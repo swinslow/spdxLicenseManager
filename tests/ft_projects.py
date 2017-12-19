@@ -25,7 +25,7 @@ from click.testing import CliRunner
 
 from slm import slm
 
-from helper_sandbox import setUpSandbox, tearDownSandbox
+from helper_sandbox import setUpSandbox, tearDownSandbox, runcmd
 
 class ListTestSuite(unittest.TestCase):
   """spdxLicenseManager project list, create and info functional test suite."""
@@ -40,12 +40,12 @@ class ListTestSuite(unittest.TestCase):
   def test_can_list_projects_and_subprojects(self):
     # Edith wants to see which top-level projects she is currently tracking
     # in spdxLicenseManager. She asks for a list of projects
-    result = self.runner.invoke(slm.cli, ['list'])
+    result = runcmd(self, slm.cli, None, "list")
     self.assertEqual(0, result.exit_code)
     self.assertEqual("frotz\ngnusto\nrezrov\n", result.output)
 
     # She knows that frotz has multiple subprojects, so she asks for a list of
     # its subprojects
-    result = self.runner.invoke(slm.cli, ['list'])
+    result = self.runner.invoke(slm.cli, ['list', 'frotz'])
     self.assertEqual(0, result.exit_code)
     self.assertEqual("frotz/frotz-dim\nfrotz/frotz-nuclear\nfrotz/frotz-shiny\n", result.output)

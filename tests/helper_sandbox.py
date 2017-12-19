@@ -22,22 +22,30 @@ import os
 import shutil
 from testfixtures import TempDirectory
 
-def setUpSandbox(self):
+def setUpSandbox(testCase):
   # set up initial temp directory
-  self.td = TempDirectory()
+  testCase.td = TempDirectory()
 
   # get paths to sandbox image and temp destination
   sandbox_src_path = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
     "sandbox"
   )
-  sandbox_dst_path = os.path.join(self.td.path, "sandbox")
+  sandbox_dst_path = os.path.join(testCase.td.path, "sandbox")
 
   # copy subdirectories and contents
   shutil.copytree(sandbox_src_path, sandbox_dst_path)
 
   # set slmhome variable for test case
-  self.slmhome = self.td.path
+  testCase.slmhome = sandbox_dst_path
 
-def tearDownSandbox(self):
-  self.td.cleanup()
+def tearDownSandbox(testCase):
+  testCase.td.cleanup()
+
+def runcmd(testCase, cli, project, *commands):
+  elements = [f'--slmhome={testCase.slmhome}']
+  if project is not None:
+    elements.append(f'--project={project}')
+  for command in commands:
+    elements.append(command)
+  return testCase.runner.invoke(cli, elements)

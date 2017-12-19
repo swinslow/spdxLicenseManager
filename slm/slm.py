@@ -18,12 +18,45 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import os
 import click
+
 from .__about__ import __version__
 
-@click.command()
-@click.version_option(
-  message=f"spdxLicenseManager (slm) version {__version__}"
-)
-def cli():
-  click.echo("Hello world!")
+from .slmconfig import SLMConfig, BadSLMConfigError
+
+from .cmdlist import cmdlist
+
+VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
+
+@click.group()
+@click.version_option(message=VERSION_MESSAGE)
+@click.option('--slmhome', default=None, envvar='SLM_HOME',
+  help='path to spdxLicenseManager data directory')
+@click.option('--project', default=None, envvar='SLM_PROJECT',
+  help='project short name')
+@click.pass_context
+def cli(ctx, slmhome, project):
+  ctx.obj = {}
+
+  # parse any top-level options
+  ctx.obj['SLMHOME'] = slmhome
+  ctx.obj['PROJECT'] = project
+
+  # if slmhome is set, load config file and set on context
+  # if slmhome is not set, just pass in an empty SLMConfig object
+  mainconfig = SLMConfig()
+  if slmhome is not None:
+    try:
+      mainconfigPath = os.path.join(os.path.abspath(slmhome), "slmconfig.json")
+      with open(mainconfigPath, "r") as f:
+        configData = f.read()
+        mainconfig.loadConfig(configData)
+    except BadSLMConfigError:
+      sys.exit(f"Error parsing configuration data from {mainconfigPath}")
+  ctx.obj['SLMCONFIG_DATA'] = mainconfig
+
+@cli.command('list')
+@click.pass_context
+def clilist(ctx):
+  return cmdlist(ctx)
