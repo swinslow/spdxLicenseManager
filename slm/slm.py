@@ -1,6 +1,6 @@
-# .gitignore
+# slm.py
 #
-# Git ignore file.
+# Main entry point for spdxLicenseManager commands.
 #
 # Copyright (C) 2017 The Linux Foundation
 #
@@ -18,15 +18,12 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-*.db
-db.sqlite3
-__pycache__
-*.pyc
-*.egg-info/*
-.DS_Store
-*.csv
-*.xlsx
-*.pptx
-scratch/*
-demo/*
-example/*
+import click
+from .__about__ import __version__
+
+@click.command()
+@click.version_option(
+  message=f"spdxLicenseManager (slm) version {__version__}"
+)
+def cli():
+  click.echo("Hello world!")

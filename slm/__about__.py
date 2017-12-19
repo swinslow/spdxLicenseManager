@@ -1,6 +1,6 @@
-# .gitignore
+# __about__.py
 #
-# Git ignore file.
+# Single source for global variables for spdxLicenseManager.
 #
 # Copyright (C) 2017 The Linux Foundation
 #
@@ -18,15 +18,4 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-*.db
-db.sqlite3
-__pycache__
-*.pyc
-*.egg-info/*
-.DS_Store
-*.csv
-*.xlsx
-*.pptx
-scratch/*
-demo/*
-example/*
+__version__ = "0.0.1"

@@ -1,6 +1,6 @@
-# tests/context.py
+# setup.py
 #
-# Helper module to import context for functional and unit tests.
+# Python packaging config file for spdxLicenseManager.
 #
 # Copyright (C) 2017 The Linux Foundation
 #
@@ -18,12 +18,22 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import sys
-import os
+from setuptools import setup, find_packages
 
-# build and insert path to code
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.insert(0, path)
+# using single source version details per https://packaging.python.org/guides/single-sourcing-package-version/ option 3
+version = {}
+with open("slm/__about__.py") as fp:
+  exec(fp.read(), version)
 
-# import code modules so tests can import them from here
-import slm
+setup(
+  name='spdxLicenseManager',
+  version=version['__version__'],
+  packages=find_packages(),
+  install_requires=[
+    'Click',
+  ],
+  entry_points='''
+    [console_scripts]
+    slm=slm.slm:cli
+  ''',
+)

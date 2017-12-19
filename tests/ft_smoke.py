@@ -18,10 +18,12 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import unittest
 import click
 from click.testing import CliRunner
 
-from .context import slm
+from slm import slm
+from slm.__about__ import __version__
 
 class VersionSmokeTestSuite(unittest.TestCase):
   """spdxLicenseManager smoke test suite."""
@@ -30,6 +32,7 @@ class VersionSmokeTestSuite(unittest.TestCase):
     self.runner = CliRunner()
 
   def test_version(self):
-    result = runner.invoke(cli, ['--version'])
+    result = self.runner.invoke(slm.cli, ['--version'])
     self.assertEqual(0, result.exit_code)
-    self.assertIn("spdxLicenseManager version", result.output)
+    self.assertIn(f"spdxLicenseManager (slm) version {__version__}",
+      result.output)
