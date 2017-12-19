@@ -24,6 +24,7 @@ import click
 from .__about__ import __version__
 
 from .slmconfig import SLMConfig, BadSLMConfigError
+from .projectconfig import ProjectConfig, BadProjectConfigError
 
 from .cmdlist import cmdlist
 
@@ -55,6 +56,22 @@ def cli(ctx, slmhome, project):
     except BadSLMConfigError:
       sys.exit(f"Error parsing configuration data from {mainconfigPath}")
   ctx.obj['SLMCONFIG_DATA'] = mainconfig
+
+  # if slmhome and project are set, load project config file and set on context
+  # if not, just pass in an empty ProjectConfig object
+  prjconfig = ProjectConfig()
+  if slmhome is not None and project is not None:
+    try:
+      prjfilename = project + ".config.json"
+      prjconfigPath = os.path.join(
+        os.path.abspath(slmhome), "projects", project, prjfilename
+      )
+      with open(prjconfigPath, "r") as f:
+        prjconfigData = f.read()
+        prjconfig.loadConfig(prjconfigData)
+    except BadProjectConfigError:
+      sys.exit(f"Error parsing project configuration data from {prjconfigPath}")
+  ctx.obj['PRJCONFIG_DATA'] = prjconfig
 
 @cli.command('list')
 @click.pass_context

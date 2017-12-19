@@ -18,10 +18,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-testft:
+functest:
 	python -m unittest discover -s tests -p "ft_*.py"
 
-testunit:
+unittest:
 	python -m unittest discover -s tests -p "unit_*.py"
 
 .PHONY: testft testunit test

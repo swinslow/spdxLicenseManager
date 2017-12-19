@@ -46,6 +46,6 @@ class ListTestSuite(unittest.TestCase):
 
     # She knows that frotz has multiple subprojects, so she asks for a list of
     # its subprojects
-    result = self.runner.invoke(slm.cli, ['list', 'frotz'])
+    result = runcmd(self, slm.cli, "frotz", "list")
     self.assertEqual(0, result.exit_code)
     self.assertEqual("frotz/frotz-dim\nfrotz/frotz-nuclear\nfrotz/frotz-shiny\n", result.output)

@@ -22,11 +22,12 @@ import click
 
 def cmdlist(ctx):
   mainconfig = ctx.obj.get('SLMCONFIG_DATA', None)
+  prjconfig = ctx.obj.get('PRJCONFIG_DATA', None)
   project = ctx.obj.get('PROJECT', None)
-  #click.echo(f'In cmdlist, project is {project}, ctx.obj is {ctx.obj}')
   if project is not None:
     # list all subprojects for this project
-    pass
+    for sp in prjconfig.subprojects:
+      click.echo(f"{project}/{sp.name}")
   else:
     # list all projects
     for p in mainconfig.projects:

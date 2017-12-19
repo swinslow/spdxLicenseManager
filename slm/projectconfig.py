@@ -1,6 +1,6 @@
-# slmconfig.py
+# projectconfig.py
 #
-# Module to load, parse and edit top-level configuration files for
+# Module to load, parse and edit project configuration files for
 # spdxLicenseManager.
 #
 # Copyright (C) 2017 The Linux Foundation
@@ -22,42 +22,42 @@
 import json
 import collections
 
-class BadSLMConfigError(Exception):
+class BadProjectConfigError(Exception):
   def __init__(self, *args, **kwargs):
     Exception.__init__(self, *args, **kwargs)
 
-SLMConfigProject = collections.namedtuple(
-  'SLMConfigProject',
+ProjectConfigSubproject = collections.namedtuple(
+  'ProjectConfigSubproject',
   ['name', 'desc']
 )
 
-class SLMConfig:
+class ProjectConfig:
   def __init__(self):
     self.loaded = False
-    self.projects = []
+    self.subprojects = []
 
   def loadConfig(self, jsondata):
     jd = json.loads(jsondata)
 
-    # load list of projects
-    ps = jd.get("projects", [])
-    for p in ps:
-      pname = p.get("name", None)
-      pdesc = p.get("desc", "=== NO DESCRIPTION ===")
-      if pname is None:
-        raise BadSLMConfigError
+    # load list of subprojects
+    sps = jd.get("subprojects", [])
+    for sp in sps:
+      spname = sp.get("name", None)
+      spdesc = sp.get("desc", "=== NO DESCRIPTION ===")
+      if spname is None:
+        raise BadProjectConfigError
 
       # create tuple and add to list
-      ptup = SLMConfigProject(pname, pdesc)
-      self.projects.append(ptup)
+      sptup = ProjectConfigSubproject(spname, spdesc)
+      self.subprojects.append(sptup)
 
-    # sort tuples by project name before returning
-    self.projects.sort(key=lambda p: p.name)
+    # sort tuples by subproject name before returning
+    self.subprojects.sort(key=lambda sp: sp.name)
 
-    return len(self.projects)
+    return len(self.subprojects)
 
-  def getProjectDesc(self, pname):
-    for p in self.projects:
-      if pname == p.name:
-        return p.desc
+  def getSubprojectDesc(self, spname):
+    for sp in self.subprojects:
+      if spname == sp.name:
+        return sp.desc
     return None
