@@ -1,6 +1,7 @@
-# tests/ft_smoke.py
+# test-requirements.txt
 #
-# Functional smoke test for spdxLicenseManager.
+# List of python requirements for running spdxLicenseManager tests.
+# Not required for use of spdxLicenseManager itself.
 #
 # Copyright (C) 2017 The Linux Foundation
 #
@@ -18,21 +19,4 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import unittest
-import click
-from click.testing import CliRunner
-
-from slm import slm
-from slm.__about__ import __version__
-
-class SmokeTestSuite(unittest.TestCase):
-  """spdxLicenseManager smoke test suite."""
-
-  def setUp(self):
-    self.runner = CliRunner()
-
-  def test_version(self):
-    result = self.runner.invoke(slm.cli, ['--version'])
-    self.assertEqual(0, result.exit_code)
-    self.assertIn(f"spdxLicenseManager (slm) version {__version__}",
-      result.output)
+testfixtures==5.3.1
