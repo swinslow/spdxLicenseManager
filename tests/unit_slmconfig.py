@@ -29,8 +29,8 @@ class SLMConfigTestSuite(unittest.TestCase):
     self.mainconfig_json = """{
       "projects": [
         { "name": "frotz", "desc": "The FROTZ Project" },
-        { "name": "gnusto", "desc": "The GNUSTO Project" },
-        { "name": "rezrov", "desc": "The REZROV Project" }
+        { "name": "rezrov", "desc": "The REZROV Project" },
+        { "name": "gnusto", "desc": "The GNUSTO Project" }
       ]
     }"""
 
@@ -49,3 +49,10 @@ class SLMConfigTestSuite(unittest.TestCase):
     badconfig = SLMConfig()
     with self.assertRaises(BadSLMConfigError):
       badconfig.loadConfig(badconfig_json)
+
+  def test_projects_are_sorted_when_listed(self):
+    mainconfig = SLMConfig()
+    numProjects = mainconfig.loadConfig(self.mainconfig_json)
+    self.assertEqual(mainconfig.projects[0].name, "frotz")
+    self.assertEqual(mainconfig.projects[1].name, "gnusto")
+    self.assertEqual(mainconfig.projects[2].name, "rezrov")

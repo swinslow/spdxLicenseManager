@@ -50,6 +50,9 @@ class SLMConfig:
       ptup = SLMConfigProject(pname, pdesc)
       self.projects.append(ptup)
 
+    # sort tuples by project name before returning
+    self.projects.sort(key=lambda p: p.name)
+
     return len(self.projects)
 
   def getProjectDesc(self, pname):
