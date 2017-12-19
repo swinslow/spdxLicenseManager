@@ -28,7 +28,7 @@ from slm import slm
 from helper_sandbox import setUpSandbox, tearDownSandbox
 
 class ListTestSuite(unittest.TestCase):
-  """spdxLicenseManager smoke test suite."""
+  """spdxLicenseManager project list, create and info functional test suite."""
 
   def setUp(self):
     self.runner = CliRunner()
