@@ -27,6 +27,7 @@ from .slmconfig import SLMConfig, BadSLMConfigError
 from .projectconfig import ProjectConfig, BadProjectConfigError
 
 from .cmdlist import cmdlist
+from .cmdcreate import cmdcreateProject, cmdcreateSubproject
 
 VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
 
@@ -77,3 +78,15 @@ def cli(ctx, slmhome, project):
 @click.pass_context
 def clilist(ctx):
   return cmdlist(ctx)
+
+@cli.command('create-project')
+@click.option('--name', help='short name for new project')
+@click.option('--desc', help='description for new project')
+@click.pass_context
+def clicreateProject(ctx, name, desc):
+  return cmdcreateProject(ctx, name, desc)
+
+@cli.command('create-subproject')
+@click.pass_context
+def clicreateSubproject(ctx):
+  return cmdcreateSubproject(ctx)

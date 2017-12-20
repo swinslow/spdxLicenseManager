@@ -50,12 +50,14 @@ class ProjectTestSuite(unittest.TestCase):
     # its subprojects
     result = runcmd(self, slm.cli, "frotz", "list")
     self.assertEqual(0, result.exit_code)
-    self.assertEqual("frotz/frotz-dim\nfrotz/frotz-nuclear\nfrotz/frotz-shiny\n", result.output)
+    self.assertEqual(result.output,
+      "frotz/frotz-dim\nfrotz/frotz-nuclear\nfrotz/frotz-shiny\n")
 
   def test_can_create_new_project_and_subproject(self):
     # Edith is starting to manage licenses for a new project called yozozzo.
     # She asks SLM to create a new project
-    result = runcmd(self, slm.cli, None, "create", "yozozzo", '--desc="The YOZOZZO Project"')
+    result = runcmd(self, slm.cli, None, "create-project",
+      "--name=yozozzo", '--desc="The YOZOZZO Project"')
     self.assertEqual(0, result.exit_code)
 
     # She confirms that the SLM top-level configuration file has been updated
@@ -65,7 +67,8 @@ class ProjectTestSuite(unittest.TestCase):
     # She also confirms that the appropriate subdirectories and config files
     # have been created
     checkForDirectoryExists(self, self.slmhome, "projects/yozozzo")
-    checkForFileExists(self, self.slmhome, "projects/yozozzo/yozozzo.config.json")
+    checkForFileExists(self, self.slmhome, 
+      "projects/yozozzo/yozozzo.config.json")
 
     # And she confirms that a "list" command now includes yozozzo in the list
     result = runcmd(self, slm.cli, None, "list")
@@ -74,7 +77,8 @@ class ProjectTestSuite(unittest.TestCase):
 
     # Now, she wants to create its first subproject, yozozzo-duck
     result = runcmd(self, slm.cli, yozozzo,
-      "create", "yozozzo-duck", '--desc="Duck transformation spell"')
+      "create-subproject", "--name=yozozzo-duck",
+      '--desc="Duck transformation spell"')
     self.assertEqual(0, result.exit_code)
 
     # She confirms that the project configuration file has been updated and
@@ -93,3 +97,22 @@ class ProjectTestSuite(unittest.TestCase):
     result = runcmd(self, slm.cli, "yozozzo", "list")
     self.assertEqual(0, result.exit_code)
     self.assertEqual("yozozzo/yozozzo-duck\n", result.output)
+
+  def test_cannot_create_new_project_with_duplicate_name(self):
+    # Edith accidentally asks SLM to create a new project with an existing name
+    result = runcmd(self, slm.cli, None,
+      "create-project", "--name=frotz", '--desc="oops"')
+
+    # It doesn't work and tells her why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(result.output, "Error: project frotz already exists\n")
+
+  def test_cannot_create_new_project_and_also_pass_existing_project(self):
+    # Edith asks SLM to create a new project, but accidentally also includes
+    # an existing project name in the command
+    result = runcmd(self, slm.cli, "frotz",
+      "create-project", "--name=yozozzo", '--desc="oops"')
+
+    # It doesn't work and tells her why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(result.output, "Error: called create-project but passed project=frotz; did you mean to call create-subproject?\n")
