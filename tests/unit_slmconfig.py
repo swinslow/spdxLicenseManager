@@ -56,3 +56,37 @@ class SLMConfigTestSuite(unittest.TestCase):
     self.assertEqual(mainconfig.projects[0].name, "frotz")
     self.assertEqual(mainconfig.projects[1].name, "gnusto")
     self.assertEqual(mainconfig.projects[2].name, "rezrov")
+
+  def test_can_add_new_project(self):
+    mainconfig = SLMConfig()
+    mainconfig.loadConfig(self.mainconfig_json)
+    mainconfig.addProject("prj4", "The prj4 Project")
+    self.assertEqual(len(mainconfig.projects), 4)
+    self.assertEqual(mainconfig.getProjectDesc("prj4"), "The prj4 Project")
+
+  def test_mainconfig_json_updated_to_include_new_project(self):
+    # load default and add new project
+    mainconfig = SLMConfig()
+    mainconfig.loadConfig(self.mainconfig_json)
+    mainconfig.addProject("prj4", "The prj4 Project")
+
+    # get JSON back and recreate in new config
+    new_json = mainconfig.getJSON()
+    newconfig = SLMConfig()
+    newconfig.loadConfig(new_json)
+
+    # check that the old and new projects are present
+    self.assertEqual(len(newconfig.projects), 4)
+    self.assertEqual(newconfig.getProjectDesc("prj4"), "The prj4 Project")
+    self.assertEqual(newconfig.getProjectDesc("frotz"), "The FROTZ Project")
+    self.assertEqual(newconfig.getProjectDesc("gnusto"), "The GNUSTO Project")
+    self.assertEqual(newconfig.getProjectDesc("rezrov"), "The REZROV Project")
+
+  def test_projects_are_sorted_after_new_project_is_added(self):
+    mainconfig = SLMConfig()
+    mainconfig.loadConfig(self.mainconfig_json)
+    mainconfig.addProject("prj4", "The prj4 Project")
+    self.assertEqual(mainconfig.projects[0].name, "frotz")
+    self.assertEqual(mainconfig.projects[1].name, "gnusto")
+    self.assertEqual(mainconfig.projects[2].name, "prj4")
+    self.assertEqual(mainconfig.projects[3].name, "rezrov")
