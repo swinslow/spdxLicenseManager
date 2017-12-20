@@ -27,7 +27,7 @@ from slm import slm
 
 from helper_sandbox import setUpSandbox, tearDownSandbox, runcmd
 
-class ListTestSuite(unittest.TestCase):
+class ProjectTestSuite(unittest.TestCase):
   """spdxLicenseManager project list, create and info functional test suite."""
 
   def setUp(self):
@@ -49,3 +49,29 @@ class ListTestSuite(unittest.TestCase):
     result = runcmd(self, slm.cli, "frotz", "list")
     self.assertEqual(0, result.exit_code)
     self.assertEqual("frotz/frotz-dim\nfrotz/frotz-nuclear\nfrotz/frotz-shiny\n", result.output)
+
+  def test_can_create_new_project_and_subproject(self):
+    # Edith is starting to manage licenses for a new project called yozozzo.
+    # She asks SLM to create a new project
+    result = runcmd(self, slm.cli, None, "create", "yozozzo", '--desc="The YOZOZZO Project"')
+    self.assertEqual(0, result.exit_code)
+
+    # She confirms that the SLM top-level configuration file has been updated
+    # and now refers to yozozzo
+
+    # She also confirms that the appropriate subdirectories and config files
+    # have been created
+
+    # And she confirms that a "list" command now includes yozozzo in the list
+
+    # Now, she wants to create its first subproject, yozozzo-duck
+
+    # She confirms that the project configuration file has been updated and
+    # now refers to yozozzo-duck
+
+    # She also confirms that the appropriate subproject subdirectories and
+    # config files have been created
+
+    # And she confirms that a "list" command no includes yozozzo-duck
+
+    self.assertFail("Finish the test!")
