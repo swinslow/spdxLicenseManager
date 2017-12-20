@@ -41,5 +41,17 @@ def cmdcreateProject(ctx, pname, pdesc):
     # error, shouldn't call create-project with existing name
     sys.exit(f"Error: project {pname} already exists")
 
+  # create subdirectory for new project
+  createNewProjectDirs(slmhome, pname)
+
+  # update main SLM config object
+  mainconfig.addProject(pname, pdesc)
+
+  # get and output new SLM config JSON
+  newJSON = mainconfig.getJSON()
+  mainconfigPath = os.path.join(slmhome, "slmconfig.json")
+  with open(mainconfigPath, "w") as f:
+    f.write(newJSON)
+
 def cmdcreateSubproject(ctx):
   pass
