@@ -56,8 +56,8 @@ class ProjectTestSuite(unittest.TestCase):
   def test_can_create_new_project_and_subproject(self):
     # Edith is starting to manage licenses for a new project called yozozzo.
     # She asks SLM to create a new project
-    result = runcmd(self, slm.cli, None, "create-project",
-      "--name=yozozzo", '--desc="The YOZOZZO Project"')
+    result = runcmd(self, slm.cli, None, "create-project", "yozozzo",
+      '--desc="The YOZOZZO Project"')
     self.assertEqual(0, result.exit_code)
 
     # She confirms that the SLM top-level configuration file has been updated
@@ -77,7 +77,7 @@ class ProjectTestSuite(unittest.TestCase):
 
     # Now, she wants to create its first subproject, yozozzo-duck
     result = runcmd(self, slm.cli, yozozzo,
-      "create-subproject", "--name=yozozzo-duck",
+      "create-subproject", "-yozozzo-duck",
       '--desc="Duck transformation spell"')
     self.assertEqual(0, result.exit_code)
 
@@ -101,7 +101,7 @@ class ProjectTestSuite(unittest.TestCase):
   def test_cannot_create_new_project_with_duplicate_name(self):
     # Edith accidentally asks SLM to create a new project with an existing name
     result = runcmd(self, slm.cli, None,
-      "create-project", "--name=frotz", '--desc="oops"')
+      "create-project", "frotz", '--desc="oops"')
 
     # It doesn't work and tells her why
     self.assertEqual(1, result.exit_code)
@@ -111,7 +111,7 @@ class ProjectTestSuite(unittest.TestCase):
     # Edith asks SLM to create a new project, but accidentally also includes
     # an existing project name in the command
     result = runcmd(self, slm.cli, "frotz",
-      "create-project", "--name=yozozzo", '--desc="oops"')
+      "create-project", "yozozzo", '--desc="oops"')
 
     # It doesn't work and tells her why
     self.assertEqual(1, result.exit_code)

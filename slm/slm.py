@@ -80,7 +80,7 @@ def clilist(ctx):
   return cmdlist(ctx)
 
 @cli.command('create-project')
-@click.option('--name', help='short name for new project')
+@click.argument('name')
 @click.option('--desc', help='description for new project')
 @click.pass_context
 def clicreateProject(ctx, name, desc):
