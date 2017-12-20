@@ -26,6 +26,8 @@ from click.testing import CliRunner
 from slm import slm
 
 from helper_sandbox import setUpSandbox, tearDownSandbox, runcmd
+from helper_check import (checkForFileExists, checkForDirectoryExists,
+  checkForTextInFile)
 
 class ProjectTestSuite(unittest.TestCase):
   """spdxLicenseManager project list, create and info functional test suite."""
@@ -58,20 +60,36 @@ class ProjectTestSuite(unittest.TestCase):
 
     # She confirms that the SLM top-level configuration file has been updated
     # and now refers to yozozzo
+    checkForTextInFile(self, self.slmhome, "slmconfig.json", "yozozzo")
 
     # She also confirms that the appropriate subdirectories and config files
     # have been created
+    checkForDirectoryExists(self, self.slmhome, "projects/yozozzo")
+    checkForFileExists(self, self.slmhome, "projects/yozozzo/yozozzo.config.json")
 
     # And she confirms that a "list" command now includes yozozzo in the list
+    result = runcmd(self, slm.cli, None, "list")
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual("frotz\ngnusto\nrezrov\nyozozzo\n", result.output)
 
     # Now, she wants to create its first subproject, yozozzo-duck
+    result = runcmd(self, slm.cli, yozozzo,
+      "create", "yozozzo-duck", '--desc="Duck transformation spell"')
+    self.assertEqual(0, result.exit_code)
 
     # She confirms that the project configuration file has been updated and
     # now refers to yozozzo-duck
+    checkForTextInFile(self, self.slmhome,
+      "projects/yozozzo/yozozzo.config.json", "yozozzo-duck")
 
     # She also confirms that the appropriate subproject subdirectories and
     # config files have been created
+    checkForDirectoryExists(self, self.slmhome,
+      "projects/yozozzo/yozozzo-duck")
+    checkForFileExists(self, self.slmhome,
+      "projects/yozozzo/yozozzo-duck/yozozzo-duck.config.json")
 
-    # And she confirms that a "list" command no includes yozozzo-duck
-
-    self.assertFail("Finish the test!")
+    # And she confirms that a "list" command now includes yozozzo-duck
+    result = runcmd(self, slm.cli, "yozozzo", "list")
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual("yozozzo/yozozzo-duck\n", result.output)
