@@ -68,6 +68,47 @@ class ProjectConfigTestSuite(unittest.TestCase):
     self.assertEqual(prjconfig.subprojects[1].name, "sub2")
     self.assertEqual(prjconfig.subprojects[2].name, "sub3")
 
-  def test_new_projectconfig_has_empty_subdir(self):
+  def test_new_projectconfig_has_empty_subprojects(self):
     prjconfig = ProjectConfig()
     self.assertFalse(prjconfig.subprojects)
+
+  def test_can_add_new_subproject(self):
+    prjconfig = ProjectConfig()
+    prjconfig.loadConfig(self.prjconfig_json)
+    numSubprojects = prjconfig.addSubproject("sub4", "The 4th Subproject")
+    self.assertEqual(numSubprojects, 4)
+    self.assertEqual(len(prjconfig.subprojects), 4)
+    self.assertEqual(prjconfig.getSubprojectDesc("sub4"), "The 4th Subproject")
+
+  def test_prjconfig_json_updated_to_include_new_subproject(self):
+    # load default and add new subproject
+    prjconfig = ProjectConfig()
+    prjconfig.loadConfig(self.prjconfig_json)
+    prjconfig.addSubproject("sub4", "The 4th Subproject")
+
+    # get JSON back and recreate in new config
+    new_json = prjconfig.getJSON()
+    newconfig = ProjectConfig()
+    newconfig.loadConfig(new_json)
+
+    # check that the old and new subprojects are present
+    self.assertEqual(len(newconfig.subprojects), 4)
+    self.assertEqual(newconfig.getSubprojectDesc("sub4"), "The 4th Subproject")
+    self.assertEqual(newconfig.getSubprojectDesc("sub1"), "subproject 1")
+    self.assertEqual(newconfig.getSubprojectDesc("sub2"), "subproject B")
+    self.assertEqual(newconfig.getSubprojectDesc("sub3"), "subproject the third")
+
+  def test_subprojects_are_sorted_after_new_subproject_is_added(self):
+    prjconfig = ProjectConfig()
+    prjconfig.loadConfig(self.prjconfig_json)
+    prjconfig.addSubproject("sub2.5", "The 2.5th Subproject")
+    self.assertEqual(prjconfig.subprojects[0].name, "sub1")
+    self.assertEqual(prjconfig.subprojects[1].name, "sub2")
+    self.assertEqual(prjconfig.subprojects[2].name, "sub2.5")
+    self.assertEqual(prjconfig.subprojects[3].name, "sub3")
+
+  def test_cannot_add_duplicate_subproject_name(self):
+    prjconfig = ProjectConfig()
+    prjconfig.loadConfig(self.prjconfig_json)
+    with self.assertRaises(BadProjectConfigError):
+      prjconfig.addSubproject("sub1", "duplicate name - should fail")

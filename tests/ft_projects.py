@@ -76,7 +76,7 @@ class ProjectTestSuite(unittest.TestCase):
     self.assertEqual("frotz\ngnusto\nrezrov\nyozozzo\n", result.output)
 
     # Now, she wants to create its first subproject, yozozzo-duck
-    result = runcmd(self, slm.cli, yozozzo,
+    result = runcmd(self, slm.cli, "yozozzo",
       "create-subproject", "-yozozzo-duck",
       '--desc="Duck transformation spell"')
     self.assertEqual(0, result.exit_code)

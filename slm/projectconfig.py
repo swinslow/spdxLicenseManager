@@ -61,8 +61,32 @@ class ProjectConfig:
 
     return len(self.subprojects)
 
+  def getJSON(self):
+    # convert subrojects from tuples to dicts
+    subproject_rep = []
+    for sp in self.subprojects:
+      spd = {"name": sp.name, "desc": sp.desc}
+      subproject_rep.append(spd)
+    rep = {"subprojects": subproject_rep}
+    return json.dumps(rep, indent=2)
+
   def getSubprojectDesc(self, spname):
     for sp in self.subprojects:
       if spname == sp.name:
         return sp.desc
     return None
+
+  def addSubproject(self, spname, spdesc):
+    # check if name already present
+    for sp in self.subprojects:
+      if spname == sp.name:
+        raise BadProjectConfigError
+
+    sptup = ProjectConfigSubproject(spname, spdesc)
+    self.subprojects.append(sptup)
+
+    # sort tuples by subproject name before returning
+    self.subprojects.sort(key=lambda sp: sp.name)
+
+    return len(self.subprojects)
+

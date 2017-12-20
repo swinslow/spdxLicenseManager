@@ -22,6 +22,8 @@ import os
 import sys
 import click
 
+from .projectconfig import ProjectConfig
+
 def createNewProjectDirs(slmhome, pname):
   dirPath = os.path.abspath(os.path.join(slmhome, "projects", pname))
   os.makedirs(name=dirPath, mode=0o755)
@@ -52,6 +54,14 @@ def cmdcreateProject(ctx, pname, pdesc):
   mainconfigPath = os.path.join(slmhome, "slmconfig.json")
   with open(mainconfigPath, "w") as f:
     f.write(newJSON)
+
+  # create new empty project config and write JSON to disk
+  prjconfig = ProjectConfig()
+  prjFilename = f"{pname}.config.json"
+  prjconfigPath = os.path.join(slmhome, "projects", pname, prjFilename)
+  prjJSON = prjconfig.getJSON()
+  with open(prjconfigPath, "w") as f:
+    f.write(prjJSON)
 
 def cmdcreateSubproject(ctx):
   pass
