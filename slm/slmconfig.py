@@ -47,6 +47,11 @@ class SLMConfig:
       if pname is None:
         raise BadSLMConfigError
 
+      # check if name already present
+      for pcheck in self.projects:
+        if pname == pcheck.name:
+          raise BadSLMConfigError
+
       # create tuple and add to list
       ptup = SLMConfigProject(pname, pdesc)
       self.projects.append(ptup)
@@ -56,8 +61,31 @@ class SLMConfig:
 
     return len(self.projects)
 
+  def getJSON(self):
+    # convert projects from tuples to dicts
+    project_rep = []
+    for p in self.projects:
+      pd = {"name": p.name, "desc": p.desc}
+      project_rep.append(pd)
+    rep = {"projects": project_rep}
+    return json.dumps(rep, indent=2)
+
   def getProjectDesc(self, pname):
     for p in self.projects:
       if pname == p.name:
         return p.desc
     return None
+
+  def addProject(self, pname, pdesc):
+    # check if name already present
+    for p in self.projects:
+      if pname == p.name:
+        raise BadSLMConfigError
+
+    ptup = SLMConfigProject(pname, pdesc)
+    self.projects.append(ptup)
+
+    # sort tuples by project name before returning
+    self.projects.sort(key=lambda p: p.name)
+
+    return len(self.projects)

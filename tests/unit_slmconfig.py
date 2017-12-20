@@ -50,6 +50,17 @@ class SLMConfigTestSuite(unittest.TestCase):
     with self.assertRaises(BadSLMConfigError):
       badconfig.loadConfig(badconfig_json)
 
+  def test_raises_exception_for_duplicate_project_names(self):
+    badconfig_json = """{
+      "projects": [
+        { "name": "frotz", "desc": "The FROTZ Project" },
+        { "name": "frotz", "desc": "duplicate name -- should fail" }
+      ]
+    }"""
+    badconfig = SLMConfig()
+    with self.assertRaises(BadSLMConfigError):
+      badconfig.loadConfig(badconfig_json)
+
   def test_projects_are_sorted_when_listed(self):
     mainconfig = SLMConfig()
     numProjects = mainconfig.loadConfig(self.mainconfig_json)
@@ -60,7 +71,8 @@ class SLMConfigTestSuite(unittest.TestCase):
   def test_can_add_new_project(self):
     mainconfig = SLMConfig()
     mainconfig.loadConfig(self.mainconfig_json)
-    mainconfig.addProject("prj4", "The prj4 Project")
+    numProjects = mainconfig.addProject("prj4", "The prj4 Project")
+    self.assertEqual(numProjects, 4)
     self.assertEqual(len(mainconfig.projects), 4)
     self.assertEqual(mainconfig.getProjectDesc("prj4"), "The prj4 Project")
 
@@ -90,3 +102,9 @@ class SLMConfigTestSuite(unittest.TestCase):
     self.assertEqual(mainconfig.projects[1].name, "gnusto")
     self.assertEqual(mainconfig.projects[2].name, "prj4")
     self.assertEqual(mainconfig.projects[3].name, "rezrov")
+
+  def test_cannot_add_duplicate_project_name(self):
+    mainconfig = SLMConfig()
+    mainconfig.loadConfig(self.mainconfig_json)
+    with self.assertRaises(BadSLMConfigError):
+      mainconfig.addProject("frotz", "duplicate name - should fail")
