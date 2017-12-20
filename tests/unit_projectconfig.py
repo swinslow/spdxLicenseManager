@@ -50,9 +50,24 @@ class ProjectConfigTestSuite(unittest.TestCase):
     with self.assertRaises(BadProjectConfigError):
       badconfig.loadConfig(badconfig_json)
 
+  def test_raises_exception_for_duplicate_subproject_names(self):
+    badconfig_json = """{
+      "subprojects": [
+        { "name": "subprj1", "desc": "The subprj Project" },
+        { "name": "subprj1", "desc": "duplicate name -- should fail" }
+      ]
+    }"""
+    badconfig = ProjectConfig()
+    with self.assertRaises(BadProjectConfigError):
+      badconfig.loadConfig(badconfig_json)
+
   def test_subprojects_are_sorted_when_listed(self):
     prjconfig = ProjectConfig()
     numSubprojects = prjconfig.loadConfig(self.prjconfig_json)
     self.assertEqual(prjconfig.subprojects[0].name, "sub1")
     self.assertEqual(prjconfig.subprojects[1].name, "sub2")
     self.assertEqual(prjconfig.subprojects[2].name, "sub3")
+
+  def test_new_projectconfig_has_empty_subdir(self):
+    prjconfig = ProjectConfig()
+    self.assertFalse(prjconfig.subprojects)

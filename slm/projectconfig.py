@@ -47,6 +47,11 @@ class ProjectConfig:
       if spname is None:
         raise BadProjectConfigError
 
+      # check if name already present
+      for spcheck in self.subprojects:
+        if spname == spcheck.name:
+          raise BadProjectConfigError
+
       # create tuple and add to list
       sptup = ProjectConfigSubproject(spname, spdesc)
       self.subprojects.append(sptup)
