@@ -18,8 +18,13 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import os
 import sys
 import click
+
+def createNewProjectDirs(slmhome, pname):
+  dirPath = os.path.abspath(os.path.join(slmhome, "projects", pname))
+  os.makedirs(name=dirPath, mode=0o755)
 
 def cmdcreateProject(ctx, pname, pdesc):
   slmhome = ctx.obj.get('SLMHOME', None)
