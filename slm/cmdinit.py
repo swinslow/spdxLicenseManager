@@ -20,20 +20,29 @@
 
 import json
 import os
+import sys
 import click
 
 def createNewHomeDir(newhome):
-  dirPath = os.path.abspath(newhome)
+  dirPath = newhome
   os.makedirs(name=dirPath, mode=0o755)
 
 def createNewProjectsDir(newhome):
-  projectsPath = os.path.join(os.path.abspath(newhome), "projects")
+  projectsPath = os.path.join(newhome, "projects")
   os.makedirs(name=projectsPath, mode=0o755)
 
 def cmdinit(ctx, newhome):
   verbose = ctx.obj.get('VERBOSE', False)
-  createNewHomeDir(newhome)
-  createNewProjectsDir(newhome)
+
+  # check whether this is already an existing SLM directory
+  # (e.g., does it have an slmconfig.json file and/or a projects directory?)
+  homePath = os.path.abspath(newhome)
+  if os.path.isdir(os.path.join(homePath, "projects")) or os.path.isfile(os.path.join(homePath, "slmconfig.json")):
+    sys.exit(f"Error: {homePath} already appears to be an spdxLicenseManager directory.\nIf you REALLY want to re-initialize it, delete the entire directory and re-run this command.")
+
+  # create new dirs
+  createNewHomeDir(homePath)
+  createNewProjectsDir(homePath)
 
   # create JSON config file with just a "projects" key
   # convert projects from tuples to dicts
