@@ -24,7 +24,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError, DatabaseError
 from sqlalchemy.orm import sessionmaker
 
-from .datatypes import Base, Config, Subproject
+from .datatypes import Base, Category, Config, Subproject
 
 class ProjectDBConfigError(Exception):
   """Exception raised for errors in database configuration.
@@ -158,3 +158,8 @@ class ProjectDB:
       else:
         self.session.flush()
       return subproject.id
+
+  ##### Category functions
+
+  def getCategoriesAll(self):
+    return self.session.query(Category).order_by(Category.order).all()

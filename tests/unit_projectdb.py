@@ -26,7 +26,7 @@ from testfixtures import TempDirectory
 from slm.projectdb import ProjectDB, ProjectDBConfigError
 from slm.datatypes import Config
 
-class ProjectDBTestSuite(unittest.TestCase):
+class ProjectDBUnitTestSuite(unittest.TestCase):
   """spdxLicenseManager unit test suite for DB initialization and lifecycle."""
 
   def setUp(self):

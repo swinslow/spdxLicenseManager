@@ -38,4 +38,13 @@ class Subproject(Base):
   desc = Column(String())
 
   def __repr__(self):
-    return f"Project {self.id}: {self.name} ({self.desc})"
+    return f"Subproject {self.id}: {self.name} ({self.desc})"
+
+class Category(Base):
+  __tablename__ = 'categories'
+  _id = Column(Integer(), primary_key=True)
+  name = Column(String())
+  order = Column(Integer(), unique=True)
+
+  def __repr__(self):
+    return f"Category {self._id}, order {self.order}: {self.name}"

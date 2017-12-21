@@ -26,7 +26,7 @@ from testfixtures import TempDirectory
 from slm.projectdb import ProjectDB, ProjectDBQueryError
 from slm.datatypes import Subproject
 
-class DBSubprojectTestSuite(unittest.TestCase):
+class DBSubprojectUnitTestSuite(unittest.TestCase):
   """spdxLicenseManager unit test suite for subproject data in DB."""
 
   def setUp(self):
