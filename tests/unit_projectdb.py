@@ -18,10 +18,13 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import os
 import unittest
 from unittest import mock
+from testfixtures import TempDirectory
 
 from slm.projectdb import ProjectDB, ProjectDBConfigError
+from slm.datatypes import Config
 
 class ProjectDBTestSuite(unittest.TestCase):
   """spdxLicenseManager project database unit test suite."""
@@ -49,6 +52,7 @@ class ProjectDBTestSuite(unittest.TestCase):
     dbnew.createDB(":memory:")
     self.assertTrue(dbnew.isOpened())
     self.assertFalse(dbnew.isInitialized())
+    dbnew.closeDB()
 
   @mock.patch('slm.projectdb.os.path.exists', return_value=True)
   def test_cannot_create_new_database_if_file_already_exists(self, os_exists):
@@ -68,3 +72,58 @@ class ProjectDBTestSuite(unittest.TestCase):
     self.assertFalse(dbnew.isInitialized())
     self.assertIsNone(dbnew.session)
     self.assertIsNone(dbnew.engine)
+
+  def test_can_open_existing_db(self):
+    # create in temporary directory on disk, so we can re-open DB
+    # (testfixtures will wipe out the directory at end of test)
+    with TempDirectory() as td:
+      dbPath = os.path.join(td.path, "tmp.db")
+      dbnew = ProjectDB()
+      dbnew.createDB(dbPath)
+      dbnew.initializeDBTables()
+      dbnew.closeDB()
+      # and reopen it
+      dbnew.openDB(dbPath)
+      self.assertTrue(dbnew.isOpened())
+      self.assertTrue(dbnew.isInitialized())
+      dbnew.closeDB()
+
+  def test_cannot_open_in_memory_db(self):
+    dbnew = ProjectDB()
+    with self.assertRaises(ProjectDBConfigError):
+      dbnew.openDB(":memory:")
+
+  def test_open_db_fails_if_invalid_magic_number(self):
+    # create in temporary directory on disk, so we can re-open it
+    # (testfixtures will wipe out the directory at end of test)
+    with TempDirectory() as td:
+      dbPath = os.path.join(td.path, "tmp.db")
+      dbnew = ProjectDB()
+      dbnew.createDB(dbPath)
+      dbnew.initializeDBTables()
+
+      # set invalid magic number
+      query = dbnew.session.query(Config).filter(Config.key == "magic")
+      query.update({Config.value: "invalidMagic"})
+      dbnew.session.commit()
+      dbnew.closeDB()
+
+      # and reopen it
+      with self.assertRaises(ProjectDBConfigError):
+        dbnew.openDB(dbPath)
+      self.assertFalse(dbnew.isOpened())
+      self.assertFalse(dbnew.isInitialized())
+
+  def test_cannot_open_some_random_file_as_db(self):
+    # create in temporary directory on disk, so we can re-open it
+    # (testfixtures will wipe out the directory at end of test)
+    with TempDirectory() as td:
+      fakeDBPath = os.path.join(td.path, "tmp.txt")
+      with open(fakeDBPath, "w") as f:
+        f.write("some random text")
+
+      dbnew = ProjectDB()
+      with self.assertRaises(ProjectDBConfigError):
+        dbnew.openDB(fakeDBPath)
+      self.assertFalse(dbnew.isOpened())
+      self.assertFalse(dbnew.isInitialized())

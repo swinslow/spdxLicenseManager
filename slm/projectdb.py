@@ -21,7 +21,7 @@
 import os
 
 from sqlalchemy import create_engine
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import OperationalError, DatabaseError
 from sqlalchemy.orm import sessionmaker
 
 from .datatypes import Base, Config
@@ -81,6 +81,30 @@ class ProjectDB:
     query = self.session.query(Config).filter(Config.key == "initialized")
     query.update({Config.value: "yes"})
     self.session.commit()
+
+  def openDB(self, pathToDB):
+    if pathToDB == ":memory:":
+      raise ProjectDBConfigError
+
+    # create engine string (file path only)
+    engine_str = "sqlite:///" + pathToDB
+
+    # connect to database
+    self.engine = create_engine(engine_str)
+    Session = sessionmaker(bind=self.engine)
+    self.session = Session()
+
+    # query to confirm config magic value is valid
+    try:
+      query = self.session.query(Config).filter_by(key="magic").first()
+    except DatabaseError:
+      # file is not a database
+      self.closeDB()
+      raise ProjectDBConfigError
+
+    if query.value != "spdxLicenseManager":
+      self.closeDB()
+      raise ProjectDBConfigError
 
   def closeDB(self):
     if self.session is not None:

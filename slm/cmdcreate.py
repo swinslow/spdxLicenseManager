@@ -59,7 +59,7 @@ def cmdcreateProject(ctx, pname, pdesc):
   with open(mainconfigPath, "w") as f:
     f.write(newJSON)
 
-  # create new empty project database and write JSON to disk
+  # create new empty, initialized project database and write to disk
   db = ProjectDB()
   dbFilename = f"{pname}.db"
   dbPath = os.path.abspath(os.path.join(slmhome,
@@ -67,13 +67,6 @@ def cmdcreateProject(ctx, pname, pdesc):
   db.createDB(dbPath)
   db.initializeDBTables()
   db.closeDB()
-
-  # prjconfig = ProjectConfig()
-  # prjFilename = f"{pname}.config.json"
-  # prjconfigPath = os.path.join(slmhome, "projects", pname, prjFilename)
-  # prjJSON = prjconfig.getJSON()
-  # with open(prjconfigPath, "w") as f:
-  #   f.write(prjJSON)
 
 def cmdcreateSubproject(ctx, spname, spdesc):
   slmhome = ctx.obj.get('SLMHOME', None)
