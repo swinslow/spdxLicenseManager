@@ -51,3 +51,9 @@ def cmdinit(ctx, newhome):
   mainconfigPath = os.path.join(newhome, "slmconfig.json")
   with open(mainconfigPath, "w") as f:
     f.write(newJSON)
+
+  click.echo(f"Success!")
+  click.echo(f"A new spdxLicenseManager data directory has been initialized.")
+  click.echo(f"To use spdxLicenseManager (slm), do one of the following:")
+  click.echo(f"  * For each call: slm --slmhome={homePath} ...")
+  click.echo(f"  * Or, set the environment variable SLM_HOME to {homePath}")

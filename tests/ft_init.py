@@ -70,6 +70,12 @@ class ProjectTestSuite(unittest.TestCase):
       filedata = f.read()
       self.assertTrue('"projects":' in filedata)
 
+    # Finally, the output tells her that it succeeded and to set her
+    # environment variable
+    self.assertIn("A new spdxLicenseManager data directory has been initialized", result.output)
+    self.assertIn("environment variable SLM_HOME", result.output)
+    self.assertIn(newhome, result.output)
+
   def test_cannot_initialize_an_existing_SLM_home_directory(self):
     # Edith accidentally tries to initialize an existing SLM home directory
     result = self.runner.invoke(slm.cli, ['init', self.slmhome])

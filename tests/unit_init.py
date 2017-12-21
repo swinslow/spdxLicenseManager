@@ -38,7 +38,8 @@ class InitTestSuite(unittest.TestCase):
     createNewHomeDir(newhome)
     mock_os_makedirs.assert_called_with(
       name="/tmp/fake/slm",
-      mode=0o755
+      mode=0o755,
+      exist_ok=True
     )
     createNewProjectsDir(newhome)
     mock_os_makedirs.assert_called_with(
