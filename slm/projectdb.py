@@ -20,7 +20,7 @@
 
 import os
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, desc
 from sqlalchemy.exc import OperationalError, DatabaseError
 from sqlalchemy.orm import sessionmaker
 
@@ -150,16 +150,42 @@ class ProjectDB:
                           filter(Subproject.name == name).first()
 
   def addSubproject(self, name, desc, commit=True):
-    #try:
-      subproject = Subproject(name=name, desc=desc)
-      self.session.add(subproject)
-      if commit:
-        self.session.commit()
-      else:
-        self.session.flush()
-      return subproject.id
+    subproject = Subproject(name=name, desc=desc)
+    self.session.add(subproject)
+    if commit:
+      self.session.commit()
+    else:
+      self.session.flush()
+    return subproject.id
 
   ##### Category functions
 
   def getCategoriesAll(self):
     return self.session.query(Category).order_by(Category.order).all()
+
+  def getCategory(self, *, _id=None, name=None):
+    if _id is None and name is None:
+      raise ProjectDBQueryError("Cannot call getCategory without either _id or name parameters")
+    if _id is not None and name is not None:
+      raise ProjectDBQueryError("Cannot call getCategory with both _id and name parameters")
+    if _id is not None:
+      return self.session.query(Category).\
+                          filter(Category._id == _id).first()
+    if name is not None:
+      return self.session.query(Category).\
+                          filter(Category.name == name).first()
+
+  def getCategoryHighestOrder(self):
+    return self.session.query(Category.order).\
+                        order_by(desc(Category.order)).first()[0]
+
+  def addCategory(self, name, order=None, commit=True):
+    if order is None:
+      order = self.getCategoryHighestOrder() + 1
+    category = Category(name=name, order=order)
+    self.session.add(category)
+    if commit:
+      self.session.commit()
+    else:
+      self.session.flush()
+    return category._id

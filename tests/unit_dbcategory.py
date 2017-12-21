@@ -23,7 +23,7 @@ import unittest
 from unittest import mock
 from testfixtures import TempDirectory
 
-from slm.projectdb import ProjectDB
+from slm.projectdb import ProjectDB, ProjectDBQueryError
 from slm.datatypes import Category
 
 class DBCategoryUnitTestSuite(unittest.TestCase):
@@ -66,3 +66,76 @@ class DBCategoryUnitTestSuite(unittest.TestCase):
     self.assertEqual(categories[0].name, "blah category")
     self.assertEqual(categories[1].name, "cat of crazy licenses")
     self.assertEqual(categories[2].name, "a category")
+
+  def test_can_retrieve_one_category_by_id(self):
+    category = self.db.getCategory(_id=2)
+    self.assertEqual(category.name, "cat of crazy licenses")
+
+  def test_can_retrieve_one_category_by_name(self):
+    category = self.db.getCategory(name="a category")
+    self.assertEqual(category._id, 1)
+
+  def test_cannot_retrieve_category_by_both_name_and_id(self):
+    with self.assertRaises(ProjectDBQueryError):
+      self.db.getCategory(_id=3, name="blah category")
+
+  def test_cannot_retrieve_category_without_either_name_or_id(self):
+    with self.assertRaises(ProjectDBQueryError):
+      self.db.getCategory()
+
+  def test_cannot_retrieve_category_with_positional_args(self):
+    with self.assertRaises(TypeError):
+      self.db.getCategory("blah category")
+
+  def test_returns_none_if_category_not_found_by_id(self):
+    category = self.db.getCategory(_id=17)
+    self.assertIsNone(category)
+
+  def test_returns_none_if_category_not_found_by_name(self):
+    category = self.db.getCategory(name="noSuchCategory")
+    self.assertIsNone(category)
+
+  def test_can_add_and_retrieve_categories(self):
+    category_id = self.db.addCategory(name="newcat", order=4)
+
+    # confirm that we now have four categories
+    categories = self.db.getCategoriesAll()
+    self.assertEqual(len(categories), 4)
+
+    # and confirm that we can retrieve this one by name
+    category = self.db.getCategory(name="newcat")
+    self.assertEqual(category._id, 4)
+    self.assertEqual(category.order, 4)
+
+    # and confirm that we can retrieve this one by id
+    category = self.db.getCategory(_id=4)
+    self.assertEqual(category.name, "newcat")
+    self.assertEqual(category.order, 4)
+
+  def test_can_start_adding_but_rollback_category(self):
+    category_id = self.db.addCategory(name="will rollback",
+      order=99, commit=False)
+    self.db.rollback()
+    # confirm that we still only have three categories
+    categories = self.db.getCategoriesAll()
+    self.assertEqual(len(categories), 3)
+    # and confirm that this category ID doesn't exist in database
+    category = self.db.getCategory(_id=category_id)
+    self.assertIsNone(category)
+
+  def test_can_start_adding_and_then_commit_categories(self):
+    c1_id = self.db.addCategory(name="newc1", order=98, commit=False)
+    c2_id = self.db.addCategory(name="newc2", order=99, commit=False)
+    self.db.commit()
+    # confirm that we now have five categories
+    categories = self.db.getCategoriesAll()
+    self.assertEqual(len(categories), 5)
+
+  def test_omitting_order_from_new_category_places_it_at_end(self):
+    category_id = self.db.addCategory(name="newcat")
+    category = self.db.getCategory(name="newcat")
+    self.assertEqual(category.order, 4)
+
+  def test_can_get_highest_category_order(self):
+    highestOrder = self.db.getCategoryHighestOrder()
+    self.assertEqual(highestOrder, 3)
