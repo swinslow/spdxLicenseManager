@@ -79,7 +79,6 @@ class ProjectTestSuite(unittest.TestCase):
     result = runcmd(self, slm.cli, "yozozzo",
       "create-subproject", "yozozzo-duck",
       '--desc="Duck transformation spell"')
-    print(result)
     self.assertEqual(0, result.exit_code)
 
     # She confirms that the project configuration file has been updated and
@@ -87,12 +86,10 @@ class ProjectTestSuite(unittest.TestCase):
     checkForTextInFile(self, self.slmhome,
       "projects/yozozzo/yozozzo.config.json", "yozozzo-duck")
 
-    # She also confirms that the appropriate subproject subdirectories and
-    # config files have been created
+    # She also confirms that the appropriate subproject subdirectories have
+    # been created
     checkForDirectoryExists(self, self.slmhome,
       "projects/yozozzo/yozozzo-duck")
-    checkForFileExists(self, self.slmhome,
-      "projects/yozozzo/yozozzo-duck/yozozzo-duck.config.json")
 
     # And she confirms that a "list" command now includes yozozzo-duck
     result = runcmd(self, slm.cli, "yozozzo", "list")
