@@ -53,6 +53,8 @@ class ProjectDB:
     return (self.engine is not None and self.session is not None)
 
   def isInitialized(self):
+    if not self.isOpened():
+      return False
     try:
       query = self.session.query(Config).\
                            filter(Config.key == "initialized").\
@@ -79,3 +81,9 @@ class ProjectDB:
     query = self.session.query(Config).filter(Config.key == "initialized")
     query.update({Config.value: "yes"})
     self.session.commit()
+
+  def closeDB(self):
+    if self.session is not None:
+      self.session.close()
+      self.session = None
+    self.engine = None

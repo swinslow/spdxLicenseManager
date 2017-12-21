@@ -33,9 +33,8 @@ class ProjectDBTestSuite(unittest.TestCase):
     self.db.initializeDBTables()
 
   def tearDown(self):
-    #self.db.closeDatabase()
-    #self.db = None
-    pass
+    self.db.closeDB()
+    self.db = None
 
   # not called by default; only call with each test case function if needed
   def insertSampleData(self):
@@ -59,3 +58,13 @@ class ProjectDBTestSuite(unittest.TestCase):
 
   def test_that_initialized_db_reports_as_initialized(self):
     self.assertTrue(self.db.isInitialized())
+
+  def test_that_closed_db_reports_as_uninitialized(self):
+    # don't use db from setUp(); create new in-memory DB from scratch
+    dbnew = ProjectDB()
+    dbnew.createDB(":memory:")
+    # and then close it
+    dbnew.closeDB()
+    self.assertFalse(dbnew.isInitialized())
+    self.assertIsNone(dbnew.session)
+    self.assertIsNone(dbnew.engine)
