@@ -27,8 +27,13 @@ from sqlalchemy.orm import sessionmaker
 from .datatypes import Base, Config
 
 class ProjectDBConfigError(Exception):
-  def __init__(self, *args, **kwargs):
-    Exception.__init__(self, *args, **kwargs)
+  """Exception raised for errors in database configuration.
+
+  Attributes:
+    message -- explanation of the error
+  """
+  def __init__(self, message):
+    self.message = message
 
 class ProjectDB:
   def __init__(self):
@@ -40,7 +45,7 @@ class ProjectDB:
     if pathToDB != ":memory:":
       # check whether file already exists
       if os.path.exists(pathToDB):
-        raise ProjectDBConfigError
+        raise ProjectDBConfigError(f"File {pathToDB} already exists, not re-creating it")
 
     # create engine string (in-memory OR file path)
     engine_str = "sqlite:///" + pathToDB
@@ -84,7 +89,7 @@ class ProjectDB:
 
   def openDB(self, pathToDB):
     if pathToDB == ":memory:":
-      raise ProjectDBConfigError
+      raise ProjectDBConfigError(f"Can't open an in-memory database, call createDB() instead")
 
     # create engine string (file path only)
     engine_str = "sqlite:///" + pathToDB
@@ -100,11 +105,11 @@ class ProjectDB:
     except DatabaseError:
       # file is not a database
       self.closeDB()
-      raise ProjectDBConfigError
+      raise ProjectDBConfigError(f"{pathToDB} is not an spdxLicenseManager database file")
 
     if query.value != "spdxLicenseManager":
       self.closeDB()
-      raise ProjectDBConfigError
+      raise ProjectDBConfigError(f"{pathToDB} does not contain spdxLicenseManager magic value")
 
   def closeDB(self):
     if self.session is not None:

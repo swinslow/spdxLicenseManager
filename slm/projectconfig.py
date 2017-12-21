@@ -23,8 +23,13 @@ import json
 import collections
 
 class BadProjectConfigError(Exception):
-  def __init__(self, *args, **kwargs):
-    Exception.__init__(self, *args, **kwargs)
+  """Exception raised for errors in Project configuration.
+
+  Attributes:
+    message -- explanation of the error
+  """
+  def __init__(self, message):
+    self.message = message
 
 ProjectConfigSubproject = collections.namedtuple(
   'ProjectConfigSubproject',
@@ -45,12 +50,12 @@ class ProjectConfig:
       spname = sp.get("name", None)
       spdesc = sp.get("desc", "NO DESCRIPTION")
       if spname is None:
-        raise BadProjectConfigError
+        raise BadProjectConfigError("No project name given")
 
       # check if name already present
       for spcheck in self.subprojects:
         if spname == spcheck.name:
-          raise BadProjectConfigError
+          raise BadProjectConfigError(f"Subproject {spname} present multiple times in JSON for this project")
 
       # create tuple and add to list
       sptup = ProjectConfigSubproject(spname, spdesc)
@@ -80,7 +85,7 @@ class ProjectConfig:
     # check if name already present
     for sp in self.subprojects:
       if spname == sp.name:
-        raise BadProjectConfigError
+        raise BadProjectConfigError(f"Subproject {spname} already present for this project")
 
     sptup = ProjectConfigSubproject(spname, spdesc)
     self.subprojects.append(sptup)

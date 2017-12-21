@@ -23,12 +23,22 @@ import json
 import collections
 
 class BadSLMConfigError(Exception):
-  def __init__(self, *args, **kwargs):
-    Exception.__init__(self, *args, **kwargs)
+  """Exception raised for errors in SLM configuration file.
+
+  Attributes:
+    message -- explanation of the error
+  """
+  def __init__(self, message):
+    self.message = message
 
 class SLMProjectNotFoundError(Exception):
-  def __init__(self, *args, **kwargs):
-    Exception.__init__(self, *args, **kwargs)
+  """Exception raised for inability to find project in SLM configuration file.
+
+  Attributes:
+    message -- explanation of the error
+  """
+  def __init__(self, message):
+    self.message = message
 
 SLMConfigProject = collections.namedtuple(
   'SLMConfigProject',
@@ -49,12 +59,12 @@ class SLMConfig:
       pname = p.get("name", None)
       pdesc = p.get("desc", "NO DESCRIPTION")
       if pname is None:
-        raise BadSLMConfigError
+        raise BadSLMConfigError(f"No project name given")
 
       # check if name already present
       for pcheck in self.projects:
         if pname == pcheck.name:
-          raise BadSLMConfigError
+          raise BadSLMConfigError(f"Project {pname} present multiple times in top-level JSON config file")
 
       # create tuple and add to list
       ptup = SLMConfigProject(pname, pdesc)
@@ -84,7 +94,7 @@ class SLMConfig:
     # check if name already present
     for p in self.projects:
       if pname == p.name:
-        raise BadSLMConfigError
+        raise BadSLMConfigError(f"Project {pname} already present in top-level JSON config file")
 
     ptup = SLMConfigProject(pname, pdesc)
     self.projects.append(ptup)
@@ -99,4 +109,4 @@ class SLMConfig:
       if pname == p.name:
         return f"projects/{pname}/{pname}.db"
     # if project name is not found, raise error
-    raise SLMProjectNotFoundError
+    raise SLMProjectNotFoundError(f"No project name given")
