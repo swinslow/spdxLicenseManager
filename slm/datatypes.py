@@ -33,12 +33,12 @@ class Config(Base):
 
 class Subproject(Base):
   __tablename__ = 'subprojects'
-  id = Column(Integer(), primary_key=True)
+  _id = Column(Integer(), primary_key=True)
   name = Column(String())
   desc = Column(String())
 
   def __repr__(self):
-    return f"Subproject {self.id}: {self.name} ({self.desc})"
+    return f"Subproject {self._id}: {self.name} ({self.desc})"
 
 class Category(Base):
   __tablename__ = 'categories'

@@ -144,7 +144,7 @@ class ProjectDB:
       raise ProjectDBQueryError("Cannot call getSubproject with both _id and name parameters")
     if _id is not None:
       return self.session.query(Subproject).\
-                          filter(Subproject.id == _id).first()
+                          filter(Subproject._id == _id).first()
     if name is not None:
       return self.session.query(Subproject).\
                           filter(Subproject.name == name).first()
@@ -156,7 +156,7 @@ class ProjectDB:
       self.session.commit()
     else:
       self.session.flush()
-    return subproject.id
+    return subproject._id
 
   ##### Category functions
 

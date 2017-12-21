@@ -44,9 +44,9 @@ class DBSubprojectUnitTestSuite(unittest.TestCase):
 
   def insertSampleSubprojectData(self):
     subprojects = [
-      Subproject(id=1, name="sub1", desc="subproject 1"),
-      Subproject(id=2, name="subX", desc="subproject XYZ"),
-      Subproject(id=3, name="subC", desc="subproject B"),
+      Subproject(_id=1, name="sub1", desc="subproject 1"),
+      Subproject(_id=2, name="subX", desc="subproject XYZ"),
+      Subproject(_id=3, name="subC", desc="subproject B"),
     ]
     self.db.session.bulk_save_objects(subprojects)
     self.db.session.commit()
@@ -57,7 +57,7 @@ class DBSubprojectUnitTestSuite(unittest.TestCase):
     subprojects = self.db.getSubprojectsAll()
     self.assertIsInstance(subprojects, list)
     self.assertEqual(len(subprojects), 3)
-    self.assertEqual(subprojects[0].id, 1)
+    self.assertEqual(subprojects[0]._id, 1)
     self.assertEqual(subprojects[0].name, "sub1")
     self.assertEqual(subprojects[0].desc, "subproject 1")
 
@@ -74,7 +74,7 @@ class DBSubprojectUnitTestSuite(unittest.TestCase):
 
   def test_can_retrieve_one_subproject_by_name(self):
     subproject = self.db.getSubproject(name="subC")
-    self.assertEqual(subproject.id, 3)
+    self.assertEqual(subproject._id, 3)
     self.assertEqual(subproject.desc, "subproject B")
 
   def test_cannot_retrieve_subproject_by_both_name_and_id(self):
