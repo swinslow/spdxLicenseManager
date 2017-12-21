@@ -27,6 +27,7 @@ from .__about__ import __version__
 from .slmconfig import SLMConfig, BadSLMConfigError
 from .projectdb import ProjectDB, ProjectDBConfigError
 
+from .cmdinit import cmdinit
 from .cmdlist import cmdlist
 from .cmdcreate import cmdcreateProject, cmdcreateSubproject
 
@@ -77,19 +78,25 @@ def cli(ctx, slmhome, project, verbose):
       sys.exit(str(e.message))
   ctx.obj['PROJECTDB'] = db
 
-@cli.command('list')
+@cli.command('init', help="Initialize a new SLM data directory")
+@click.argument('newhome')
+@click.pass_context
+def cliinit(ctx, newhome):
+  return cmdinit(ctx, newhome)
+
+@cli.command('list', help="List projects or subprojects")
 @click.pass_context
 def clilist(ctx):
   return cmdlist(ctx)
 
-@cli.command('create-project')
+@cli.command('create-project', help="Create a new project")
 @click.argument('name')
 @click.option('--desc', default='NO DESCRIPTION', help='description for new project')
 @click.pass_context
 def clicreateProject(ctx, name, desc):
   return cmdcreateProject(ctx, name, desc)
 
-@cli.command('create-subproject')
+@cli.command('create-subproject', help="Create a new subproject")
 @click.argument('name')
 @click.option('--desc', help='description for new subproject')
 @click.pass_context
