@@ -23,7 +23,7 @@ from unittest import mock
 
 from slm.slmconfig import SLMConfig, BadSLMConfigError
 from slm.projectconfig import ProjectConfig, BadProjectConfigError
-from slm.cmdcreate import createNewProjectDirs
+from slm.cmdcreate import createNewProjectDirs, createNewSubprojectDirs
 
 class ProjectCreateTestSuite(unittest.TestCase):
   """spdxLicenseManager project creation unit test suite."""
@@ -45,5 +45,14 @@ class ProjectCreateTestSuite(unittest.TestCase):
     createNewProjectDirs(slmhome, "newprj")
     mock_os_makedirs.assert_called_with(
       name="/tmp/fake/slm/projects/newprj",
+      mode=0o755
+    )
+
+  @mock.patch('slm.cmdcreate.os.makedirs')
+  def test_new_dir_created_for_new_subproject(self, mock_os_makedirs):
+    slmhome = "/tmp/fake/slm"
+    createNewSubprojectDirs(slmhome, "newprj", "newsubprj")
+    mock_os_makedirs.assert_called_with(
+      name="/tmp/fake/slm/projects/newprj/newsubprj",
       mode=0o755
     )

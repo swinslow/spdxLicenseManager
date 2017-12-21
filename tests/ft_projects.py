@@ -77,8 +77,9 @@ class ProjectTestSuite(unittest.TestCase):
 
     # Now, she wants to create its first subproject, yozozzo-duck
     result = runcmd(self, slm.cli, "yozozzo",
-      "create-subproject", "-yozozzo-duck",
+      "create-subproject", "yozozzo-duck",
       '--desc="Duck transformation spell"')
+    print(result)
     self.assertEqual(0, result.exit_code)
 
     # She confirms that the project configuration file has been updated and

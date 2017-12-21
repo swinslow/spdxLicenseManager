@@ -28,6 +28,10 @@ def createNewProjectDirs(slmhome, pname):
   dirPath = os.path.abspath(os.path.join(slmhome, "projects", pname))
   os.makedirs(name=dirPath, mode=0o755)
 
+def createNewSubprojectDirs(slmhome, pname, spname):
+  dirPath = os.path.abspath(os.path.join(slmhome, "projects", pname, spname))
+  os.makedirs(name=dirPath, mode=0o755)
+
 def cmdcreateProject(ctx, pname, pdesc):
   slmhome = ctx.obj.get('SLMHOME', None)
   mainconfig = ctx.obj.get('SLMCONFIG_DATA', None)
@@ -78,3 +82,16 @@ def cmdcreateSubproject(ctx, spname, spdesc):
   if prjconfig.getSubprojectDesc(spname) is not None:
     # error, shouldn't call create-subproject with existing name
     sys.exit(f"Error: subproject {spname} already exists for project {project}")
+
+  # create subdirectory for new subproject
+  createNewSubprojectDirs(slmhome, project, spname)
+
+  # update project config object
+  prjconfig.addSubproject(spname, spdesc)
+
+  # get and output new project config JSON
+  newJSON = prjconfig.getJSON()
+  prjFilename = f"{project}.config.json"
+  prjconfigPath = os.path.join(slmhome, "projects", project, prjFilename)
+  with open(prjconfigPath, "w") as f:
+    f.write(newJSON)
