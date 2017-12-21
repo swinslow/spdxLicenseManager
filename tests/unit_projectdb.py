@@ -180,6 +180,10 @@ class DBSubprojectTestSuite(unittest.TestCase):
     with self.assertRaises(ProjectDBQueryError):
       self.db.getSubproject()
 
+  def test_cannot_retrieve_subproject_with_positional_args(self):
+    with self.assertRaises(TypeError):
+      self.db.getSubproject("subC")
+
   def test_returns_none_if_subproject_not_found_by_id(self):
     subproject = self.db.getSubproject(_id=17)
     self.assertIsNone(subproject)

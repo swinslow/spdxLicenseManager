@@ -137,9 +137,9 @@ class ProjectDB:
   def getSubprojectsAll(self):
     return self.session.query(Subproject).order_by(Subproject.name).all()
 
-  def getSubproject(self, _id=None, name=None):
+  def getSubproject(self, *, _id=None, name=None):
     if _id is None and name is None:
-      raise ProjectDBQueryError("Cannot call getSubproject without both _id and name parameters")
+      raise ProjectDBQueryError("Cannot call getSubproject without either _id or name parameters")
     if _id is not None and name is not None:
       raise ProjectDBQueryError("Cannot call getSubproject with both _id and name parameters")
     if _id is not None:

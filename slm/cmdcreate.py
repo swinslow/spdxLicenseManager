@@ -80,7 +80,7 @@ def cmdcreateSubproject(ctx, spname, spdesc):
     sys.exit("Error: called create-subproject but didn't pass a project name; did you mean to call create-project?")
 
   # confirm subproject doesn't already exist for this project
-  if db.getSubproject(spname) is not None:
+  if db.getSubproject(name=spname) is not None:
     # error, shouldn't call create-subproject with existing name
     sys.exit(f"Error: subproject {spname} already exists for project {project}")
 
