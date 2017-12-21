@@ -18,7 +18,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from sqlalchemy import Column, String
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -30,3 +30,12 @@ class Config(Base):
 
   def __repr__(self):
     return f"Config {self.key} => {self.value}"
+
+class Subproject(Base):
+  __tablename__ = 'subprojects'
+  id = Column(Integer(), primary_key=True)
+  name = Column(String())
+  desc = Column(String())
+
+  def __repr__(self):
+    return f"Project {self.id}: {self.name} ({self.desc})"

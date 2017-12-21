@@ -24,10 +24,10 @@ from unittest import mock
 from testfixtures import TempDirectory
 
 from slm.projectdb import ProjectDB, ProjectDBConfigError
-from slm.datatypes import Config
+from slm.datatypes import Config, Subproject
 
 class ProjectDBTestSuite(unittest.TestCase):
-  """spdxLicenseManager project database unit test suite."""
+  """spdxLicenseManager unit test suite for DB initialization and lifecycle."""
 
   def setUp(self):
     # create and initialize an in-memory database
@@ -38,13 +38,6 @@ class ProjectDBTestSuite(unittest.TestCase):
   def tearDown(self):
     self.db.closeDB()
     self.db = None
-
-  # not called by default; only call with each test case function if needed
-  def insertSampleData(self):
-    # FIXME IMPLEMENT WHEN NEEDED; ALSO CONSIDER BREAKING OUT SUBSETS
-    pass
-
-  ##### ProjectDB initialization and closing
 
   def test_can_create_new_database(self):
     # don't use db from setUp(); create new in-memory DB from scratch
@@ -127,3 +120,38 @@ class ProjectDBTestSuite(unittest.TestCase):
         dbnew.openDB(fakeDBPath)
       self.assertFalse(dbnew.isOpened())
       self.assertFalse(dbnew.isInitialized())
+
+class DBSubprojectTestSuite(unittest.TestCase):
+  """spdxLicenseManager unit test suite for subproject data in DB."""
+
+  def setUp(self):
+    # create and initialize an in-memory database
+    self.db = ProjectDB()
+    self.db.createDB(":memory:")
+    self.db.initializeDBTables()
+
+    # insert sample data
+    self.insertSampleSubprojectData()
+
+  def tearDown(self):
+    self.db.closeDB()
+    self.db = None
+
+  def insertSampleSubprojectData(self):
+    subprojects = [
+      Subproject(id=1, name="sub1", desc="subproject 1"),
+      Subproject(id=2, name="subX", desc="subproject XYZ"),
+      Subproject(id=3, name="subC", desc="subproject B"),
+    ]
+    self.db.session.bulk_save_objects(subprojects)
+    self.db.session.commit()
+
+  ##### Test cases below
+
+  def test_can_retrieve_all_subproject_names_and_descs(self):
+    subprojects = self.db.getSubprojectsAll()
+    self.assertIsInstance(subprojects, list)
+    self.assertEqual(len(subprojects), 3)
+    self.assertEqual(subprojects[0].id, 1)
+    self.assertEqual(subprojects[0].name, "sub1")
+    self.assertEqual(subprojects[0].desc, "subproject 1")

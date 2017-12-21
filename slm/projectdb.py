@@ -24,7 +24,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError, DatabaseError
 from sqlalchemy.orm import sessionmaker
 
-from .datatypes import Base, Config
+from .datatypes import Base, Config, Subproject
 
 class ProjectDBConfigError(Exception):
   """Exception raised for errors in database configuration.
@@ -116,3 +116,8 @@ class ProjectDB:
       self.session.close()
       self.session = None
     self.engine = None
+
+  ##### Subproject functions
+
+  def getSubprojectsAll(self):
+    return self.session.query(Subproject).all()
