@@ -21,7 +21,7 @@
 import unittest
 from unittest import mock
 
-from slm.projectdb import ProjectDB
+from slm.projectdb import ProjectDB, ProjectDBConfigError
 
 class ProjectDBTestSuite(unittest.TestCase):
   """spdxLicenseManager project database unit test suite."""
@@ -34,8 +34,9 @@ class ProjectDBTestSuite(unittest.TestCase):
     pass
 
   def tearDown(self):
-    self.db.closeDatabase()
-    self.db = None
+    #self.db.closeDatabase()
+    #self.db = None
+    pass
 
   # not called by default; only call with each test case function if needed
   def insertSampleData(self):
@@ -46,7 +47,13 @@ class ProjectDBTestSuite(unittest.TestCase):
 
   def test_can_create_new_database(self):
     # don't use db from setUp(); create new in-memory DB from scratch
-    self.dbnew = ProjectDB()
-    self.dbnew.createDatabase(":memory:")
-    self.assertTrue(self.dbnew.isOpened())
-    self.assertFalse(self.dbnew.isInitialized())
+    dbnew = ProjectDB()
+    dbnew.createDatabase(":memory:")
+    self.assertTrue(dbnew.isOpened())
+    self.assertFalse(dbnew.isInitialized())
+
+  @mock.patch('slm.projectdb.os.path.exists', return_value=True)
+  def test_cannot_create_new_database_if_file_already_exists(self, os_exists):
+    dbnew = ProjectDB()
+    with self.assertRaises(ProjectDBConfigError):
+      dbnew.createDatabase("/tmp/fake/existing.db")
