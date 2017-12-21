@@ -22,25 +22,16 @@ import os
 import shutil
 from testfixtures import TempDirectory
 
-from slm.projectdb import ProjectDB
-from slm.datatypes import Subproject
-
-def setUpSandbox(testCase):
+def setUpSandbox(testCase, cli):
   # set up initial temp directory
   testCase.td = TempDirectory()
 
-  # get paths to sandbox image and temp destination
-  sandbox_src_path = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)),
-    "sandbox"
-  )
-  sandbox_dst_path = os.path.join(testCase.td.path, "sandbox")
-
-  # copy subdirectories and contents
-  shutil.copytree(sandbox_src_path, sandbox_dst_path)
+  # initialize the directory
+  sandboxPath = os.path.join(testCase.td.path, "sandbox")
+  testCase.runner.invoke(cli, ['init', sandboxPath])
 
   # set slmhome variable for test case
-  testCase.slmhome = sandbox_dst_path
+  testCase.slmhome = sandboxPath
 
 def tearDownSandbox(testCase):
   testCase.td.cleanup()
@@ -53,24 +44,23 @@ def runcmd(testCase, cli, project, *commands):
     elements.append(command)
   return testCase.runner.invoke(cli, elements)
 
-def insertSandboxData(testCase):
-  # FIXME eventually this should probably pull in data from some sort of
-  # FIXME external fixture file
+def runSandboxCommands(testCase, cli):
+  # create some test projects
+  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
+    'create-project', 'frotz', '--desc="The FROTZ Project"'])
+  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
+    'create-project', 'rezrov', '--desc="The REZROV Project"'])
+  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
+    'create-project', 'gnusto', '--desc="The GNUSTO Project"'])
 
-  # create and initialize frotz database file
-  db = ProjectDB()
-  dbPath = os.path.join(testCase.slmhome, "projects", "frotz", "frotz.db")
-  db.createDB(dbPath)
-  db.initializeDBTables()
-
-  # manually add data to frotz DB file
-  subprojects = [
-    Subproject(id=1, name="frotz-dim", desc="FROTZ with dim settings"),
-    Subproject(id=2, name="frotz-shiny", desc="FROTZ with shiny settings"),
-    Subproject(id=3, name="frotz-nuclear", desc="FROTZ with nuclear settings"),
-  ]
-  db.session.bulk_save_objects(subprojects)
-  db.session.commit()
-
-  # and close it
-  db.closeDB()
+  # and some test subprojects
+  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
+    '--project=frotz',
+    'create-subproject', 'frotz-dim', '--desc="FROTZ with dim settings"'])
+  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
+    '--project=frotz',
+    'create-subproject', 'frotz-shiny', '--desc="FROTZ with shiny settings"'])
+  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
+    '--project=frotz',
+    'create-subproject', 'frotz-nuclear',
+    '--desc="FROTZ with nuclear settings"'])

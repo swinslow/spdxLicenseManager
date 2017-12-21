@@ -1,7 +1,0 @@
-{
-  "projects": [
-    { "name": "frotz", "desc": "The FROTZ Project" },
-    { "name": "gnusto", "desc": "The GNUSTO Project" },
-    { "name": "rezrov", "desc": "The REZROV Project" }
-  ]
-}

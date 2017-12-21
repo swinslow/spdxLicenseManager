@@ -24,7 +24,7 @@ import click
 from click.testing import CliRunner
 from testfixtures import TempDirectory
 
-from helper_sandbox import setUpSandbox, tearDownSandbox
+from helper_sandbox import setUpSandbox, runSandboxCommands, tearDownSandbox
 
 from slm import slm
 
@@ -38,7 +38,8 @@ class ProjectTestSuite(unittest.TestCase):
     self.mainsandboxPath = os.path.join(self.maintd.path, "sandbox")
 
     # also create a real sandbox for the "existing SLM" test
-    setUpSandbox(self)
+    setUpSandbox(self, slm.cli)
+    runSandboxCommands(self, slm.cli)
 
   def tearDown(self):
     tearDownSandbox(self)
