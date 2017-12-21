@@ -43,7 +43,7 @@ class ProjectDBTestSuite(unittest.TestCase):
     # FIXME IMPLEMENT WHEN NEEDED; ALSO CONSIDER BREAKING OUT SUBSETS
     pass
 
-  ##### ProjectDB object initialization and closing
+  ##### ProjectDB initialization and closing
 
   def test_can_create_new_database(self):
     # don't use db from setUp(); create new in-memory DB from scratch
