@@ -120,4 +120,4 @@ class ProjectDB:
   ##### Subproject functions
 
   def getSubprojectsAll(self):
-    return self.session.query(Subproject).all()
+    return self.session.query(Subproject).order_by(Subproject.name).all()

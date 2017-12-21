@@ -25,7 +25,8 @@ from click.testing import CliRunner
 
 from slm import slm
 
-from helper_sandbox import setUpSandbox, tearDownSandbox, runcmd
+from helper_sandbox import (setUpSandbox, insertSandboxData, tearDownSandbox,
+  runcmd)
 from helper_check import (checkForFileExists, checkForDirectoryExists,
   checkForTextInFile)
 
@@ -35,6 +36,7 @@ class ProjectTestSuite(unittest.TestCase):
   def setUp(self):
     self.runner = CliRunner()
     setUpSandbox(self)
+    insertSandboxData(self)
 
   def tearDown(self):
     tearDownSandbox(self)

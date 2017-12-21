@@ -22,13 +22,13 @@ import click
 
 def cmdlist(ctx):
   mainconfig = ctx.obj.get('SLMCONFIG_DATA', None)
-  prjconfig = ctx.obj.get('PRJCONFIG_DATA', None)
+  db = ctx.obj.get('PROJECTDB', None)
   project = ctx.obj.get('PROJECT', None)
   verbose = ctx.obj.get('VERBOSE', False)
 
   if project is not None:
     # list all subprojects for this project
-    for sp in prjconfig.subprojects:
+    for sp in db.getSubprojectsAll():
       if verbose:
         click.echo(f"{project}/{sp.name}\t{sp.desc}")
       else:

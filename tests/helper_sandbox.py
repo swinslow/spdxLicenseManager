@@ -22,6 +22,9 @@ import os
 import shutil
 from testfixtures import TempDirectory
 
+from slm.projectdb import ProjectDB
+from slm.datatypes import Subproject
+
 def setUpSandbox(testCase):
   # set up initial temp directory
   testCase.td = TempDirectory()
@@ -49,3 +52,25 @@ def runcmd(testCase, cli, project, *commands):
   for command in commands:
     elements.append(command)
   return testCase.runner.invoke(cli, elements)
+
+def insertSandboxData(testCase):
+  # FIXME eventually this should probably pull in data from some sort of
+  # FIXME external fixture file
+
+  # create and initialize frotz database file
+  db = ProjectDB()
+  dbPath = os.path.join(testCase.slmhome, "projects", "frotz", "frotz.db")
+  db.createDB(dbPath)
+  db.initializeDBTables()
+
+  # manually add data to frotz DB file
+  subprojects = [
+    Subproject(id=1, name="frotz-dim", desc="FROTZ with dim settings"),
+    Subproject(id=2, name="frotz-shiny", desc="FROTZ with shiny settings"),
+    Subproject(id=3, name="frotz-nuclear", desc="FROTZ with nuclear settings"),
+  ]
+  db.session.bulk_save_objects(subprojects)
+  db.session.commit()
+
+  # and close it
+  db.closeDB()

@@ -155,3 +155,9 @@ class DBSubprojectTestSuite(unittest.TestCase):
     self.assertEqual(subprojects[0].id, 1)
     self.assertEqual(subprojects[0].name, "sub1")
     self.assertEqual(subprojects[0].desc, "subproject 1")
+
+  def test_all_subprojects_are_sorted_by_name(self):
+    subprojects = self.db.getSubprojectsAll()
+    self.assertEqual(subprojects[0].name, "sub1")
+    self.assertEqual(subprojects[1].name, "subC")
+    self.assertEqual(subprojects[2].name, "subX")

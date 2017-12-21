@@ -19,12 +19,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
+import sys
 import click
 
 from .__about__ import __version__
 
 from .slmconfig import SLMConfig, BadSLMConfigError
-from .projectconfig import ProjectConfig, BadProjectConfigError
+from .projectdb import ProjectDB, ProjectDBConfigError
 
 from .cmdlist import cmdlist
 from .cmdcreate import cmdcreateProject, cmdcreateSubproject
@@ -56,25 +57,25 @@ def cli(ctx, slmhome, project, verbose):
       with open(mainconfigPath, "r") as f:
         configData = f.read()
         mainconfig.loadConfig(configData)
-    except BadSLMConfigError:
-      sys.exit(f"Error parsing configuration data from {mainconfigPath}")
+    except BadSLMConfigError as e:
+      sys.exit(str(e.message))
   ctx.obj['SLMCONFIG_DATA'] = mainconfig
 
-  # if slmhome and project are set, load project config file and set on context
-  # if not, just pass in an empty ProjectConfig object
-  prjconfig = ProjectConfig()
-  if slmhome is not None and project is not None:
+  # if slmhome and project are set, load project database and set on context
+  # if not, just pass in None
+  if slmhome is None or project is None:
+    db = None
+  else:
+    db = ProjectDB()
+    projectDBRelativePath = mainconfig.getDBRelativePath(project)
+    projectDBPath = os.path.join(
+      os.path.abspath(slmhome), projectDBRelativePath
+    )
     try:
-      prjfilename = project + ".config.json"
-      prjconfigPath = os.path.join(
-        os.path.abspath(slmhome), "projects", project, prjfilename
-      )
-      with open(prjconfigPath, "r") as f:
-        prjconfigData = f.read()
-        prjconfig.loadConfig(prjconfigData)
-    except BadProjectConfigError:
-      sys.exit(f"Error parsing project configuration data from {prjconfigPath}")
-  ctx.obj['PRJCONFIG_DATA'] = prjconfig
+      db.openDB(projectDBPath)
+    except ProjectDBConfigError as e:
+      sys.exit(str(e.message))
+  ctx.obj['PROJECTDB'] = db
 
 @cli.command('list')
 @click.pass_context

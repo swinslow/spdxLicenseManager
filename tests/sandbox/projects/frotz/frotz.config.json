@@ -1,7 +1,0 @@
-{
-  "subprojects": [
-    { "name": "frotz-dim",     "desc": "FROTZ with dim settings" },
-    { "name": "frotz-nuclear", "desc": "FROTZ with nuclear settings" },
-    { "name": "frotz-shiny",   "desc": "FROTZ with shiny settings" }
-  ]
-}
