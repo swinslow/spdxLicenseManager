@@ -22,7 +22,7 @@ import os
 import sys
 import click
 
-from .projectconfig import ProjectConfig
+from .projectdb import ProjectDB
 
 def createNewProjectDirs(slmhome, pname):
   dirPath = os.path.abspath(os.path.join(slmhome, "projects", pname))
@@ -42,7 +42,7 @@ def cmdcreateProject(ctx, pname, pdesc):
     # error, shouldn't call create-project and also pass a project name
     sys.exit(f"Error: called create-project but passed project={project}; did you mean to call create-subproject?")
 
-  # confirm project doesn't already exist
+  # confirm project doesn't already exist in SLM configuration file
   if mainconfig.getProjectDesc(pname) is not None:
     # error, shouldn't call create-project with existing name
     sys.exit(f"Error: project {pname} already exists")
@@ -59,13 +59,21 @@ def cmdcreateProject(ctx, pname, pdesc):
   with open(mainconfigPath, "w") as f:
     f.write(newJSON)
 
-  # create new empty project config and write JSON to disk
-  prjconfig = ProjectConfig()
-  prjFilename = f"{pname}.config.json"
-  prjconfigPath = os.path.join(slmhome, "projects", pname, prjFilename)
-  prjJSON = prjconfig.getJSON()
-  with open(prjconfigPath, "w") as f:
-    f.write(prjJSON)
+  # create new empty project database and write JSON to disk
+  db = ProjectDB()
+  dbFilename = f"{pname}.db"
+  dbPath = os.path.abspath(os.path.join(slmhome,
+    "projects", pname, dbFilename))
+  db.createDB(dbPath)
+  db.initializeDBTables()
+  db.closeDB()
+
+  # prjconfig = ProjectConfig()
+  # prjFilename = f"{pname}.config.json"
+  # prjconfigPath = os.path.join(slmhome, "projects", pname, prjFilename)
+  # prjJSON = prjconfig.getJSON()
+  # with open(prjconfigPath, "w") as f:
+  #   f.write(prjJSON)
 
 def cmdcreateSubproject(ctx, spname, spdesc):
   slmhome = ctx.obj.get('SLMHOME', None)

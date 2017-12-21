@@ -43,7 +43,7 @@ class ProjectConfig:
     sps = jd.get("subprojects", [])
     for sp in sps:
       spname = sp.get("name", None)
-      spdesc = sp.get("desc", "=== NO DESCRIPTION ===")
+      spdesc = sp.get("desc", "NO DESCRIPTION")
       if spname is None:
         raise BadProjectConfigError
 

@@ -47,7 +47,7 @@ class SLMConfig:
     ps = jd.get("projects", [])
     for p in ps:
       pname = p.get("name", None)
-      pdesc = p.get("desc", "=== NO DESCRIPTION ===")
+      pdesc = p.get("desc", "NO DESCRIPTION")
       if pname is None:
         raise BadSLMConfigError
 

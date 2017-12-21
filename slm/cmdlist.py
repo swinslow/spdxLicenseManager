@@ -24,11 +24,19 @@ def cmdlist(ctx):
   mainconfig = ctx.obj.get('SLMCONFIG_DATA', None)
   prjconfig = ctx.obj.get('PRJCONFIG_DATA', None)
   project = ctx.obj.get('PROJECT', None)
+  verbose = ctx.obj.get('VERBOSE', False)
+
   if project is not None:
     # list all subprojects for this project
     for sp in prjconfig.subprojects:
-      click.echo(f"{project}/{sp.name}")
+      if verbose:
+        click.echo(f"{project}/{sp.name}\t{sp.desc}")
+      else:
+        click.echo(f"{project}/{sp.name}")
   else:
     # list all projects
     for p in mainconfig.projects:
-      click.echo(p.name)
+      if verbose:
+        click.echo(f"{p.name}\t{p.desc}")
+      else:
+        click.echo(p.name)

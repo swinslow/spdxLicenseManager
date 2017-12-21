@@ -37,13 +37,15 @@ VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
   help='path to spdxLicenseManager data directory')
 @click.option('--project', default=None, envvar='SLM_PROJECT',
   help='project short name')
+@click.option('-v', '--verbose', is_flag=True, help='Enables verbose mode')
 @click.pass_context
-def cli(ctx, slmhome, project):
+def cli(ctx, slmhome, project, verbose):
   ctx.obj = {}
 
   # parse any top-level options
   ctx.obj['SLMHOME'] = slmhome
   ctx.obj['PROJECT'] = project
+  ctx.obj['VERBOSE'] = verbose
 
   # if slmhome is set, load config file and set on context
   # if slmhome is not set, just pass in an empty SLMConfig object
@@ -81,7 +83,7 @@ def clilist(ctx):
 
 @cli.command('create-project')
 @click.argument('name')
-@click.option('--desc', help='description for new project')
+@click.option('--desc', default='NO DESCRIPTION', help='description for new project')
 @click.pass_context
 def clicreateProject(ctx, name, desc):
   return cmdcreateProject(ctx, name, desc)

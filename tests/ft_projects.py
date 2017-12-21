@@ -53,6 +53,30 @@ class ProjectTestSuite(unittest.TestCase):
     self.assertEqual(result.output,
       "frotz/frotz-dim\nfrotz/frotz-nuclear\nfrotz/frotz-shiny\n")
 
+  def test_can_get_desc_for_projects_when_listing_with_verbose_flag(self):
+    # Edith wants to get descriptions too when she lists the projects
+    # using the -v flag
+    result = runcmd(self, slm.cli, None, "-v", "list")
+    self.assertEqual(0, result.exit_code)
+    self.assertIn("The FROTZ Project", result.output)
+
+    # It also works with the --verbose flag
+    result = runcmd(self, slm.cli, None, "--verbose", "list")
+    self.assertEqual(0, result.exit_code)
+    self.assertIn("The FROTZ Project", result.output)
+
+  def test_can_get_desc_for_subprojects_when_listing_with_verbose_flag(self):
+    # Edith wants to get descriptions too when she lists the subprojects
+    # using the -v flag
+    result = runcmd(self, slm.cli, "frotz", "-v", "list")
+    self.assertEqual(0, result.exit_code)
+    self.assertIn("FROTZ with nuclear settings", result.output)
+
+    # It also works with the --verbose flag
+    result = runcmd(self, slm.cli, "frotz", "--verbose", "list")
+    self.assertEqual(0, result.exit_code)
+    self.assertIn("FROTZ with nuclear settings", result.output)
+
   def test_can_create_new_project_and_subproject(self):
     # Edith is starting to manage licenses for a new project called yozozzo.
     # She asks SLM to create a new project
@@ -90,6 +114,8 @@ class ProjectTestSuite(unittest.TestCase):
     self.assertEqual(0, result.exit_code)
     self.assertEqual("yozozzo/yozozzo-duck\n", result.output)
 
+  ##### NAMING AND CALLING TESTS
+
   def test_cannot_create_new_project_with_duplicate_name(self):
     # Edith accidentally asks SLM to create a new project with an existing name
     result = runcmd(self, slm.cli, None,
@@ -108,6 +134,19 @@ class ProjectTestSuite(unittest.TestCase):
     # It doesn't work and tells her why
     self.assertEqual(1, result.exit_code)
     self.assertEqual(result.output, "Error: called create-project but passed project=frotz; did you mean to call create-subproject?\n")
+
+  def test_project_with_no_desc_option_gets_NO_DESCRIPTION_text(self):
+    # Edith asks SLM to create a new project, but accidentally omits the
+    # "desc" option to the create-project command
+    result = runcmd(self, slm.cli, None, "create-project", "nodesc")
+
+    # It works fine, and sets the project description to NO DESCRIPTION
+    self.assertEqual(0, result.exit_code)
+
+    # ...which she confirms with a "list" call
+    result = runcmd(self, slm.cli, None, "-v", "list")
+    self.assertEqual(0, result.exit_code)
+    self.assertIn("NO DESCRIPTION", result.output)
 
   def test_cannot_create_new_subproject_with_duplicate_name(self):
     # Edith accidentally asks SLM to create a new subproject with an existing
