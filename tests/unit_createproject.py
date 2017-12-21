@@ -22,7 +22,6 @@ import unittest
 from unittest import mock
 
 from slm.slmconfig import SLMConfig, BadSLMConfigError
-from slm.projectconfig import ProjectConfig, BadProjectConfigError
 from slm.cmdcreate import createNewProjectDirs, createNewSubprojectDirs
 
 class ProjectCreateTestSuite(unittest.TestCase):
