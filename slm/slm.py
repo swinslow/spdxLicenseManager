@@ -87,6 +87,8 @@ def clicreateProject(ctx, name, desc):
   return cmdcreateProject(ctx, name, desc)
 
 @cli.command('create-subproject')
+@click.argument('name')
+@click.option('--desc', help='description for new subproject')
 @click.pass_context
-def clicreateSubproject(ctx):
-  return cmdcreateSubproject(ctx)
+def clicreateSubproject(ctx, name, desc):
+  return cmdcreateSubproject(ctx, name, desc)

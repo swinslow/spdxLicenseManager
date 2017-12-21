@@ -116,3 +116,23 @@ class ProjectTestSuite(unittest.TestCase):
     # It doesn't work and tells her why
     self.assertEqual(1, result.exit_code)
     self.assertEqual(result.output, "Error: called create-project but passed project=frotz; did you mean to call create-subproject?\n")
+
+  def test_cannot_create_new_subproject_with_duplicate_name(self):
+    # Edith accidentally asks SLM to create a new subproject with an existing
+    # name under the same project
+    result = runcmd(self, slm.cli, "frotz",
+      "create-subproject", "frotz-dim", '--desc="oops"')
+
+    # It doesn't work and tells her why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(result.output, "Error: subproject frotz-dim already exists for project frotz\n")
+
+  def test_cannot_create_new_subproject_without_existing_project(self):
+    # Edith asks SLM to create a new subproject, but accidentally also fails
+    # to include an existing project name in the command
+    result = runcmd(self, slm.cli, None,
+      "create-subproject", "oops", '--desc="oops"')
+
+    # It doesn't work and tells her why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(result.output, "Error: called create-subproject but didn't pass a project name; did you mean to call create-project?\n")
