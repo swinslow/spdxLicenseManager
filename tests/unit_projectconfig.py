@@ -20,7 +20,7 @@
 
 import unittest
 
-from slm.projectconfig import ProjectConfig, BadProjectConfigError
+#from slm.projectconfig import ProjectConfig, BadProjectConfigError
 
 class ProjectConfigTestSuite(unittest.TestCase):
   """spdxLicenseManager project configuration unit test suite."""

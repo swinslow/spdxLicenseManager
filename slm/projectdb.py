@@ -35,6 +35,15 @@ class ProjectDBConfigError(Exception):
   def __init__(self, message):
     self.message = message
 
+class ProjectDBQueryError(Exception):
+  """Exception raised for errors in database queries.
+
+  Attributes:
+    message -- explanation of the error
+  """
+  def __init__(self, message):
+    self.message = message
+
 class ProjectDB:
   def __init__(self):
     super(ProjectDB, self).__init__()
@@ -117,7 +126,35 @@ class ProjectDB:
       self.session = None
     self.engine = None
 
+  def commit(self):
+    self.session.commit()
+
+  def rollback(self):
+    self.session.rollback()
+
   ##### Subproject functions
 
   def getSubprojectsAll(self):
     return self.session.query(Subproject).order_by(Subproject.name).all()
+
+  def getSubproject(self, _id=None, name=None):
+    if _id is None and name is None:
+      raise ProjectDBQueryError("Cannot call getSubproject without both _id and name parameters")
+    if _id is not None and name is not None:
+      raise ProjectDBQueryError("Cannot call getSubproject with both _id and name parameters")
+    if _id is not None:
+      return self.session.query(Subproject).\
+                          filter(Subproject.id == _id).first()
+    if name is not None:
+      return self.session.query(Subproject).\
+                          filter(Subproject.name == name).first()
+
+  def addSubproject(self, name, desc, commit=True):
+    #try:
+      subproject = Subproject(name=name, desc=desc)
+      self.session.add(subproject)
+      if commit:
+        self.session.commit()
+      else:
+        self.session.flush()
+      return subproject.id

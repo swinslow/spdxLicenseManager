@@ -72,7 +72,7 @@ def cmdcreateSubproject(ctx, spname, spdesc):
   slmhome = ctx.obj.get('SLMHOME', None)
   mainconfig = ctx.obj.get('SLMCONFIG_DATA', None)
   project = ctx.obj.get('PROJECT', None)
-  prjconfig = ctx.obj.get('PRJCONFIG_DATA', None)
+  db = ctx.obj.get('PROJECTDB', None)
 
   # confirm did also pass in an existing project name
   if project is None:
@@ -80,7 +80,7 @@ def cmdcreateSubproject(ctx, spname, spdesc):
     sys.exit("Error: called create-subproject but didn't pass a project name; did you mean to call create-project?")
 
   # confirm subproject doesn't already exist for this project
-  if prjconfig.getSubprojectDesc(spname) is not None:
+  if db.getSubproject(spname) is not None:
     # error, shouldn't call create-subproject with existing name
     sys.exit(f"Error: subproject {spname} already exists for project {project}")
 
@@ -88,11 +88,7 @@ def cmdcreateSubproject(ctx, spname, spdesc):
   createNewSubprojectDirs(slmhome, project, spname)
 
   # update project config object
-  prjconfig.addSubproject(spname, spdesc)
+  db.addSubproject(spname, spdesc)
 
-  # get and output new project config JSON
-  newJSON = prjconfig.getJSON()
-  prjFilename = f"{project}.config.json"
-  prjconfigPath = os.path.join(slmhome, "projects", project, prjFilename)
-  with open(prjconfigPath, "w") as f:
-    f.write(newJSON)
+  db.closeDB()
+
