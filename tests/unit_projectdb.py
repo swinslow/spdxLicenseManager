@@ -28,10 +28,9 @@ class ProjectDBTestSuite(unittest.TestCase):
 
   def setUp(self):
     # create and initialize an in-memory database
-    #self.db = ProjectDB()
-    #self.db.createDatabase(":memory:")
-    #self.db.initializeDatabaseTables()
-    pass
+    self.db = ProjectDB()
+    self.db.createDB(":memory:")
+    self.db.initializeDBTables()
 
   def tearDown(self):
     #self.db.closeDatabase()
@@ -48,7 +47,7 @@ class ProjectDBTestSuite(unittest.TestCase):
   def test_can_create_new_database(self):
     # don't use db from setUp(); create new in-memory DB from scratch
     dbnew = ProjectDB()
-    dbnew.createDatabase(":memory:")
+    dbnew.createDB(":memory:")
     self.assertTrue(dbnew.isOpened())
     self.assertFalse(dbnew.isInitialized())
 
@@ -56,4 +55,7 @@ class ProjectDBTestSuite(unittest.TestCase):
   def test_cannot_create_new_database_if_file_already_exists(self, os_exists):
     dbnew = ProjectDB()
     with self.assertRaises(ProjectDBConfigError):
-      dbnew.createDatabase("/tmp/fake/existing.db")
+      dbnew.createDB("/tmp/fake/existing.db")
+
+  def test_that_initialized_db_reports_as_initialized(self):
+    self.assertTrue(self.db.isInitialized())

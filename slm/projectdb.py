@@ -24,7 +24,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import sessionmaker
 
-from .datatypes import Config
+from .datatypes import Base, Config
 
 class ProjectDBConfigError(Exception):
   def __init__(self, *args, **kwargs):
@@ -36,7 +36,7 @@ class ProjectDB:
     self.engine = None
     self.session = None
 
-  def createDatabase(self, pathToDB):
+  def createDB(self, pathToDB):
     if pathToDB != ":memory:":
       # check whether file already exists
       if os.path.exists(pathToDB):
@@ -60,3 +60,22 @@ class ProjectDB:
       return query is not None and query.value == "yes"
     except OperationalError:
       return False
+
+  def initializeDBTables(self):
+    # create tables
+    Base.metadata.create_all(self.engine)
+
+    # insert basic config values, with initialized as "no" until other
+    # insertions are completed
+    c1 = Config(key="magic", value="spdxLicenseManager")
+    c2 = Config(key="initialized", value="no")
+    self.session.bulk_save_objects([c1, c2])
+    self.session.commit()
+
+    ##### FIXME CALL OTHER DATA INSERTION FUNCTIONS HERE
+
+    # if we make it here (e.g. no exception was raised earlier), set
+    # "initialized" to "yes"
+    query = self.session.query(Config).filter(Config.key == "initialized")
+    query.update({Config.value: "yes"})
+    self.session.commit()
