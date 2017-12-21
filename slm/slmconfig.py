@@ -26,6 +26,10 @@ class BadSLMConfigError(Exception):
   def __init__(self, *args, **kwargs):
     Exception.__init__(self, *args, **kwargs)
 
+class SLMProjectNotFoundError(Exception):
+  def __init__(self, *args, **kwargs):
+    Exception.__init__(self, *args, **kwargs)
+
 SLMConfigProject = collections.namedtuple(
   'SLMConfigProject',
   ['name', 'desc']
@@ -89,3 +93,10 @@ class SLMConfig:
     self.projects.sort(key=lambda p: p.name)
 
     return len(self.projects)
+
+  def getDBRelativePath(self, pname):
+    for p in self.projects:
+      if pname == p.name:
+        return f"projects/{pname}/{pname}.db"
+    # if project name is not found, raise error
+    raise SLMProjectNotFoundError

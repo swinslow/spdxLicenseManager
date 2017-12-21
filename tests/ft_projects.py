@@ -64,11 +64,10 @@ class ProjectTestSuite(unittest.TestCase):
     # and now refers to yozozzo
     checkForTextInFile(self, self.slmhome, "slmconfig.json", "yozozzo")
 
-    # She also confirms that the appropriate subdirectories and config files
-    # have been created
+    # She also confirms that the appropriate subdirectory and database have
+    # been created
     checkForDirectoryExists(self, self.slmhome, "projects/yozozzo")
-    checkForFileExists(self, self.slmhome, 
-      "projects/yozozzo/yozozzo.config.json")
+    checkForFileExists(self, self.slmhome, "projects/yozozzo/yozozzo.db")
 
     # And she confirms that a "list" command now includes yozozzo in the list
     result = runcmd(self, slm.cli, None, "list")
@@ -81,12 +80,7 @@ class ProjectTestSuite(unittest.TestCase):
       '--desc="Duck transformation spell"')
     self.assertEqual(0, result.exit_code)
 
-    # She confirms that the project configuration file has been updated and
-    # now refers to yozozzo-duck
-    checkForTextInFile(self, self.slmhome,
-      "projects/yozozzo/yozozzo.config.json", "yozozzo-duck")
-
-    # She also confirms that the appropriate subproject subdirectories have
+    # She confirms that the appropriate subproject subdirectories have
     # been created
     checkForDirectoryExists(self, self.slmhome,
       "projects/yozozzo/yozozzo-duck")

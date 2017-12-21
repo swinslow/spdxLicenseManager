@@ -20,7 +20,7 @@
 
 import unittest
 
-from slm.slmconfig import SLMConfig, BadSLMConfigError
+from slm.slmconfig import SLMConfig, BadSLMConfigError, SLMProjectNotFoundError
 
 class SLMConfigTestSuite(unittest.TestCase):
   """spdxLicenseManager SLM configuration unit test suite."""
@@ -108,3 +108,15 @@ class SLMConfigTestSuite(unittest.TestCase):
     mainconfig.loadConfig(self.mainconfig_json)
     with self.assertRaises(BadSLMConfigError):
       mainconfig.addProject("frotz", "duplicate name - should fail")
+
+  def test_can_get_correct_project_database_path(self):
+    mainconfig = SLMConfig()
+    mainconfig.loadConfig(self.mainconfig_json)
+    self.assertEqual(mainconfig.getDBRelativePath("rezrov"),
+      "projects/rezrov/rezrov.db")
+
+  def test_database_path_with_invalid_project_name_raises_config_error(self):
+    mainconfig = SLMConfig()
+    mainconfig.loadConfig(self.mainconfig_json)
+    with self.assertRaises(SLMProjectNotFoundError):
+      mainconfig.getDBRelativePath("oops")
