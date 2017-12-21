@@ -59,7 +59,7 @@ class ProjectTestSuite(unittest.TestCase):
 
     # She sees that an initial "projects" subdirectory has been created
     projectsPath = os.path.join(newhome, "projects")
-    self.assertTrue(os.path.isdir(newhome))
+    self.assertTrue(os.path.isdir(projectsPath))
 
     # She sees that an initial slmconfig.json file has been created
     mainconfigPath = os.path.join(newhome, "slmconfig.json")
@@ -77,3 +77,15 @@ class ProjectTestSuite(unittest.TestCase):
     # SLM won't let her and explains why
     self.assertEqual(1, result.exit_code)
     self.assertEqual(result.output, f"Error: {self.slmhome} already appears to be an spdxLicenseManager directory.\nIf you REALLY want to re-initialize it, delete the entire directory and re-run this command.\n")
+
+  def test_can_initialize_a_new_empty_existing_directory(self):
+    # Edith already created the sandbox directory, and wants to initialize it
+    os.makedirs(name=self.mainsandboxPath, mode=0o755)
+    result = self.runner.invoke(slm.cli, ['init', self.mainsandboxPath])
+    # This works fine because it doesn't have projects/ or slmconfig.json
+    self.assertEqual(0, result.exit_code)
+    self.assertTrue(os.path.isdir(self.mainsandboxPath))
+    projectsPath = os.path.join(self.mainsandboxPath, "projects")
+    self.assertTrue(os.path.isdir(projectsPath))
+    mainconfigPath = os.path.join(self.mainsandboxPath, "slmconfig.json")
+    self.assertTrue(os.path.isfile(mainconfigPath))

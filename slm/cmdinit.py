@@ -25,7 +25,7 @@ import click
 
 def createNewHomeDir(newhome):
   dirPath = newhome
-  os.makedirs(name=dirPath, mode=0o755)
+  os.makedirs(name=dirPath, mode=0o755, exist_ok=True)
 
 def createNewProjectsDir(newhome):
   projectsPath = os.path.join(newhome, "projects")
