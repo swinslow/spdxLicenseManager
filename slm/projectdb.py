@@ -29,4 +29,7 @@ class ProjectDB:
     super(ProjectDB, self).__init__()
 
   def createDatabase(self, pathToDB):
-    pass
+    if pathToDB != ":memory:":
+      # check whether file already exists
+      if os.path.exists(pathToDB):
+        raise ProjectDBConfigError
