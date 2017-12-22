@@ -64,3 +64,11 @@ def runSandboxCommands(testCase, cli):
     '--project=frotz',
     'create-subproject', 'frotz-nuclear',
     '--desc="FROTZ with nuclear settings"'])
+
+  # and some test categories
+  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
+    '--project=frotz', 'add-category', 'Project Licenses'])
+  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
+    '--project=frotz', 'add-category', 'Copyleft'])
+  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
+    '--project=frotz', 'add-category', 'Attribution'])

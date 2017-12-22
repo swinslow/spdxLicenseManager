@@ -1,6 +1,7 @@
 # cmdcreate.py
 #
-# Implementation of 'create' command for spdxLicenseManager.
+# Implementation of 'create-project' and 'create-subproject' commands for
+# spdxLicenseManager.
 #
 # Copyright (C) 2017 The Linux Foundation
 #

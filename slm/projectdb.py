@@ -176,8 +176,11 @@ class ProjectDB:
                           filter(Category.name == name).first()
 
   def getCategoryHighestOrder(self):
-    return self.session.query(Category.order).\
-                        order_by(desc(Category.order)).first()[0]
+    highest = self.session.query(Category.order).\
+                           order_by(desc(Category.order)).first()
+    if highest is None:
+      return 0
+    return highest[0]
 
   def addCategory(self, name, order=None, commit=True):
     if order is None:

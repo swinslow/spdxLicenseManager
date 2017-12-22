@@ -30,6 +30,7 @@ from .projectdb import ProjectDB, ProjectDBConfigError
 from .cmdinit import cmdinit
 from .cmdlist import cmdlist
 from .cmdcreate import cmdcreateProject, cmdcreateSubproject
+from .cmdaddcategory import cmdaddCategory
 
 VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
 
@@ -78,6 +79,28 @@ def cli(ctx, slmhome, project, verbose):
       sys.exit(str(e.message))
   ctx.obj['PROJECTDB'] = db
 
+##### Helpers
+
+def checkForContext(ctx):
+  slmhome = ctx.obj.get('SLMHOME', None)
+  mainconfig = ctx.obj.get('SLMCONFIG_DATA', None)
+  project = ctx.obj.get('PROJECT', None)
+  db = ctx.obj.get('PROJECTDB', None)
+
+  if slmhome is None:
+    sys.exit("spdxLicenseManager data directory not specified.\nPlease specify with --slmhome or with SLM_HOME environment variable.")
+
+  if mainconfig is None:
+    sys.exit(f"Couldn't load main spdxLicenseManager configuration file from {slmhome}/slmconfig.json.")
+
+  if project is None:
+    sys.exit(f"No project specified.\nPlease specify a project with --project=PROJECT or the SLM_PROJECT environment variable.")
+
+  if db is None:
+    sys.exit(f"Couldn't load project database from {slmhome}/projects/{project}/{project}.db.")
+
+##### Commands
+
 @cli.command('init', help="Initialize a new SLM data directory")
 @click.argument('newhome')
 @click.pass_context
@@ -102,3 +125,11 @@ def clicreateProject(ctx, name, desc):
 @click.pass_context
 def clicreateSubproject(ctx, name, desc):
   return cmdcreateSubproject(ctx, name, desc)
+
+@cli.command('add-category', help="Add a new category of licenses")
+@click.argument('name')
+@click.option('--order', default=None, help='ordering of categories in reports')
+@click.pass_context
+def cliaddCategory(ctx, name, order):
+  checkForContext(ctx)
+  return cmdaddCategory(ctx, name, order)

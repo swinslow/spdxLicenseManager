@@ -42,12 +42,25 @@ class CategoryFuncTestSuite(unittest.TestCase):
   def test_can_create_and_retrieve_a_category(self):
     # Edith is creating a new category of licenses with Advertising Clauses
     result = runcmd(self, slm.cli, "frotz", "add-category",
-      '"Advertising Clauses"')
+      "Advertising Clauses")
 
-    # It worked correctly and lets her know
+    # It works correctly and lets her know
     self.assertEqual(0, result.exit_code)
-    self.assertEqual("Created category 'Advertising Clauses'.\n",
+    self.assertEqual("Created category: Advertising Clauses\n",
       result.output)
+
+    # She checks the list of categories to make sure, and there it is
+    result = runcmd(self, slm.cli, "frotz", "list-categories")
+    self.assertEqual(0, result.exit_code)
+    self.assertIn("Advertising Clauses", result.output)
+
+  def test_cannot_create_a_category_without_a_project(self):
+    # Edith accidentally forgets to specify a project when trying to add
+    # a new category
+    result = runcmd(self, slm.cli, None, "add-category", 'whatever')
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual("No project specified.\nPlease specify a project with --project=PROJECT or the SLM_PROJECT environment variable.\n",result.output)
 
     # She checks the list of categories to make sure, and there it is
     result = runcmd(self, slm.cli, "frotz", "list-categories")
@@ -57,7 +70,7 @@ class CategoryFuncTestSuite(unittest.TestCase):
   def test_cannot_add_an_existing_category(self):
     # Edith accidentally tries to re-create the Project Licenses category
     result = runcmd(self, slm.cli, "frotz", "add-category",
-      '"Project Licenses"')
+      'Project Licenses')
 
     # It fails and explains why
     self.assertEqual(1, result.exit_code)

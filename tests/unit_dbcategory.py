@@ -139,3 +139,10 @@ class DBCategoryUnitTestSuite(unittest.TestCase):
   def test_can_get_highest_category_order(self):
     highestOrder = self.db.getCategoryHighestOrder()
     self.assertEqual(highestOrder, 3)
+
+  def test_highest_order_works_even_with_no_categories(self):
+    newdb = ProjectDB()
+    newdb.createDB(":memory:")
+    newdb.initializeDBTables()
+    highestOrder = newdb.getCategoryHighestOrder()
+    self.assertEqual(highestOrder, 0)
