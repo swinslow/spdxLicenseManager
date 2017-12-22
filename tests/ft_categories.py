@@ -62,11 +62,6 @@ class CategoryFuncTestSuite(unittest.TestCase):
     self.assertEqual(1, result.exit_code)
     self.assertEqual("No project specified.\nPlease specify a project with --project=PROJECT or the SLM_PROJECT environment variable.\n",result.output)
 
-    # She checks the list of categories to make sure, and there it is
-    result = runcmd(self, slm.cli, "frotz", "list-categories")
-    self.assertEqual(0, result.exit_code)
-    self.assertIn("Advertising Clauses", result.output)
-
   def test_cannot_add_an_existing_category(self):
     # Edith accidentally tries to re-create the Project Licenses category
     result = runcmd(self, slm.cli, "frotz", "add-category",

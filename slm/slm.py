@@ -31,6 +31,7 @@ from .cmdinit import cmdinit
 from .cmdlist import cmdlist
 from .cmdcreate import cmdcreateProject, cmdcreateSubproject
 from .cmdaddcategory import cmdaddCategory
+from .cmdlistcategories import cmdlistCategories
 
 VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
 
@@ -133,3 +134,9 @@ def clicreateSubproject(ctx, name, desc):
 def cliaddCategory(ctx, name, order):
   checkForContext(ctx)
   return cmdaddCategory(ctx, name, order)
+
+@cli.command('list-categories', help="List categories of licenses")
+@click.pass_context
+def clilistCategories(ctx):
+  checkForContext(ctx)
+  return cmdlistCategories(ctx)
