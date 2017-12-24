@@ -43,8 +43,8 @@ class Subproject(Base):
 class Category(Base):
   __tablename__ = 'categories'
   _id = Column(Integer(), primary_key=True)
-  name = Column(String())
-  order = Column(Integer(), unique=True)
+  name = Column(String(), unique=True)
+  order = Column(Integer())
 
   def __repr__(self):
     return f"Category {self._id}, order {self.order}: {self.name}"

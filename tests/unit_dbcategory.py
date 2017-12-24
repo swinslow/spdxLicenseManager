@@ -23,7 +23,9 @@ import unittest
 from unittest import mock
 from testfixtures import TempDirectory
 
-from slm.projectdb import ProjectDB, ProjectDBQueryError
+from slm.projectdb import (ProjectDB, ProjectDBQueryError,
+  ProjectDBInsertError, ProjectDBUpdateError)
+
 from slm.datatypes import Category
 
 class DBCategoryUnitTestSuite(unittest.TestCase):
@@ -136,6 +138,10 @@ class DBCategoryUnitTestSuite(unittest.TestCase):
     category = self.db.getCategory(name="newcat")
     self.assertEqual(category.order, 4)
 
+  def test_cannot_create_category_with_existing_order(self):
+    with self.assertRaises(ProjectDBInsertError):
+      self.db.addCategory(name="duplicate order", order=3)
+
   def test_can_get_highest_category_order(self):
     highestOrder = self.db.getCategoryHighestOrder()
     self.assertEqual(highestOrder, 3)
@@ -146,3 +152,42 @@ class DBCategoryUnitTestSuite(unittest.TestCase):
     newdb.initializeDBTables()
     highestOrder = newdb.getCategoryHighestOrder()
     self.assertEqual(highestOrder, 0)
+
+  def test_can_edit_category_name(self):
+    self.db.changeCategoryName(name="a category", newName="another category")
+    category = self.db.getCategory(name="another category")
+    self.assertEqual(category._id, 1)
+
+  def test_cannot_edit_category_name_that_does_not_exist(self):
+    with self.assertRaises(ProjectDBUpdateError):
+      self.db.changeCategoryName(name="invalid", newName="this will fail")
+
+  def test_cannot_change_category_name_to_existing_name(self):
+    with self.assertRaises(ProjectDBUpdateError):
+      self.db.changeCategoryName(name="a category", newName="blah category")
+
+  def test_can_reorder_categories_from_higher_to_lower(self):
+    self.db.changeCategoryOrder(name="a category", sortBefore="blah category")
+    categories = self.db.getCategoriesAll()
+    self.assertEqual(categories[0].name, "a category")
+    self.assertEqual(categories[1].name, "blah category")
+    self.assertEqual(categories[2].name, "cat of crazy licenses")
+
+  def test_can_reorder_categories_from_lower_to_higher(self):
+    self.db.changeCategoryOrder(name="blah category", sortBefore="a category")
+    categories = self.db.getCategoriesAll()
+    self.assertEqual(categories[0].name, "cat of crazy licenses")
+    self.assertEqual(categories[1].name, "blah category")
+    self.assertEqual(categories[2].name, "a category")
+
+  def test_cannot_reorder_category_name_before_one_that_does_not_exist(self):
+    with self.assertRaises(ProjectDBUpdateError):
+      self.db.changeCategoryOrder(name="a category", sortBefore="oops")
+
+  def test_cannot_reorder_category_name_that_does_not_exist(self):
+    with self.assertRaises(ProjectDBUpdateError):
+      self.db.changeCategoryOrder(name="oops", sortBefore="a category")
+
+  def test_cannot_create_category_with_order_less_than_one(self):
+    with self.assertRaises(ProjectDBInsertError):
+      self.db.addCategory(name="need positive order", order=0)

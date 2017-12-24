@@ -21,7 +21,7 @@
 import os
 
 from sqlalchemy import create_engine, desc
-from sqlalchemy.exc import OperationalError, DatabaseError
+from sqlalchemy.exc import OperationalError, DatabaseError, IntegrityError
 from sqlalchemy.orm import sessionmaker
 
 from .datatypes import Base, Category, Config, Subproject
@@ -37,6 +37,24 @@ class ProjectDBConfigError(Exception):
 
 class ProjectDBQueryError(Exception):
   """Exception raised for errors in database queries.
+
+  Attributes:
+    message -- explanation of the error
+  """
+  def __init__(self, message):
+    self.message = message
+
+class ProjectDBInsertError(Exception):
+  """Exception raised for errors in database insertions.
+
+  Attributes:
+    message -- explanation of the error
+  """
+  def __init__(self, message):
+    self.message = message
+
+class ProjectDBUpdateError(Exception):
+  """Exception raised for errors in database updates.
 
   Attributes:
     message -- explanation of the error
@@ -185,6 +203,14 @@ class ProjectDB:
   def addCategory(self, name, order=None, commit=True):
     if order is None:
       order = self.getCategoryHighestOrder() + 1
+    if order <= 0:
+      raise ProjectDBInsertError(f"Cannot create category '{name}' with order {order}; order value must be a positive integer.")
+    # check that order isn't already present
+    catCheck = self.session.query(Category).\
+                            filter(Category.order == order).first()
+    if catCheck is not None:
+      raise ProjectDBInsertError(f"Cannot create category '{name}' with order {order} because category '{catCheck.name}' already has order {order}.")
+
     category = Category(name=name, order=order)
     self.session.add(category)
     if commit:
@@ -192,3 +218,65 @@ class ProjectDB:
     else:
       self.session.flush()
     return category._id
+
+  def changeCategoryName(self, name, newName):
+    if name is None or newName is None:
+      raise ProjectDBUpdateError("Missing parameter for changeCategoryName")
+    cat = self.session.query(Category).\
+                       filter(Category.name == name).first()
+    if cat is None:
+      raise ProjectDBUpdateError(f"Category {name} not found in changeCategoryName")
+
+    try:
+      cat.name = newName
+      self.session.commit()
+    except IntegrityError:
+      raise ProjectDBUpdateError(f"Category {newName} already exists in changeCategoryName({name})")
+
+  def changeCategoryOrder(self, name, sortBefore):
+    # find out the order value for name
+    catMain = self.session.query(Category).\
+                           filter(Category.name == name).first()
+    if catMain is None:
+      raise ProjectDBUpdateError(f"Category {name} not found in changeCategoryOrder")
+    orderMain = catMain.order
+
+    # temporarily change catMain's order to what should be an unused value,
+    # so that we can reorder without breaking the unique constraint
+    catMain.order = -999
+
+    # find out the order value for sortBefore
+    catSortBefore = self.session.query(Category).\
+                                 filter(Category.name == sortBefore).first()
+    if catSortBefore is None:
+      raise ProjectDBUpdateError(f"Cannot sort '{name}' category before non-existent '{sortBefore}' category")
+    orderSortBefore = catSortBefore.order
+
+    if orderMain > orderSortBefore:
+      # if orderMain is currently higher, then it's moving to a lower number.
+      # all categories with values between these two, including sortBefore,
+      # will be incremented
+      cats = self.session.query(Category).filter(
+        Category.order >= orderSortBefore,
+        Category.order < orderMain
+      ).all()
+      for cat in cats:
+        cat.order = cat.order + 1
+      newMainOrder = orderSortBefore
+    else:
+      # if orderMain is currently lower, then it's moving to a higher number.
+      # all categories with values between these two, NOT including sortBefore,
+      # will be decremented
+      cats = self.session.query(Category).filter(
+        Category.order < orderSortBefore,
+        Category.order > orderMain
+      ).all()
+      for cat in cats:
+        cat.order = cat.order - 1
+      newMainOrder = orderSortBefore - 1
+
+    # now update the main category's order
+    catMain.order = newMainOrder
+
+    # and save everything
+    self.session.commit()

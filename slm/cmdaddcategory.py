@@ -21,7 +21,7 @@
 import sys
 import click
 
-from .projectdb import ProjectDB
+from .projectdb import ProjectDB, ProjectDBInsertError
 
 def cmdaddCategory(ctx, name, order):
   slmhome = ctx.obj.get('SLMHOME', None)
@@ -35,7 +35,10 @@ def cmdaddCategory(ctx, name, order):
     sys.exit(f"Category '{name}' already exists for project {project}.")
 
   # create category in database
-  db.addCategory(name=name, order=order)
+  try:
+    db.addCategory(name=name, order=order)
+  except ProjectDBInsertError as e:
+    sys.exit(e)
 
   # let the user know it worked
   click.echo(f"Created category: {name}")
