@@ -24,7 +24,7 @@ from sqlalchemy import create_engine, desc
 from sqlalchemy.exc import OperationalError, DatabaseError, IntegrityError
 from sqlalchemy.orm import sessionmaker
 
-from .datatypes import Base, Category, Config, Subproject
+from .datatypes import Base, Category, Config, License, Subproject
 
 class ProjectDBConfigError(Exception):
   """Exception raised for errors in database configuration.
@@ -150,7 +150,9 @@ class ProjectDB:
   def rollback(self):
     self.session.rollback()
 
+  ##########################
   ##### Subproject functions
+  ##########################
 
   def getSubprojectsAll(self):
     return self.session.query(Subproject).order_by(Subproject.name).all()
@@ -176,7 +178,9 @@ class ProjectDB:
       self.session.flush()
     return subproject._id
 
+  ########################
   ##### Category functions
+  ########################
 
   def getCategoriesAll(self):
     return self.session.query(Category).order_by(Category.order).all()
@@ -280,3 +284,32 @@ class ProjectDB:
 
     # and save everything
     self.session.commit()
+
+  #######################
+  ##### License functions
+  #######################
+
+  def getLicensesAll(self):
+    return self.session.query(License).order_by(License.name).all()
+
+  def addLicense(self, name, category):
+    # get the category's ID for insertion
+    category_id = self.session.query(Category).\
+                              filter(Category.name == category).first()._id
+
+    license = License(name=name, category_id=category_id)
+    self.session.add(license)
+    self.session.commit()
+    return license._id
+
+  def getLicense(self, *, _id=None, name=None):
+    if _id is None and name is None:
+      raise ProjectDBQueryError("Cannot call getLicense without either _id or name parameters")
+    if _id is not None and name is not None:
+      raise ProjectDBQueryError("Cannot call getLicense with both _id and name parameters")
+    if _id is not None:
+      return self.session.query(License).\
+                          filter(License._id == _id).first()
+    if name is not None:
+      return self.session.query(License).\
+                          filter(License.name == name).first()

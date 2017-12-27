@@ -72,3 +72,17 @@ def runSandboxCommands(testCase, cli):
     '--project=frotz', 'add-category', 'Copyleft'])
   testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
     '--project=frotz', 'add-category', 'Attribution'])
+
+  # and some test licenses
+  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
+    '--project=frotz', 'add-license', 'Apache-2.0', 'Project Licenses'])
+  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
+    '--project=frotz', 'add-license', 'CC-BY-4.0', 'Project Licenses'])
+  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
+    '--project=frotz', 'add-license', 'GPL-2.0-only', 'Copyleft'])
+  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
+    '--project=frotz', 'add-license', 'GPL-2.0-or-later', 'Copyleft'])
+  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
+    '--project=frotz', 'add-license', 'BSD-2-Clause', 'Attribution'])
+  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
+    '--project=frotz', 'add-license', 'MIT', 'Attribution'])

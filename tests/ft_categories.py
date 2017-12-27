@@ -174,6 +174,3 @@ class CategoryFuncTestSuite(unittest.TestCase):
     # It fails and explains why
     self.assertEqual(1, result.exit_code)
     self.assertEqual("Cannot sort 'Attribution' category before non-existent 'Advertising Clause' category\n", result.output)
-
-  # def test_can_move_a_category_to_end(self):
-  #   self.fail("write me")

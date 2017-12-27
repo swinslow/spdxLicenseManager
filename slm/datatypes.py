@@ -18,7 +18,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -48,3 +49,17 @@ class Category(Base):
 
   def __repr__(self):
     return f"Category {self._id}, order {self.order}: {self.name}"
+
+class License(Base):
+  __tablename__ = 'licenses'
+  # columns
+  _id = Column(Integer(), primary_key=True)
+  name = Column(String(), unique=True)
+  category_id = Column(Integer(), ForeignKey('categories._id'))
+  # relationships
+  category = relationship("Category",
+    backref=backref('licenses', order_by=name)
+  )
+
+  def __repr__(self):
+    return f"License {self._id}: {self.name}, category {self.category.name}"

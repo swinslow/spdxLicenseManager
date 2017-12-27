@@ -33,6 +33,8 @@ from .cmdcreate import cmdcreateProject, cmdcreateSubproject
 from .cmdaddcategory import cmdaddCategory
 from .cmdeditcategory import cmdeditCategory
 from .cmdlistcategories import cmdlistCategories
+from .cmdaddlicense import cmdaddLicense
+from .cmdlistlicenses import cmdlistLicenses
 
 VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
 
@@ -109,6 +111,10 @@ def checkForContext(ctx):
 def cliinit(ctx, newhome):
   return cmdinit(ctx, newhome)
 
+######################
+##### Project commands
+######################
+
 @cli.command('list', help="List projects or subprojects")
 @click.pass_context
 def clilist(ctx):
@@ -127,6 +133,10 @@ def clicreateProject(ctx, name, desc):
 @click.pass_context
 def clicreateSubproject(ctx, name, desc):
   return cmdcreateSubproject(ctx, name, desc)
+
+#######################
+##### Category commands
+#######################
 
 @cli.command('add-category', help="Add a new category of licenses")
 @click.argument('name')
@@ -150,3 +160,21 @@ def cliaddCategory(ctx, name, new_name, sort_before):
 def clilistCategories(ctx):
   checkForContext(ctx)
   return cmdlistCategories(ctx)
+
+######################
+##### License commands
+######################
+
+@cli.command('add-license', help="Add a new license")
+@click.argument('name')
+@click.argument('category')
+@click.pass_context
+def cliaddCategory(ctx, name, category):
+  checkForContext(ctx)
+  return cmdaddLicense(ctx, name, category)
+
+@cli.command('list-licenses', help="List licenses")
+@click.pass_context
+def clilistLicenses(ctx):
+  checkForContext(ctx)
+  return cmdlistLicenses(ctx)
