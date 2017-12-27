@@ -22,7 +22,8 @@ import unittest
 from unittest import mock
 
 from slm.slmconfig import SLMConfig, BadSLMConfigError
-from slm.cmdcreate import createNewProjectDirs, createNewSubprojectDirs
+from slm.commands.cmdCreate import (createNewProjectDirs,
+  createNewSubprojectDirs)
 
 class ProjectCreateTestSuite(unittest.TestCase):
   """spdxLicenseManager project creation unit test suite."""
@@ -38,7 +39,7 @@ class ProjectCreateTestSuite(unittest.TestCase):
   def tearDown(self):
     pass
 
-  @mock.patch('slm.cmdcreate.os.makedirs')
+  @mock.patch('slm.commands.cmdCreate.os.makedirs')
   def test_new_dir_created_for_new_project(self, mock_os_makedirs):
     slmhome = "/tmp/fake/slm"
     createNewProjectDirs(slmhome, "newprj")
@@ -47,7 +48,7 @@ class ProjectCreateTestSuite(unittest.TestCase):
       mode=0o755
     )
 
-  @mock.patch('slm.cmdcreate.os.makedirs')
+  @mock.patch('slm.commands.cmdCreate.os.makedirs')
   def test_new_dir_created_for_new_subproject(self, mock_os_makedirs):
     slmhome = "/tmp/fake/slm"
     createNewSubprojectDirs(slmhome, "newprj", "newsubprj")

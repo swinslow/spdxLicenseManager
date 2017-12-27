@@ -21,7 +21,7 @@
 import unittest
 from unittest import mock
 
-from slm.cmdinit import createNewHomeDir, createNewProjectsDir
+from slm.commands.cmdInit import createNewHomeDir, createNewProjectsDir
 
 class InitTestSuite(unittest.TestCase):
   """spdxLicenseManager initialization unit test suite."""
@@ -32,7 +32,7 @@ class InitTestSuite(unittest.TestCase):
   def tearDown(self):
     pass
 
-  @mock.patch('slm.cmdcreate.os.makedirs')
+  @mock.patch('slm.commands.cmdInit.os.makedirs')
   def test_new_dirs_created_for_initialization(self, mock_os_makedirs):
     newhome = "/tmp/fake/slm"
     createNewHomeDir(newhome)
