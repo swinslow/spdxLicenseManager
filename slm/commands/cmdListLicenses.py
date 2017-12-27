@@ -1,6 +1,6 @@
-# cmdaddcategory.py
+# commands/cmdListLicenses.py
 #
-# Implementation of 'add-category' command for spdxLicenseManager.
+# Implementation of 'list-licenses' command for spdxLicenseManager.
 #
 # Copyright (C) 2017 The Linux Foundation
 #
@@ -18,30 +18,13 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import sys
 import click
 
-from .projectdb import ProjectDB, ProjectDBInsertError
-
-def cmdaddCategory(ctx, name, order):
+def cmdListLicenses(ctx):
   slmhome = ctx.obj.get('SLMHOME', None)
   mainconfig = ctx.obj.get('SLMCONFIG_DATA', None)
   project = ctx.obj.get('PROJECT', None)
   db = ctx.obj.get('PROJECTDB', None)
 
-  # confirm category doesn't already exist for this project
-  if db.getCategory(name=name) is not None:
-    # error, shouldn't call add-category with existing name
-    sys.exit(f"Category '{name}' already exists for project {project}.")
-
-  # create category in database
-  try:
-    db.addCategory(name=name, order=order)
-  except ProjectDBInsertError as e:
-    sys.exit(e)
-
-  # let the user know it worked
-  click.echo(f"Created category: {name}")
-
-  # clean up database
-  db.closeDB()
+  for lic in db.getLicensesAll():
+    click.echo(f"{lic.name}")

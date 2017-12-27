@@ -1,4 +1,4 @@
-# cmdeditcategory.py
+# commands/cmdEditCategory.py
 #
 # Implementation of 'edit-category' command for spdxLicenseManager.
 #
@@ -21,9 +21,9 @@
 import sys
 import click
 
-from .projectdb import ProjectDB, ProjectDBUpdateError
+from ..projectdb import ProjectDBUpdateError
 
-def cmdeditCategory(ctx, name, newName, sortBefore):
+def cmdEditCategory(ctx, name, newName, sortBefore):
   slmhome = ctx.obj.get('SLMHOME', None)
   mainconfig = ctx.obj.get('SLMCONFIG_DATA', None)
   project = ctx.obj.get('PROJECT', None)

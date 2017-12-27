@@ -1,4 +1,4 @@
-# cmdcreate.py
+# commands/cmdCreate.py
 #
 # Implementation of 'create-project' and 'create-subproject' commands for
 # spdxLicenseManager.
@@ -23,7 +23,7 @@ import os
 import sys
 import click
 
-from .projectdb import ProjectDB
+from ..projectdb import ProjectDB
 
 def createNewProjectDirs(slmhome, pname):
   dirPath = os.path.abspath(os.path.join(slmhome, "projects", pname))
@@ -33,7 +33,7 @@ def createNewSubprojectDirs(slmhome, pname, spname):
   dirPath = os.path.abspath(os.path.join(slmhome, "projects", pname, spname))
   os.makedirs(name=dirPath, mode=0o755)
 
-def cmdcreateProject(ctx, pname, pdesc):
+def cmdCreateProject(ctx, pname, pdesc):
   slmhome = ctx.obj.get('SLMHOME', None)
   mainconfig = ctx.obj.get('SLMCONFIG_DATA', None)
   project = ctx.obj.get('PROJECT', None)
@@ -69,7 +69,7 @@ def cmdcreateProject(ctx, pname, pdesc):
   db.initializeDBTables()
   db.closeDB()
 
-def cmdcreateSubproject(ctx, spname, spdesc):
+def cmdCreateSubproject(ctx, spname, spdesc):
   slmhome = ctx.obj.get('SLMHOME', None)
   mainconfig = ctx.obj.get('SLMCONFIG_DATA', None)
   project = ctx.obj.get('PROJECT', None)

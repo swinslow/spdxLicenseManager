@@ -1,4 +1,4 @@
-# cmdinit.py
+# commands/cmdInit.py
 #
 # Implementation of 'init' command for spdxLicenseManager.
 #
@@ -31,7 +31,7 @@ def createNewProjectsDir(newhome):
   projectsPath = os.path.join(newhome, "projects")
   os.makedirs(name=projectsPath, mode=0o755)
 
-def cmdinit(ctx, newhome):
+def cmdInit(ctx, newhome):
   verbose = ctx.obj.get('VERBOSE', False)
 
   # check whether this is already an existing SLM directory

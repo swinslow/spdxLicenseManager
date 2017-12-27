@@ -27,14 +27,14 @@ from .__about__ import __version__
 from .slmconfig import SLMConfig, BadSLMConfigError
 from .projectdb import ProjectDB, ProjectDBConfigError
 
-from .cmdinit import cmdinit
-from .cmdlist import cmdlist
-from .cmdcreate import cmdcreateProject, cmdcreateSubproject
-from .cmdaddcategory import cmdaddCategory
-from .cmdeditcategory import cmdeditCategory
-from .cmdlistcategories import cmdlistCategories
-from .cmdaddlicense import cmdaddLicense
-from .cmdlistlicenses import cmdlistLicenses
+from .commands.cmdInit import cmdInit
+from .commands.cmdList import cmdList
+from .commands.cmdCreate import cmdCreateProject, cmdCreateSubproject
+from .commands.cmdAddCategory import cmdAddCategory
+from .commands.cmdEditCategory import cmdEditCategory
+from .commands.cmdListCategories import cmdListCategories
+from .commands.cmdAddLicense import cmdAddLicense
+from .commands.cmdListLicenses import cmdListLicenses
 
 VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
 
@@ -108,8 +108,8 @@ def checkForContext(ctx):
 @cli.command('init', help="Initialize a new SLM data directory")
 @click.argument('newhome')
 @click.pass_context
-def cliinit(ctx, newhome):
-  return cmdinit(ctx, newhome)
+def cliInit(ctx, newhome):
+  return cmdInit(ctx, newhome)
 
 ######################
 ##### Project commands
@@ -117,22 +117,22 @@ def cliinit(ctx, newhome):
 
 @cli.command('list', help="List projects or subprojects")
 @click.pass_context
-def clilist(ctx):
-  return cmdlist(ctx)
+def cliList(ctx):
+  return cmdList(ctx)
 
 @cli.command('create-project', help="Create a new project")
 @click.argument('name')
 @click.option('--desc', default='NO DESCRIPTION', help='description for new project')
 @click.pass_context
-def clicreateProject(ctx, name, desc):
-  return cmdcreateProject(ctx, name, desc)
+def cliCreateProject(ctx, name, desc):
+  return cmdCreateProject(ctx, name, desc)
 
 @cli.command('create-subproject', help="Create a new subproject")
 @click.argument('name')
 @click.option('--desc', help='description for new subproject')
 @click.pass_context
-def clicreateSubproject(ctx, name, desc):
-  return cmdcreateSubproject(ctx, name, desc)
+def cliCreateSubproject(ctx, name, desc):
+  return cmdCreateSubproject(ctx, name, desc)
 
 #######################
 ##### Category commands
@@ -142,24 +142,24 @@ def clicreateSubproject(ctx, name, desc):
 @click.argument('name')
 @click.option('--order', default=None, help='ordering of categories in reports')
 @click.pass_context
-def cliaddCategory(ctx, name, order):
+def cliAddCategory(ctx, name, order):
   checkForContext(ctx)
-  return cmdaddCategory(ctx, name, order)
+  return cmdAddCategory(ctx, name, order)
 
 @cli.command('edit-category', help="Edit a category of licenses")
 @click.argument('name')
 @click.option('--new-name', default=None, help='revised name for category')
 @click.option('--sort-before', default=None, help='name of category that should come after this one in reports')
 @click.pass_context
-def cliaddCategory(ctx, name, new_name, sort_before):
+def cliEditCategory(ctx, name, new_name, sort_before):
   checkForContext(ctx)
-  return cmdeditCategory(ctx, name, new_name, sort_before)
+  return cmdEditCategory(ctx, name, new_name, sort_before)
 
 @cli.command('list-categories', help="List categories of licenses")
 @click.pass_context
-def clilistCategories(ctx):
+def cliListCategories(ctx):
   checkForContext(ctx)
-  return cmdlistCategories(ctx)
+  return cmdListCategories(ctx)
 
 ######################
 ##### License commands
@@ -169,12 +169,12 @@ def clilistCategories(ctx):
 @click.argument('name')
 @click.argument('category')
 @click.pass_context
-def cliaddCategory(ctx, name, category):
+def cliAddLicense(ctx, name, category):
   checkForContext(ctx)
-  return cmdaddLicense(ctx, name, category)
+  return cmdAddLicense(ctx, name, category)
 
 @cli.command('list-licenses', help="List licenses")
 @click.pass_context
-def clilistLicenses(ctx):
+def cliListLicenses(ctx):
   checkForContext(ctx)
-  return cmdlistLicenses(ctx)
+  return cmdListLicenses(ctx)

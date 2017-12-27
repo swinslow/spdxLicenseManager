@@ -1,4 +1,4 @@
-# cmdlist.py
+# commands/cmdList.py
 #
 # Implementation of 'list' command for spdxLicenseManager.
 #
@@ -20,7 +20,7 @@
 
 import click
 
-def cmdlist(ctx):
+def cmdList(ctx):
   mainconfig = ctx.obj.get('SLMCONFIG_DATA', None)
   db = ctx.obj.get('PROJECTDB', None)
   project = ctx.obj.get('PROJECT', None)

@@ -1,4 +1,4 @@
-# cmdaddlicense.py
+# commands/cmdAddLicense.py
 #
 # Implementation of 'add-license' command for spdxLicenseManager.
 #
@@ -21,9 +21,9 @@
 import sys
 import click
 
-from .projectdb import ProjectDB, ProjectDBInsertError
+from ..projectdb import ProjectDBInsertError
 
-def cmdaddLicense(ctx, name, category):
+def cmdAddLicense(ctx, name, category):
   slmhome = ctx.obj.get('SLMHOME', None)
   mainconfig = ctx.obj.get('SLMCONFIG_DATA', None)
   project = ctx.obj.get('PROJECT', None)

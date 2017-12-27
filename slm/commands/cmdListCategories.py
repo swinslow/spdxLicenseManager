@@ -1,4 +1,4 @@
-# cmdlistcategories.py
+# commands/cmdListCategories.py
 #
 # Implementation of 'list-categories' command for spdxLicenseManager.
 #
@@ -20,9 +20,7 @@
 
 import click
 
-from .projectdb import ProjectDB
-
-def cmdlistCategories(ctx):
+def cmdListCategories(ctx):
   slmhome = ctx.obj.get('SLMHOME', None)
   mainconfig = ctx.obj.get('SLMCONFIG_DATA', None)
   project = ctx.obj.get('PROJECT', None)
