@@ -44,8 +44,15 @@ def runcmd(testCase, cli, project, *commands):
     elements.append(command)
   return testCase.runner.invoke(cli, elements)
 
+def sandboxcmd(testCase, cli, *commands):
+  elements = [f'--slmhome={testCase.slmhome}', '--project=frotz']
+  for command in commands:
+    elements.append(command)
+  testCase.runner.invoke(cli, elements)
+
 def runSandboxCommands(testCase, cli):
   # create some test projects
+  # use invoke rather than sandboxcmd b/c these are not --project=frotz
   testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
     'create-project', 'frotz', '--desc="The FROTZ Project"'])
   testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
@@ -54,35 +61,22 @@ def runSandboxCommands(testCase, cli):
     'create-project', 'gnusto', '--desc="The GNUSTO Project"'])
 
   # and some test subprojects
-  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
-    '--project=frotz',
-    'create-subproject', 'frotz-dim', '--desc="FROTZ with dim settings"'])
-  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
-    '--project=frotz',
-    'create-subproject', 'frotz-shiny', '--desc="FROTZ with shiny settings"'])
-  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
-    '--project=frotz',
-    'create-subproject', 'frotz-nuclear',
-    '--desc="FROTZ with nuclear settings"'])
+  sandboxcmd(testCase, cli, 'create-subproject', 'frotz-dim',
+    '--desc="FROTZ with dim settings"')
+  sandboxcmd(testCase, cli, 'create-subproject', 'frotz-shiny',
+    '--desc="FROTZ with shiny settings"')
+  sandboxcmd(testCase, cli, 'create-subproject', 'frotz-nuclear',
+    '--desc="FROTZ with nuclear settings"')
 
   # and some test categories
-  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
-    '--project=frotz', 'add-category', 'Project Licenses'])
-  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
-    '--project=frotz', 'add-category', 'Copyleft'])
-  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
-    '--project=frotz', 'add-category', 'Attribution'])
+  sandboxcmd(testCase, cli, 'add-category', 'Project Licenses')
+  sandboxcmd(testCase, cli, 'add-category', 'Copyleft')
+  sandboxcmd(testCase, cli, 'add-category', 'Attribution')
 
   # and some test licenses
-  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
-    '--project=frotz', 'add-license', 'Apache-2.0', 'Project Licenses'])
-  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
-    '--project=frotz', 'add-license', 'CC-BY-4.0', 'Project Licenses'])
-  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
-    '--project=frotz', 'add-license', 'GPL-2.0-only', 'Copyleft'])
-  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
-    '--project=frotz', 'add-license', 'GPL-2.0-or-later', 'Copyleft'])
-  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
-    '--project=frotz', 'add-license', 'BSD-2-Clause', 'Attribution'])
-  testCase.runner.invoke(cli, [f'--slmhome={testCase.slmhome}',
-    '--project=frotz', 'add-license', 'MIT', 'Attribution'])
+  sandboxcmd(testCase, cli, 'add-license', 'Apache-2.0', 'Project Licenses')
+  sandboxcmd(testCase, cli, 'add-license', 'CC-BY-4.0', 'Project Licenses')
+  sandboxcmd(testCase, cli, 'add-license', 'GPL-2.0-only', 'Copyleft')
+  sandboxcmd(testCase, cli, 'add-license', 'GPL-2.0-or-later', 'Copyleft')
+  sandboxcmd(testCase, cli, 'add-license', 'BSD-2-Clause', 'Attribution')
+  sandboxcmd(testCase, cli, 'add-license', 'MIT', 'Attribution')
