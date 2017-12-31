@@ -48,7 +48,7 @@ class DBLicenseUnitTestSuite(unittest.TestCase):
   def insertSampleCategoryData(self):
     categories = [
       Category(_id=1, name="a category", order=3),
-      Category(_id=2, name="cat of crazy licenses", order=2),
+      Category(_id=2, name="cat", order=2),
       Category(_id=3, name="blah category", order=1),
     ]
     self.db.session.bulk_save_objects(categories)
@@ -74,6 +74,34 @@ class DBLicenseUnitTestSuite(unittest.TestCase):
     self.assertEqual(licenses[0]._id, 3)
     self.assertEqual(licenses[0].name, "293PageEULA")
 
+  def test_can_retrieve_one_license_by_id(self):
+    license = self.db.getLicense(_id=2)
+    self.assertEqual(license.name, "HarshEULA")
+
+  def test_can_retrieve_one_license_by_name(self):
+    license = self.db.getLicense(name="DoAnything")
+    self.assertEqual(license._id, 1)
+
+  def test_cannot_retrieve_license_by_both_name_and_id(self):
+    with self.assertRaises(ProjectDBQueryError):
+      self.db.getLicense(_id=3, name="293PageEULA")
+
+  def test_cannot_retrieve_license_without_either_name_or_id(self):
+    with self.assertRaises(ProjectDBQueryError):
+      self.db.getLicense()
+
+  def test_cannot_retrieve_license_with_positional_args(self):
+    with self.assertRaises(TypeError):
+      self.db.getLicense("DoAnything")
+
+  def test_returns_none_if_license_not_found_by_id(self):
+    license = self.db.getLicense(_id=17)
+    self.assertIsNone(license)
+
+  def test_returns_none_if_license_not_found_by_name(self):
+    license = self.db.getLicense(name="noSuchLicense")
+    self.assertIsNone(license)
+
   def test_can_add_and_retrieve_licenses(self):
     license_id = self.db.addLicense(name="SomeOtherEULA",
       category="blah category")
@@ -93,3 +121,33 @@ class DBLicenseUnitTestSuite(unittest.TestCase):
     license = self.db.getLicense(_id=5)
     self.assertEqual(license.name, "SomeOtherEULA")
     self.assertEqual(license.category_id, 3)
+
+  def test_can_start_adding_but_rollback_license(self):
+    license_id = self.db.addLicense(name="will rollback",
+      category="blah category", commit=False)
+    self.db.rollback()
+    # confirm that we still only have four licenses
+    licenses = self.db.getLicensesAll()
+    self.assertEqual(len(licenses), 4)
+    # and confirm that this license ID doesn't exist in database
+    license = self.db.getLicense(_id=license_id)
+    self.assertIsNone(license)
+
+  def test_can_start_adding_and_then_commit_licenses(self):
+    l1_id = self.db.addLicense(name="newl1", category="cat", commit=False)
+    l2_id = self.db.addLicense(name="newl2", category="cat", commit=False)
+    self.db.commit()
+    # confirm that we now have six licenses
+    licenses = self.db.getLicensesAll()
+    self.assertEqual(len(licenses), 6)
+
+  def test_cannot_add_license_without_category(self):
+    with self.assertRaises(TypeError):
+      self.db.addLicense(name="oops")
+    # confirm it wasn't added either
+    license = self.db.getLicense(name="oops")
+    self.assertIsNone(license)
+
+  def test_cannot_add_license_with_duplicate_name(self):
+    with self.assertRaises(ProjectDBInsertError):
+      self.db.addLicense(name="DoAnything", category="cat")

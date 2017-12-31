@@ -292,14 +292,20 @@ class ProjectDB:
   def getLicensesAll(self):
     return self.session.query(License).order_by(License.name).all()
 
-  def addLicense(self, name, category):
+  def addLicense(self, name, category, commit=True):
     # get the category's ID for insertion
     category_id = self.session.query(Category).\
                               filter(Category.name == category).first()._id
 
     license = License(name=name, category_id=category_id)
-    self.session.add(license)
-    self.session.commit()
+    try:
+      self.session.add(license)
+      if commit:
+        self.session.commit()
+      else:
+        self.session.flush()
+    except IntegrityError:
+      raise ProjectDBInsertError(f"License {name} already exists")
     return license._id
 
   def getLicense(self, *, _id=None, name=None):

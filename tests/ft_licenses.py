@@ -38,7 +38,7 @@ class LicenseFuncTestSuite(unittest.TestCase):
   def tearDown(self):
     tearDownSandbox(self)
 
-  def test_can_list_license(self):
+  def test_can_list_licenses(self):
     # Edith asks for a list of all current licenses
     result = runcmd(self, slm.cli, "frotz", "list-licenses")
 
@@ -61,3 +61,13 @@ class LicenseFuncTestSuite(unittest.TestCase):
     result = runcmd(self, slm.cli, "frotz", "list-licenses")
     self.assertEqual(0, result.exit_code)
     self.assertIn("BSD-3-Clause", result.output)
+
+  def test_cannot_add_a_license_without_a_project(self):
+    # Edith accidentally forgets to specify a project when trying to add
+    # a new license
+    result = runcmd(self, slm.cli, None, 'add-license',
+      'will fail', 'Attribution')
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual("No project specified.\nPlease specify a project with --project=PROJECT or the SLM_PROJECT environment variable.\n",result.output)
