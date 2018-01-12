@@ -81,7 +81,7 @@ class LicenseFuncTestSuite(unittest.TestCase):
     self.assertEqual(2, result.exit_code)
     self.assertEqual(f'Usage: {slm.cli.name} add-license [OPTIONS] NAME CATEGORY\n\nError: Missing argument "category".\n',result.output)
 
-  def test_cannot_add_a_license_without_an_invalid_category(self):
+  def test_cannot_add_a_license_without_an_existing_category(self):
     # Edith accidentally tries to create a license with a non-existent category
     result = runcmd(self, slm.cli, 'frotz', 'add-license',
       'CC0', 'Public Domain')

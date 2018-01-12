@@ -148,6 +148,13 @@ class DBLicenseUnitTestSuite(unittest.TestCase):
     license = self.db.getLicense(name="oops")
     self.assertIsNone(license)
 
+  def test_cannot_add_license_without_existing_category(self):
+    with self.assertRaises(ProjectDBInsertError):
+      self.db.addLicense(name="oops", category="noSuchCategory")
+    # confirm it wasn't added either
+    license = self.db.getLicense(name="oops")
+    self.assertIsNone(license)
+
   def test_cannot_add_license_with_duplicate_name(self):
     with self.assertRaises(ProjectDBInsertError):
       self.db.addLicense(name="DoAnything", category="cat")

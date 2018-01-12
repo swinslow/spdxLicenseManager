@@ -294,8 +294,11 @@ class ProjectDB:
 
   def addLicense(self, name, category, commit=True):
     # get the category's ID for insertion
-    category_id = self.session.query(Category).\
-                              filter(Category.name == category).first()._id
+    cat = self.session.query(Category).\
+                            filter(Category.name == category).first()
+    if cat is None:
+      raise ProjectDBInsertError(f"Category '{category}' does not exist.")
+    category_id = cat._id
 
     license = License(name=name, category_id=category_id)
     try:
