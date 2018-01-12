@@ -21,6 +21,7 @@
 import os
 import shutil
 from testfixtures import TempDirectory
+from traceback import print_tb
 
 def setUpSandbox(testCase, cli):
   # set up initial temp directory
@@ -80,3 +81,14 @@ def runSandboxCommands(testCase, cli):
   sandboxcmd(testCase, cli, 'add-license', 'GPL-2.0-or-later', 'Copyleft')
   sandboxcmd(testCase, cli, 'add-license', 'BSD-2-Clause', 'Attribution')
   sandboxcmd(testCase, cli, 'add-license', 'MIT', 'Attribution')
+
+def printResultDebug(result):
+  tb = result.exc_info[2]
+  print(f"exc_info = {result.exc_info}")
+  print(f"exception = {result.exception}")
+  print(f"exit_code = {result.exit_code}")
+  print(f"output = {result.output}")
+  print(f"output_bytes = {result.output_bytes}")
+  print(f"runner = {result.runner}")
+  print(f"=====TRACEBACK=====")
+  print_tb(tb)
