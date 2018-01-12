@@ -305,7 +305,7 @@ class ProjectDB:
       else:
         self.session.flush()
     except IntegrityError:
-      raise ProjectDBInsertError(f"License {name} already exists")
+      raise ProjectDBInsertError(f"License '{name}' already exists.")
     return license._id
 
   def getLicense(self, *, _id=None, name=None):

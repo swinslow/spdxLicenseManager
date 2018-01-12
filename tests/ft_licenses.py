@@ -71,3 +71,30 @@ class LicenseFuncTestSuite(unittest.TestCase):
     # It fails and explains why
     self.assertEqual(1, result.exit_code)
     self.assertEqual("No project specified.\nPlease specify a project with --project=PROJECT or the SLM_PROJECT environment variable.\n",result.output)
+
+  def test_cannot_add_a_license_without_a_category(self):
+    # Edith accidentally forgets to specify a category when trying to add
+    # a new license
+    result = runcmd(self, slm.cli, 'frotz', 'add-license', 'will fail')
+
+    # It fails and explains why
+    self.assertEqual(2, result.exit_code)
+    self.assertEqual(f'Usage: {slm.cli.name} add-license [OPTIONS] NAME CATEGORY\n\nError: Missing argument "category".\n',result.output)
+
+  def test_cannot_add_a_license_without_an_invalid_category(self):
+    # Edith accidentally tries to create a license with a non-existent category
+    result = runcmd(self, slm.cli, 'frotz', 'add-license',
+      'CC0', 'Public Domain')
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(f"Category 'Public Domain' does not exist.\n", result.output)
+
+  def test_cannot_add_an_existing_license(self):
+    # Edith accidentally tries to re-create the BSD-2-Clause license
+    result = runcmd(self, slm.cli, "frotz", "add-license",
+      'BSD-2-Clause', 'Copyleft')
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual("License 'BSD-2-Clause' already exists.\n", result.output)
