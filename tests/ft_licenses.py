@@ -128,8 +128,11 @@ class LicenseFuncTestSuite(unittest.TestCase):
       "edit-license", "BSD-2-Clause", "--new-cat", "Copyleft")
     self.assertEqual(0, result.exit_code)
 
-    # When listing the license, BSD-Simplified is now listed
-    self.fail("NEED TO IMPLEMENT LISTING LICENSES BY CATEGORY")
+    # When listing the license, BSD-2-Clause is now listed in Copyleft
+    result = runcmd(self, slm.cli, "frotz", "list-licenses", "--by-cat")
+    self.assertEqual(0, result.exit_code)
+    self.assertIn("Copyleft:\n  BSD-2-Clause", result.output)
+    self.assertNotIn("Attribution:\n  BSD-2-Clause", result.output)
 
   def test_cannot_edit_a_license_that_does_not_exist(self):
     # Edith tries to edit the CDDL-1.0 license but forgets that it
