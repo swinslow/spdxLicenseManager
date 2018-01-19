@@ -98,3 +98,53 @@ class LicenseFuncTestSuite(unittest.TestCase):
     # It fails and explains why
     self.assertEqual(1, result.exit_code)
     self.assertEqual("License 'BSD-2-Clause' already exists.\n", result.output)
+
+  def test_can_change_a_license_name(self):
+    # Edith decides that the BSD-2-Clause license should have been called
+    # BSD-Simplified instead
+    result = runcmd(self, slm.cli, "frotz",
+      "edit-license", "BSD-2-Clause", "--new-name", "BSD-Simplified")
+    self.assertEqual(0, result.exit_code)
+
+    # When listing the license, BSD-Simplified is now listed
+    result = runcmd(self, slm.cli, "frotz", "list-licenses")
+    self.assertEqual(0, result.exit_code)
+    self.assertIn("BSD-Simplified", result.output)
+    self.assertNotIn("BSD-2-Clause", result.output)
+
+  def test_can_change_a_license_category(self):
+    # Edith decides that the BSD-2-Clause license should have been in the
+    # Copyleft category instead (for some reason)
+    result = runcmd(self, slm.cli, "frotz",
+      "edit-license", "BSD-2-Clause", "--new-cat", "Copyleft")
+    self.assertEqual(0, result.exit_code)
+
+    # When listing the license, BSD-Simplified is now listed
+    self.fail("NEED TO IMPLEMENT LISTING LICENSES BY CATEGORY")
+
+  def test_cannot_edit_a_license_that_does_not_exist(self):
+    # Edith tries to edit the CDDL-1.0 license but forgets that it
+    # doesn't exist yet
+    result = runcmd(self, slm.cli, "frotz",
+      "edit-license", "CDDL-1.0", "--new-name", "CDDL-1.0+")
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual("License 'CDDL-1.0' does not exist in project frotz.\nDid you mean to call add-license instead?\n", result.output)
+
+  def test_cannot_change_a_license_name_to_an_existing_name(self):
+    # Edith accidentally tries to rename the BSD-2-Clause license to MIT
+    result = runcmd(self, slm.cli, "frotz",
+      "edit-license", "BSD-2-Clause", "--new-name", "MIT")
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual("Cannot rename 'BSD-2-Clause' license to 'MIT'; another license already has that name.\n", result.output)
+
+  def test_cannot_edit_a_license_without_requesting_an_edit(self):
+    # Edith accidentally edits a license but doesn't ask to change anything
+    result = runcmd(self, slm.cli, "frotz", "edit-license", "BSD-2-Clause")
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual("For edit-license, need to specify at least one of --new-name or --new-cat\n", result.output)
