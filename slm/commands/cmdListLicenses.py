@@ -22,8 +22,20 @@ import click
 
 from .helperContext import extractContext
 
-def cmdListLicenses(ctx):
+def cmdListLicenses(ctx, by_cat):
   slmhome, mainconfig, project, db = extractContext(ctx)
 
-  for lic in db.getLicensesAll():
-    click.echo(f"{lic.name}")
+  if by_cat:
+    # list all licenses, sorted by category order and then alphabetically
+    last_cat = None
+    for (cat, lic) in db.getLicensesAllByCategory():
+      if cat != last_cat:
+        # in new category; print cat name
+        click.echo(f"{cat}:")
+        last_cat = cat
+      click.echo(f"  {lic}")
+
+  else:
+    # list all licenses, sorted alphabetically
+    for lic in db.getLicensesAll():
+      click.echo(f"{lic.name}")
