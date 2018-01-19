@@ -74,6 +74,22 @@ class DBLicenseUnitTestSuite(unittest.TestCase):
     self.assertEqual(licenses[0]._id, 3)
     self.assertEqual(licenses[0].name, "293PageEULA")
 
+  def test_can_retrieve_all_license_names_by_category(self):
+    cat_lics = self.db.getLicensesAllByCategory()
+    self.assertIsInstance(cat_lics, list)
+    self.assertEqual(len(cat_lics), 4)
+    # returns a flat list of tuples, of form [(cat name, lic name)]
+    # categories should be ordered by cat order
+    # and within each category, licenses should be ordered alphabetically
+    self.assertEqual(cat_lics[0][0], "blah category")
+    self.assertEqual(cat_lics[0][1], "293PageEULA")
+    self.assertEqual(cat_lics[1][0], "cat")
+    self.assertEqual(cat_lics[1][1], "HarshEULA")
+    self.assertEqual(cat_lics[2][0], "a category")
+    self.assertEqual(cat_lics[2][1], "DoAnything")
+    self.assertEqual(cat_lics[3][0], "a category")
+    self.assertEqual(cat_lics[3][1], "DoAnythingNoncommercial")
+
   def test_can_retrieve_one_license_by_id(self):
     license = self.db.getLicense(_id=2)
     self.assertEqual(license.name, "HarshEULA")

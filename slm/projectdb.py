@@ -292,6 +292,17 @@ class ProjectDB:
   def getLicensesAll(self):
     return self.session.query(License).order_by(License.name).all()
 
+  def getLicensesAllByCategory(self):
+    query = self.session.query(
+      Category._id, Category.name, Category.order, License.name
+    ).join(License).order_by(Category.order, License.name).all()
+    cat_lics = []
+    for q in query:
+      # just retain category and license names
+      t = (q[1], q[3])
+      cat_lics.append(t)
+    return cat_lics
+
   def addLicense(self, name, category, commit=True):
     # get the category's ID for insertion
     cat = self.session.query(Category).\
