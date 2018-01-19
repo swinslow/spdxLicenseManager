@@ -136,7 +136,7 @@ class CategoryFuncTestSuite(unittest.TestCase):
 
     # It fails and explains why
     self.assertEqual(1, result.exit_code)
-    self.assertEqual("For edit-command, need to specify at least one of --new-name or --sort-before\n", result.output)
+    self.assertEqual("For edit-category, need to specify at least one of --new-name or --sort-before\n", result.output)
 
   def test_can_move_a_category_from_higher_to_lower(self):
     # Edith decides that she wants the attribution category to show up before

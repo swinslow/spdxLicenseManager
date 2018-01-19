@@ -34,7 +34,7 @@ def cmdEditCategory(ctx, name, newName, sortBefore):
 
   # need to request at least one of the edit options
   if newName is None and sortBefore is None:
-    sys.exit("For edit-command, need to specify at least one of --new-name or --sort-before")
+    sys.exit("For edit-category, need to specify at least one of --new-name or --sort-before")
 
   if name == newName:
     sys.exit(f"Cannot rename '{name}' to itself.")
