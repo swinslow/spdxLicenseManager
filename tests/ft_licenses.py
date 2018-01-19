@@ -25,7 +25,7 @@ from click.testing import CliRunner
 from slm import slm
 
 from helper_sandbox import (setUpSandbox, runSandboxCommands, tearDownSandbox,
-  runcmd)
+  runcmd, printResultDebug)
 
 class LicenseFuncTestSuite(unittest.TestCase):
   """spdxLicenseManager license create, edit and list FT suite."""
@@ -133,6 +133,17 @@ class LicenseFuncTestSuite(unittest.TestCase):
     self.assertEqual(0, result.exit_code)
     self.assertIn("Copyleft:\n  BSD-2-Clause", result.output)
     self.assertNotIn("Attribution:\n  BSD-2-Clause", result.output)
+
+  def test_cannot_change_a_license_to_a_category_that_does_not_exist(self):
+    # Edith decides that the BSD-2-Clause license should have been in the
+    # Advertising Clauses category, but it does not exist
+    result = runcmd(self, slm.cli, "frotz",
+      "edit-license", "BSD-2-Clause", "--new-cat", "Advertising Clauses")
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual("Category 'Advertising Clauses' does not exist.\n",
+      result.output)
 
   def test_cannot_edit_a_license_that_does_not_exist(self):
     # Edith tries to edit the CDDL-1.0 license but forgets that it

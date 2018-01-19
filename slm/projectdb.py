@@ -306,7 +306,7 @@ class ProjectDB:
   def addLicense(self, name, category, commit=True):
     # get the category's ID for insertion
     cat = self.session.query(Category).\
-                            filter(Category.name == category).first()
+                       filter(Category.name == category).first()
     if cat is None:
       raise ProjectDBInsertError(f"Category '{category}' does not exist.")
     category_id = cat._id
@@ -347,3 +347,25 @@ class ProjectDB:
       self.session.commit()
     except IntegrityError:
       raise ProjectDBUpdateError(f"License {newName} already exists in changeLicenseName({name})")
+
+  def changeLicenseCategory(self, name, newCat):
+    if name is None or newCat is None:
+      raise ProjectDBUpdateError("Missing parameter for changeLicenseCategory")
+
+    # get the category's ID for insertion
+    cat = self.session.query(Category).\
+                       filter(Category.name == newCat).first()
+    if cat is None:
+      raise ProjectDBUpdateError(f"Category '{newCat}' does not exist.")
+    category_id = cat._id
+
+    lic = self.session.query(License).\
+                       filter(License.name == name).first()
+    if lic is None:
+      raise ProjectDBUpdateError(f"License {name} not found in changeLicenseCategory")
+
+    try:
+      lic.category_id = category_id
+      self.session.commit()
+    except IntegrityError:
+      raise ProjectDBUpdateError(f"Unexpected invalid category ID {category_id} in changeLicenseCategory")

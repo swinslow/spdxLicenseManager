@@ -47,5 +47,13 @@ def cmdEditLicense(ctx, name, newName, newCat):
       sys.exit(f"Cannot rename '{name}' license to '{newName}'; another license already has that name.")
     click.echo(f"Updated name of {name} to {newName}")
 
+  # change category if requested
+  if newCat is not None:
+    try:
+      db.changeLicenseCategory(name=name, newCat=newCat)
+    except ProjectDBUpdateError as e:
+      sys.exit(e)
+    click.echo(f"Updated category of {name} to {newCat}")
+
   # clean up database
   db.closeDB()

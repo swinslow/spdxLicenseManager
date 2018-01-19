@@ -187,3 +187,12 @@ class DBLicenseUnitTestSuite(unittest.TestCase):
   def test_cannot_change_license_name_to_existing_name(self):
     with self.assertRaises(ProjectDBUpdateError):
       self.db.changeLicenseName(name="293PageEULA", newName="DoAnything")
+
+  def test_can_edit_license_category(self):
+    self.db.changeLicenseCategory(name="293PageEULA", newCat="a category")
+    license = self.db.getLicense(name="293PageEULA")
+    self.assertEqual(license.category.name, "a category")
+
+  def test_cannot_change_license_to_category_that_does_not_exist(self):
+    with self.assertRaises(ProjectDBUpdateError):
+      self.db.changeLicenseCategory(name="293PageEULA", newCat="invalid")
