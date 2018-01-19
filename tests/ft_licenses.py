@@ -153,6 +153,15 @@ class LicenseFuncTestSuite(unittest.TestCase):
     self.assertEqual(1, result.exit_code)
     self.assertEqual("Cannot rename 'BSD-2-Clause' license to 'MIT'; another license already has that name.\n", result.output)
 
+  def test_cannot_change_a_license_name_to_itself(self):
+    # Edith accidentally tries to rename the MIT license to MIT
+    result = runcmd(self, slm.cli, "frotz",
+      "edit-license", "MIT", "--new-name", "MIT")
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual("Cannot rename 'MIT' to itself.\n", result.output)
+
   def test_cannot_edit_a_license_without_requesting_an_edit(self):
     # Edith accidentally edits a license but doesn't ask to change anything
     result = runcmd(self, slm.cli, "frotz", "edit-license", "BSD-2-Clause")

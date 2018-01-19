@@ -1,6 +1,6 @@
-# commands/cmdEditCategory.py
+# commands/cmdEditLicense.py
 #
-# Implementation of 'edit-category' command for spdxLicenseManager.
+# Implementation of 'edit-license' command for spdxLicenseManager.
 #
 # Copyright (C) The Linux Foundation
 #
@@ -24,38 +24,28 @@ import click
 from .helperContext import extractContext
 from ..projectdb import ProjectDBUpdateError
 
-def cmdEditCategory(ctx, name, newName, sortBefore):
+def cmdEditLicense(ctx, name, newName, newCat):
   slmhome, mainconfig, project, db = extractContext(ctx)
 
-  # confirm that this category exists
-  if db.getCategory(name=name) is None:
-    # error, shouldn't call edit-category with category that doesn't exist yet
-    sys.exit(f"Category '{name}' does not exist in project {project}.\nDid you mean to call add-category instead?")
+  # confirm that this license exists
+  if db.getLicense(name=name) is None:
+    # error, shouldn't call edit-license with license that doesn't exist yet
+    sys.exit(f"License '{name}' does not exist in project {project}.\nDid you mean to call add-license instead?")
 
   # need to request at least one of the edit options
-  if newName is None and sortBefore is None:
-    sys.exit("For edit-category, need to specify at least one of --new-name or --sort-before")
+  if newName is None and newCat is None:
+    sys.exit("For edit-license, need to specify at least one of --new-name or --new-cat")
 
   if name == newName:
     sys.exit(f"Cannot rename '{name}' to itself.")
-  if name == sortBefore:
-    sys.exit(f"Cannot sort '{name}' before itself.")
 
   # change name if requested
   if newName is not None:
     try:
-      db.changeCategoryName(name=name, newName=newName)
+      db.changeLicenseName(name=name, newName=newName)
     except ProjectDBUpdateError as e:
-      sys.exit(f"Cannot rename '{name}' category to '{newName}'; another category already has that name.")
+      sys.exit(f"Cannot rename '{name}' license to '{newName}'; another license already has that name.")
     click.echo(f"Updated name of {name} to {newName}")
-
-  # change ordering if requested
-  if sortBefore is not None:
-    try:
-      db.changeCategoryOrder(name=name, sortBefore=sortBefore)
-    except ProjectDBUpdateError as e:
-      sys.exit(e)
-    click.echo(f"Updated ordering of {name} to before {sortBefore}")
 
   # clean up database
   db.closeDB()

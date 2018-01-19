@@ -333,3 +333,17 @@ class ProjectDB:
     if name is not None:
       return self.session.query(License).\
                           filter(License.name == name).first()
+
+  def changeLicenseName(self, name, newName):
+    if name is None or newName is None:
+      raise ProjectDBUpdateError("Missing parameter for changeLicenseName")
+    lic = self.session.query(License).\
+                       filter(License.name == name).first()
+    if lic is None:
+      raise ProjectDBUpdateError(f"License {name} not found in changeLicenseName")
+
+    try:
+      lic.name = newName
+      self.session.commit()
+    except IntegrityError:
+      raise ProjectDBUpdateError(f"License {newName} already exists in changeLicenseName({name})")

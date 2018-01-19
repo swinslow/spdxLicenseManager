@@ -35,6 +35,7 @@ from .commands.cmdEditCategory import cmdEditCategory
 from .commands.cmdListCategories import cmdListCategories
 from .commands.cmdAddLicense import cmdAddLicense
 from .commands.cmdListLicenses import cmdListLicenses
+from .commands.cmdEditLicense import cmdEditLicense
 
 VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
 
@@ -179,3 +180,12 @@ def cliAddLicense(ctx, name, category):
 def cliListLicenses(ctx, by_cat):
   checkForContext(ctx)
   return cmdListLicenses(ctx, by_cat)
+
+@cli.command('edit-license', help="Edit a license")
+@click.argument('name')
+@click.option('--new-name', default=None, help='revised name for license')
+@click.option('--new-cat', default=None, help='name of category for license')
+@click.pass_context
+def cliEditLicense(ctx, name, new_name, new_cat):
+  checkForContext(ctx)
+  return cmdEditLicense(ctx, name, new_name, new_cat)
