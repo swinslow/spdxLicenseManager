@@ -2,7 +2,7 @@
 #
 # Helper functions for spdxLicenseManager commands to extract context vars.
 #
-# Copyright (C) 2018 The Linux Foundation
+# Copyright (C) The Linux Foundation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

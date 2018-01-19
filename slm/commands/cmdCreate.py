@@ -3,7 +3,7 @@
 # Implementation of 'create-project' and 'create-subproject' commands for
 # spdxLicenseManager.
 #
-# Copyright (C) 2017 The Linux Foundation
+# Copyright (C) The Linux Foundation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

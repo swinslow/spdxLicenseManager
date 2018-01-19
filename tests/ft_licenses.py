@@ -2,7 +2,7 @@
 #
 # Functional test for spdxLicenseManager: create, edit, and list licenses.
 #
-# Copyright (C) 2017 The Linux Foundation
+# Copyright (C) The Linux Foundation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
