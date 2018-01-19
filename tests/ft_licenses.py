@@ -47,6 +47,15 @@ class LicenseFuncTestSuite(unittest.TestCase):
     self.assertEqual("Apache-2.0\nBSD-2-Clause\nCC-BY-4.0\nGPL-2.0-only\nGPL-2.0-or-later\nMIT\n",
       result.output)
 
+  def test_can_list_licenses_by_category(self):
+    # Edith asks for a list of all current licenses, sorted by category
+    result = runcmd(self, slm.cli, "frotz", "list-licenses", "--by-cat")
+
+    # they are sorted in category order and subsorted alphabetically
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual("Project Licenses:\n  Apache-2.0\n  CC-BY-4.0\nCopyleft:\n  GPL-2.0-only\n  GPL-2.0-or-later\nAttribution:\n  BSD-2-Clause\n  MIT\n",
+      result.output)
+
   def test_can_add_and_retrieve_a_license(self):
     # Edith is creating a new license
     result = runcmd(self, slm.cli, "frotz", "add-license",
