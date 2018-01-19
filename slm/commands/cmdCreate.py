@@ -23,6 +23,7 @@ import os
 import sys
 import click
 
+from .helperContext import extractContext
 from ..projectdb import ProjectDB
 
 def createNewProjectDirs(slmhome, pname):
@@ -70,10 +71,7 @@ def cmdCreateProject(ctx, pname, pdesc):
   db.closeDB()
 
 def cmdCreateSubproject(ctx, spname, spdesc):
-  slmhome = ctx.obj.get('SLMHOME', None)
-  mainconfig = ctx.obj.get('SLMCONFIG_DATA', None)
-  project = ctx.obj.get('PROJECT', None)
-  db = ctx.obj.get('PROJECTDB', None)
+  slmhome, mainconfig, project, db = extractContext(ctx)
 
   # confirm did also pass in an existing project name
   if project is None:

@@ -20,11 +20,10 @@
 
 import click
 
+from .helperContext import extractContext
+
 def cmdListCategories(ctx):
-  slmhome = ctx.obj.get('SLMHOME', None)
-  mainconfig = ctx.obj.get('SLMCONFIG_DATA', None)
-  project = ctx.obj.get('PROJECT', None)
-  db = ctx.obj.get('PROJECTDB', None)
+  slmhome, mainconfig, project, db = extractContext(ctx)
 
   for cat in db.getCategoriesAll():
     click.echo(f"{cat.name}")

@@ -1,8 +1,8 @@
-# commands/cmdListLicenses.py
+# commands/helperContext.py
 #
-# Implementation of 'list-licenses' command for spdxLicenseManager.
+# Helper functions for spdxLicenseManager commands to extract context vars.
 #
-# Copyright (C) 2017 The Linux Foundation
+# Copyright (C) 2018 The Linux Foundation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,12 +18,11 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import click
+def extractContext(ctx):
+  """Extract standard config vars from click context."""
+  slmhome = ctx.obj.get('SLMHOME', None)
+  mainconfig = ctx.obj.get('SLMCONFIG_DATA', None)
+  project = ctx.obj.get('PROJECT', None)
+  db = ctx.obj.get('PROJECTDB', None)
 
-from .helperContext import extractContext
-
-def cmdListLicenses(ctx):
-  slmhome, mainconfig, project, db = extractContext(ctx)
-
-  for lic in db.getLicensesAll():
-    click.echo(f"{lic.name}")
+  return (slmhome, mainconfig, project, db)

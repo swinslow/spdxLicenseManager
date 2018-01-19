@@ -21,13 +21,11 @@
 import sys
 import click
 
+from .helperContext import extractContext
 from ..projectdb import ProjectDBInsertError
 
 def cmdAddCategory(ctx, name, order):
-  slmhome = ctx.obj.get('SLMHOME', None)
-  mainconfig = ctx.obj.get('SLMCONFIG_DATA', None)
-  project = ctx.obj.get('PROJECT', None)
-  db = ctx.obj.get('PROJECTDB', None)
+  slmhome, mainconfig, project, db = extractContext(ctx)
 
   # confirm category doesn't already exist for this project
   if db.getCategory(name=name) is not None:

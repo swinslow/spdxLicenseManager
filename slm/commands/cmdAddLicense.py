@@ -21,13 +21,11 @@
 import sys
 import click
 
+from .helperContext import extractContext
 from ..projectdb import ProjectDBInsertError
 
 def cmdAddLicense(ctx, name, category):
-  slmhome = ctx.obj.get('SLMHOME', None)
-  mainconfig = ctx.obj.get('SLMCONFIG_DATA', None)
-  project = ctx.obj.get('PROJECT', None)
-  db = ctx.obj.get('PROJECTDB', None)
+  slmhome, mainconfig, project, db = extractContext(ctx)
 
   # create license in database
   try:
