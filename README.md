@@ -1,4 +1,12 @@
+**Note**: this is an in-process rewrite of [spdxSummarizer](https://github.com/swinslow/spdxSummarizer), designed to be more scriptable, configurable and backed by a full test suite. It is **not** yet ready for prime-time, as much of the plumbing is still very much in process.
 
+# spdxLicenseManager
+
+## About
+
+spdxLicenseManager is a set of command-line tools for importing, analyzing and generating reports about files and licenses.
+
+It imports [SPDX®](https://spdx.org/) tag-value files, and processes, categorizes and reports on its license data in various formats.
 
 ## License
 
