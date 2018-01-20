@@ -18,14 +18,20 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import sys
 import click
 
 from .helperContext import extractContext
+from ..projectdb import ProjectDBQueryError
 
-def cmdListLicenses(ctx, by_cat):
+def cmdListLicenses(ctx, by_category, in_category):
   slmhome, mainconfig, project, db = extractContext(ctx)
 
-  if by_cat:
+  if by_category and in_category:
+    # can't do both
+    sys.exit("Cannot use both --by-category and --in-category flags with the list-licenses command.")
+
+  if by_category:
     # list all licenses, sorted by category order and then alphabetically
     last_cat = None
     for (cat, lic) in db.getLicensesAllByCategory():
@@ -34,6 +40,14 @@ def cmdListLicenses(ctx, by_cat):
         click.echo(f"{cat}:")
         last_cat = cat
       click.echo(f"  {lic}")
+
+  elif in_category:
+    # list all licenses in just this category, sorted alphabetically
+    try:
+      for lic in db.getLicensesInCategory(category=in_category):
+        click.echo(f"{lic.name}")
+    except ProjectDBQueryError as e:
+      sys.exit(e)
 
   else:
     # list all licenses, sorted alphabetically

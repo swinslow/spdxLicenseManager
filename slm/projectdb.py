@@ -303,6 +303,19 @@ class ProjectDB:
       cat_lics.append(t)
     return cat_lics
 
+  def getLicensesInCategory(self, category):
+    # raise exception if category does not exist
+    cat = self.session.query(Category).\
+                       filter(Category.name == category).first()
+    if cat is None:
+      raise ProjectDBQueryError(f"Category '{category}' does not exist.")
+
+    return self.session.query(
+      License._id, License.name
+    ).join(Category).order_by(License.name).filter(
+      Category.name == category
+    ).all()
+
   def addLicense(self, name, category, commit=True):
     # get the category's ID for insertion
     cat = self.session.query(Category).\

@@ -90,6 +90,20 @@ class DBLicenseUnitTestSuite(unittest.TestCase):
     self.assertEqual(cat_lics[3][0], "a category")
     self.assertEqual(cat_lics[3][1], "DoAnythingNoncommercial")
 
+  def test_can_retrieve_licenses_in_just_one_category(self):
+    licenses = self.db.getLicensesInCategory(category="a category")
+    self.assertIsInstance(licenses, list)
+    self.assertEqual(len(licenses), 2)
+    # will sort alphabetically
+    self.assertEqual(licenses[0]._id, 1)
+    self.assertEqual(licenses[0].name, "DoAnything")
+    self.assertEqual(licenses[1]._id, 4)
+    self.assertEqual(licenses[1].name, "DoAnythingNoncommercial")
+
+  def test_cannot_retrieve_license_in_category_that_does_not_exist(self):
+    with self.assertRaises(ProjectDBQueryError):
+      self.db.getLicensesInCategory(category="invalid")
+
   def test_can_retrieve_one_license_by_id(self):
     license = self.db.getLicense(_id=2)
     self.assertEqual(license.name, "HarshEULA")

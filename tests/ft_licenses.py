@@ -180,3 +180,33 @@ class LicenseFuncTestSuite(unittest.TestCase):
     # It fails and explains why
     self.assertEqual(1, result.exit_code)
     self.assertEqual("For edit-license, need to specify at least one of --new-name or --new-cat\n", result.output)
+
+  def test_can_list_licenses_within_one_category(self):
+    # Edith wants to list just the licenses in the Copyleft category
+    result = runcmd(self, slm.cli, "frotz",
+      "list-licenses", "--in-category", "Copyleft")
+
+    # they are sorted alphabetically
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual("GPL-2.0-only\nGPL-2.0-or-later\n", result.output)
+
+  def test_cannot_list_licenses_in_a_category_that_does_not_exist(self):
+    # Edith wants to list just the licenses in the Advertising Clauses
+    # category, but it does not exist
+    result = runcmd(self, slm.cli, "frotz",
+      "list-licenses", "--in-category", "Advertising Clauses")
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual("Category 'Advertising Clauses' does not exist.\n",
+      result.output)
+
+  def test_cannot_list_licenses_by_category_and_also_filtering_category(self):
+    # Edith wants to list licenses by category, and also asks for just the
+    # licenses in the Attribution category
+    result = runcmd(self, slm.cli, "frotz",
+      "list-licenses", "--by-category", "--in-category", "Attribution")
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual("Cannot use both --by-category and --in-category flags with the list-licenses command.\n", result.output)
