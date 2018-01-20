@@ -49,7 +49,7 @@ class LicenseFuncTestSuite(unittest.TestCase):
 
   def test_can_list_licenses_by_category(self):
     # Edith asks for a list of all current licenses, sorted by category
-    result = runcmd(self, slm.cli, "frotz", "list-licenses", "--by-cat")
+    result = runcmd(self, slm.cli, "frotz", "list-licenses", "--by-category")
 
     # they are sorted in category order and subsorted alphabetically
     self.assertEqual(0, result.exit_code)
@@ -129,7 +129,7 @@ class LicenseFuncTestSuite(unittest.TestCase):
     self.assertEqual(0, result.exit_code)
 
     # When listing the license, BSD-2-Clause is now listed in Copyleft
-    result = runcmd(self, slm.cli, "frotz", "list-licenses", "--by-cat")
+    result = runcmd(self, slm.cli, "frotz", "list-licenses", "--by-category")
     self.assertEqual(0, result.exit_code)
     self.assertIn("Copyleft:\n  BSD-2-Clause", result.output)
     self.assertNotIn("Attribution:\n  BSD-2-Clause", result.output)

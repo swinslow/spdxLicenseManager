@@ -175,11 +175,11 @@ def cliAddLicense(ctx, name, category):
   return cmdAddLicense(ctx, name, category)
 
 @cli.command('list-licenses', help="List licenses")
-@click.option('-c', '--by-cat', is_flag=True, help='Sort by category')
+@click.option('-c', '--by-category', is_flag=True, help='Sort by category')
 @click.pass_context
-def cliListLicenses(ctx, by_cat):
+def cliListLicenses(ctx, by_category):
   checkForContext(ctx)
-  return cmdListLicenses(ctx, by_cat)
+  return cmdListLicenses(ctx, by_category)
 
 @cli.command('edit-license', help="Edit a license")
 @click.argument('name')
