@@ -18,6 +18,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+test: functest unittest
+
 functest: FORCE
 	python -m unittest discover -s tests -p "ft_*.py"
 
