@@ -25,7 +25,7 @@ from click.testing import CliRunner
 from slm import slm
 
 from helper_sandbox import (setUpSandbox, runSandboxCommands, tearDownSandbox,
-  runcmd, printResultDebug)
+  runcmd)
 
 class LicenseFuncTestSuite(unittest.TestCase):
   """spdxLicenseManager license create, edit and list FT suite."""

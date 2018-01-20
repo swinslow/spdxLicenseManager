@@ -106,7 +106,8 @@ class ProjectDB:
     self.session.bulk_save_objects([c1, c2])
     self.session.commit()
 
-    ##### FIXME CALL OTHER DATA INSERTION FUNCTIONS HERE
+    ##### Placeholder: Other data/config insertion functions could be
+    ##### called here, if desired
 
     # if we make it here (e.g. no exception was raised earlier), set
     # "initialized" to "yes"
