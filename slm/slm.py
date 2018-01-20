@@ -36,6 +36,8 @@ from .commands.cmdListCategories import cmdListCategories
 from .commands.cmdAddLicense import cmdAddLicense
 from .commands.cmdListLicenses import cmdListLicenses
 from .commands.cmdEditLicense import cmdEditLicense
+from .commands.cmdSetConfig import cmdSetConfig
+from .commands.cmdGetConfig import cmdGetConfig
 
 VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
 
@@ -134,6 +136,25 @@ def cliCreateProject(ctx, name, desc):
 @click.pass_context
 def cliCreateSubproject(ctx, name, desc):
   return cmdCreateSubproject(ctx, name, desc)
+
+####################################
+##### Project configuration commands
+####################################
+
+@cli.command('set-config', help="Add or update configuration value")
+@click.argument('key')
+@click.argument('value')
+@click.pass_context
+def cliSetConfig(ctx, key, value):
+  checkForContext(ctx)
+  return cmdSetConfig(ctx, key, value)
+
+@cli.command('get-config', help="Get configuration value")
+@click.argument('key')
+@click.pass_context
+def cliGetConfig(ctx, key):
+  checkForContext(ctx)
+  return cmdGetConfig(ctx, key)
 
 #######################
 ##### Category commands

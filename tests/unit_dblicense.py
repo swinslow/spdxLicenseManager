@@ -21,7 +21,6 @@
 import os
 import unittest
 from unittest import mock
-from testfixtures import TempDirectory
 
 from slm.projectdb import (ProjectDB, ProjectDBQueryError,
   ProjectDBInsertError, ProjectDBUpdateError)

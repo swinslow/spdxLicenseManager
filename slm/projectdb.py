@@ -24,6 +24,8 @@ from sqlalchemy import create_engine, desc
 from sqlalchemy.exc import OperationalError, DatabaseError, IntegrityError
 from sqlalchemy.orm import sessionmaker
 
+from .__configs__ import (isValidConfigKey, isInternalConfigKey,
+  getConfigKeyDesc)
 from .datatypes import Base, Category, Config, License, Subproject
 
 class ProjectDBConfigError(Exception):
@@ -150,6 +152,35 @@ class ProjectDB:
 
   def rollback(self):
     self.session.rollback()
+
+  ######################
+  ##### Config functions
+  ######################
+
+  def getConfigValue(self, key):
+    config = self.session.query(Config).filter(Config.key == key).first()
+    if config:
+      return config.value
+    else:
+      raise ProjectDBQueryError(f"Config not found for key {key}.")
+
+  def setConfigValue(self, key, value):
+    if not isValidConfigKey(key):
+      raise ProjectDBInsertError(f"Cannot set configuration value for unknown key '{key}'.")
+    if isInternalConfigKey(key):
+      raise ProjectDBUpdateError(f"Cannot modify configuration value for key '{key}'.")
+    try:
+      # check to see whether the key is already present
+      config = self.session.query(Config).filter(Config.key == key).first()
+      # if we get here, key was present, so we'll update it
+      config.value = value
+    except AttributeError:
+      # if we get here instead, key did not exist, so we'll create it
+      config = Config(key=key, value=value)
+      self.session.add(config)
+    # and regardless of whether or not it existed, commit it
+    self.session.commit()
+    return key
 
   ##########################
   ##### Subproject functions
