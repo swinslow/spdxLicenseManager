@@ -37,6 +37,7 @@ from .commands.cmdListLicenses import cmdListLicenses
 from .commands.cmdEditLicense import cmdEditLicense
 from .commands.cmdSetConfig import cmdSetConfig
 from .commands.cmdGetConfig import cmdGetConfig
+from .commands.cmdListConfig import cmdListConfig
 
 VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
 
@@ -154,6 +155,12 @@ def cliSetConfig(ctx, key, value):
 def cliGetConfig(ctx, key):
   checkForContext(ctx)
   return cmdGetConfig(ctx, key)
+
+@cli.command('list-config', help="List all configuration values")
+@click.pass_context
+def cliListConfig(ctx):
+  checkForContext(ctx)
+  return cmdListConfig(ctx)
 
 #######################
 ##### Category commands

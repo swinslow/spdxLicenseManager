@@ -68,6 +68,11 @@ def runSandboxCommands(testCase, cli):
   sandboxcmd(testCase, cli, 'create-subproject', 'frotz-nuclear',
     '--desc="FROTZ with nuclear settings"')
 
+  # and some test configuration values
+  sandboxcmd(testCase, cli, 'set-config', 'strip_LicenseRef', 'yes')
+  sandboxcmd(testCase, cli, 'set-config', 'vendor_dirs',
+    'vendor;thirdparty;third-party')
+
   # and some test categories
   sandboxcmd(testCase, cli, 'add-category', 'Project Licenses')
   sandboxcmd(testCase, cli, 'add-category', 'Copyleft')

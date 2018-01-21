@@ -79,3 +79,16 @@ class DBConfigUnitTestSuite(unittest.TestCase):
   def test_cannot_set_unknown_key(self):
     with self.assertRaises(ProjectDBInsertError):
       self.db.setConfigValue(key="new_key", value="123abc")
+
+  def test_can_get_all_configs(self):
+    configs = self.db.getConfigsAll()
+    self.assertIsInstance(configs, list)
+    self.assertEqual(len(configs), 4)
+    self.assertEqual(configs[0].key, "initialized")
+    self.assertEqual(configs[0].value, "yes")
+    self.assertEqual(configs[1].key, "magic")
+    self.assertEqual(configs[1].value, "spdxLicenseManager")
+    self.assertEqual(configs[2].key, "strip_LicenseRef")
+    self.assertEqual(configs[2].value, "yes")
+    self.assertEqual(configs[3].key, "vendor_dirs")
+    self.assertEqual(configs[3].value, "vendor;thirdparty;third-party")

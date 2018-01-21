@@ -77,3 +77,12 @@ class ConfigFuncTestSuite(unittest.TestCase):
     # It fails and explains why
     self.assertEqual(1, result.exit_code)
     self.assertEqual("Cannot set configuration value for unknown key 'invalid'.\n",result.output)
+
+  def test_can_list_configs(self):
+    # Edith wants to get a list of all config keys and values
+    result = runcmd(self, slm.cli, "frotz", "list-config")
+
+    # they are sorted alphabetically, with asterisks for internal config
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual("* initialized: yes\n* magic: spdxLicenseManager\nstrip_LicenseRef: yes\nvendor_dirs: vendor;thirdparty;third-party\n",
+      result.output)

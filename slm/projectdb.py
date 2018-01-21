@@ -156,6 +156,9 @@ class ProjectDB:
   ##### Config functions
   ######################
 
+  def getConfigsAll(self):
+    return self.session.query(Config).order_by(Config.key).all()
+
   def getConfigValue(self, key):
     config = self.session.query(Config).filter(Config.key == key).first()
     if config:
