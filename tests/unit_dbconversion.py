@@ -104,3 +104,61 @@ class DBConversionUnitTestSuite(unittest.TestCase):
   def test_returns_none_if_conversion_not_found_by_name(self):
     conversion = self.db.getConversion(old_text="noSuchConversion")
     self.assertIsNone(conversion)
+
+  def test_can_add_and_retrieve_conversions(self):
+    conv_id = self.db.addConversion(old_text="harsh", new_license="HarshEULA")
+
+    # confirm that we now have four conversions
+    convs = self.db.getConversionsAll()
+    self.assertEqual(len(convs), 4)
+
+    # and confirm that we can retrieve this one by its text
+    conv = self.db.getConversion(old_text="harsh")
+    self.assertEqual(conv._id, 4)
+    self.assertEqual(conv.new_license_id, 2)
+    self.assertIsNotNone(conv.new_license)
+    self.assertEqual(conv.new_license.name, "HarshEULA")
+
+    # and confirm that we can retrieve this one by id
+    conv = self.db.getConversion(_id=4)
+    self.assertEqual(conv.old_text, "harsh")
+    self.assertEqual(conv.new_license_id, 2)
+
+  def test_can_start_adding_but_rollback_conversion(self):
+    conv_id = self.db.addConversion(old_text="will rollback",
+      new_license="293PageEULA", commit=False)
+    self.db.rollback()
+    # confirm that we still only have three conversions
+    convs = self.db.getConversionsAll()
+    self.assertEqual(len(convs), 3)
+    # and confirm that this conversion ID doesn't exist in database
+    conv = self.db.getConversion(_id=4)
+    self.assertIsNone(conv)
+
+  def test_can_start_adding_and_then_commit_conversions(self):
+    c1_id = self.db.addConversion(old_text="c1", new_license="293PageEULA",
+      commit=False)
+    c2_id = self.db.addConversion(old_text="c2", new_license="293PageEULA",
+      commit=False)
+    self.db.commit()
+    # confirm that we now have five conversions
+    convs = self.db.getConversionsAll()
+    self.assertEqual(len(convs), 5)
+
+  def test_cannot_add_conversion_without_license(self):
+    with self.assertRaises(TypeError):
+      self.db.addConversion(old_text="oops")
+    # confirm it wasn't added either
+    conv = self.db.getConversion(old_text="oops")
+    self.assertIsNone(conv)
+
+  def test_cannot_add_conversion_without_existing_license(self):
+    with self.assertRaises(ProjectDBInsertError):
+      self.db.addConversion(old_text="oops", new_license="blah")
+    # confirm it wasn't added either
+    conv = self.db.getConversion(old_text="oops")
+    self.assertIsNone(conv)
+
+  def test_cannot_add_conversion_with_duplicate_name(self):
+    with self.assertRaises(ProjectDBInsertError):
+      self.db.addConversion(old_text="NC", new_license="293PageEULA")

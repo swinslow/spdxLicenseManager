@@ -25,7 +25,7 @@ from click.testing import CliRunner
 from slm import slm
 
 from helper_sandbox import (setUpSandbox, runSandboxCommands, tearDownSandbox,
-  runcmd)
+  runcmd, printResultDebug)
 
 class ConversionFuncTestSuite(unittest.TestCase):
   """spdxLicenseManager license conversion create, edit, list and delete
@@ -60,7 +60,7 @@ class ConversionFuncTestSuite(unittest.TestCase):
 
     # It fails and explains why
     self.assertEqual(2, result.exit_code)
-    self.assertEqual(f'Usage: {slm.cli.name} add-conversion [OPTIONS] TEXT-TO-CONVERT LICENSE-NAME\n\nError: Missing argument "license-name".\n',result.output)
+    self.assertEqual(f'Usage: {slm.cli.name} add-conversion [OPTIONS] OLD_TEXT LICENSE_NAME\n\nError: Missing argument "license_name".\n',result.output)
 
   def test_cannot_add_a_conversion_with_a_nonexistent_license(self):
     # Edith tries to add a new conversion, but accidentally specifies a
@@ -70,7 +70,7 @@ class ConversionFuncTestSuite(unittest.TestCase):
 
     # It fails and explains why
     self.assertEqual(1, result.exit_code)
-    self.assertEqual(f'License "BSD-3-Clause" does not exist yet. Did you mean to call add-license first?\n',result.output)
+    self.assertEqual(f"License 'BSD-3-Clause' does not exist yet.\nDid you mean to call add-license first?\n",result.output)
 
   def test_cannot_add_a_duplicate_conversion(self):
     # Edith tries to add a new conversion, but accidentally specifies text
@@ -82,4 +82,4 @@ class ConversionFuncTestSuite(unittest.TestCase):
 
     # It fails and explains why
     self.assertEqual(1, result.exit_code)
-    self.assertEqual(f'Conversion for "BSD-Simplified" already exists (=> BSD-2-Clause).\n',result.output)
+    self.assertEqual(f"Conversion 'BSD-Simplified' already exists.\n",result.output)

@@ -39,6 +39,8 @@ from .commands.cmdSetConfig import cmdSetConfig
 from .commands.cmdGetConfig import cmdGetConfig
 from .commands.cmdListConfig import cmdListConfig
 from .commands.cmdUnsetConfig import cmdUnsetConfig
+from .commands.cmdGetConversion import cmdGetConversion
+from .commands.cmdAddConversion import cmdAddConversion
 
 VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
 
@@ -226,3 +228,22 @@ def cliListLicenses(ctx, by_category, in_category):
 def cliEditLicense(ctx, name, new_name, new_cat):
   checkForContext(ctx)
   return cmdEditLicense(ctx, name, new_name, new_cat)
+
+#########################
+##### Conversion commands
+#########################
+
+@cli.command('add-conversion', help="Add a new license name conversion")
+@click.argument('old_text')
+@click.argument('license_name')
+@click.pass_context
+def cliAddConversion(ctx, old_text, license_name):
+  checkForContext(ctx)
+  return cmdAddConversion(ctx, old_text, license_name)
+
+@cli.command('get-conversion', help="Get a license name conversion")
+@click.argument('old_text')
+@click.pass_context
+def cliGetConversion(ctx, old_text):
+  checkForContext(ctx)
+  return cmdGetConversion(ctx, old_text)

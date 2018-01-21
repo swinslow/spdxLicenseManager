@@ -441,6 +441,9 @@ class ProjectDB:
   ##### Conversion functions
   ##########################
 
+  def getConversionsAll(self):
+    return self.session.query(Conversion).order_by(Conversion.old_text).all()
+
   def getConversion(self, *, _id=None, old_text=None):
     if _id is None and old_text is None:
       raise ProjectDBQueryError("Cannot call getConversion without either _id or old_text parameters")
@@ -452,3 +455,22 @@ class ProjectDB:
     if old_text is not None:
       return self.session.query(Conversion).\
                           filter(Conversion.old_text == old_text).first()
+
+  def addConversion(self, old_text, new_license, commit=True):
+    # get the new license's ID for insertion
+    lic = self.session.query(License).\
+                       filter(License.name == new_license).first()
+    if lic is None:
+      raise ProjectDBInsertError(f'License "{new_license}" does not exist.')
+    new_license_id = lic._id
+
+    conv = Conversion(old_text=old_text, new_license_id=new_license_id)
+    try:
+      self.session.add(conv)
+      if commit:
+        self.session.commit()
+      else:
+        self.session.flush()
+    except IntegrityError:
+      raise ProjectDBInsertError(f"Conversion '{old_text}' already exists.")
+    return conv._id
