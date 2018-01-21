@@ -65,7 +65,7 @@ class LicenseFuncTestSuite(unittest.TestCase):
     self.assertEqual("Created license: BSD-3-Clause\n",
       result.output)
 
-    # She checks the list of categories to make sure, and there it is
+    # She checks the list of licenses to make sure, and there it is
     result = runcmd(self, slm.cli, "frotz", "list-licenses")
     self.assertEqual(0, result.exit_code)
     self.assertIn("BSD-3-Clause", result.output)
