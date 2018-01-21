@@ -62,3 +62,17 @@ class License(Base):
 
   def __repr__(self):
     return f"License {self._id}: {self.name}, category {self.category.name}"
+
+class Conversion(Base):
+  __tablename__ = 'conversions'
+  # columns
+  _id = Column(Integer(), primary_key=True)
+  old_text = Column(String(), unique=True)
+  new_license_id = Column(Integer(), ForeignKey('licenses._id'))
+  # relationships
+  new_license = relationship('License',
+    backref=backref('conversions', order_by=old_text)
+  )
+
+  def __repr__(self):
+    return f"Conversion {self._id}: '{self.old_text}' => '{self.new_license.name}'"

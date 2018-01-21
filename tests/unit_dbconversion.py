@@ -24,7 +24,7 @@ from unittest import mock
 from slm.projectdb import (ProjectDB, ProjectDBQueryError,
   ProjectDBInsertError, ProjectDBUpdateError, ProjectDBDeleteError)
 
-from slm.datatypes import Conversion
+from slm.datatypes import Category, Conversion, License
 
 class DBConversionUnitTestSuite(unittest.TestCase):
   """spdxLicenseManager unit test suite for converting license names in DB."""

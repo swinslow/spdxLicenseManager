@@ -25,7 +25,7 @@ from sqlalchemy.orm import sessionmaker
 
 from .__configs__ import (isValidConfigKey, isInternalConfigKey,
   getConfigKeyDesc)
-from .datatypes import Base, Category, Config, License, Subproject
+from .datatypes import Base, Category, Config, Conversion, License, Subproject
 
 class ProjectDBConfigError(Exception):
   """Exception raised for errors in database configuration.
@@ -436,3 +436,19 @@ class ProjectDB:
       self.session.commit()
     except IntegrityError:
       raise ProjectDBUpdateError(f"Unexpected invalid category ID {category_id} in changeLicenseCategory")
+
+  ##########################
+  ##### Conversion functions
+  ##########################
+
+  def getConversion(self, *, _id=None, old_text=None):
+    if _id is None and old_text is None:
+      raise ProjectDBQueryError("Cannot call getConversion without either _id or old_text parameters")
+    if _id is not None and old_text is not None:
+      raise ProjectDBQueryError("Cannot call getConversion with both _id and old_text parameters")
+    if _id is not None:
+      return self.session.query(Conversion).\
+                          filter(Conversion._id == _id).first()
+    if old_text is not None:
+      return self.session.query(Conversion).\
+                          filter(Conversion.old_text == old_text).first()
