@@ -2,6 +2,8 @@
 
 # spdxLicenseManager
 
+[![Build Status](https://travis-ci.org/swinslow/spdxLicenseManager.svg?branch=master)](https://travis-ci.org/swinslow/spdxLicenseManager)
+
 ## About
 
 spdxLicenseManager is a set of command-line tools for importing, analyzing and generating reports about files and licenses.
