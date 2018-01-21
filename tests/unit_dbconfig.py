@@ -22,7 +22,7 @@ import unittest
 from unittest import mock
 
 from slm.projectdb import (ProjectDB, ProjectDBQueryError,
-  ProjectDBInsertError, ProjectDBUpdateError)
+  ProjectDBInsertError, ProjectDBUpdateError, ProjectDBDeleteError)
 
 from slm.datatypes import Config
 
@@ -92,3 +92,20 @@ class DBConfigUnitTestSuite(unittest.TestCase):
     self.assertEqual(configs[2].value, "yes")
     self.assertEqual(configs[3].key, "vendor_dirs")
     self.assertEqual(configs[3].value, "vendor;thirdparty;third-party")
+
+  def test_can_unset_config(self):
+    self.db.unsetConfigValue(key="vendor_dirs")
+    with self.assertRaises(ProjectDBQueryError):
+      self.db.getConfigValue(key="vendor_dirs")
+
+  def test_cannot_unset_config_for_internal_config(self):
+    with self.assertRaises(ProjectDBDeleteError):
+      self.db.unsetConfigValue(key="magic")
+
+  def test_cannot_unset_config_for_unknown_config(self):
+    with self.assertRaises(ProjectDBDeleteError):
+      self.db.unsetConfigValue(key="blah")
+
+  def test_cannot_unset_config_for_valid_config_that_is_not_set(self):
+    with self.assertRaises(ProjectDBDeleteError):
+      self.db.unsetConfigValue(key="ignore_extensions")

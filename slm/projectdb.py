@@ -63,6 +63,15 @@ class ProjectDBUpdateError(Exception):
   def __init__(self, message):
     self.message = message
 
+class ProjectDBDeleteError(Exception):
+  """Exception raised for errors in database deletions.
+
+  Attributes:
+    message -- explanation of the error
+  """
+  def __init__(self, message):
+    self.message = message
+
 class ProjectDB:
   def __init__(self):
     super(ProjectDB, self).__init__()
@@ -164,13 +173,13 @@ class ProjectDB:
     if config:
       return config.value
     else:
-      raise ProjectDBQueryError(f"Config not found for key {key}.")
+      raise ProjectDBQueryError(f"Configuration value not found for '{key}'.")
 
   def setConfigValue(self, key, value):
     if not isValidConfigKey(key):
       raise ProjectDBInsertError(f"Cannot set configuration value for unknown key '{key}'.")
     if isInternalConfigKey(key):
-      raise ProjectDBUpdateError(f"Cannot modify configuration value for key '{key}'.")
+      raise ProjectDBUpdateError(f"Cannot modify configuration value for reserved key '{key}'.")
     try:
       # check to see whether the key is already present
       config = self.session.query(Config).filter(Config.key == key).first()
@@ -183,6 +192,17 @@ class ProjectDB:
     # and regardless of whether or not it existed, commit it
     self.session.commit()
     return key
+
+  def unsetConfigValue(self, key):
+    if not isValidConfigKey(key):
+      raise ProjectDBDeleteError(f"Cannot remove configuration value for unknown key '{key}'.")
+    if isInternalConfigKey(key):
+      raise ProjectDBDeleteError(f"Cannot remove configuration value for reserved key '{key}'.")
+    config = self.session.query(Config).filter(Config.key == key).first()
+    if config is None:
+      raise ProjectDBDeleteError(f"Cannot remove configuration value for key '{key}', because it is not currently set.")
+    self.session.delete(config)
+    self.session.commit()
 
   ##########################
   ##### Subproject functions

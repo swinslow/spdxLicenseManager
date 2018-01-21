@@ -38,6 +38,7 @@ from .commands.cmdEditLicense import cmdEditLicense
 from .commands.cmdSetConfig import cmdSetConfig
 from .commands.cmdGetConfig import cmdGetConfig
 from .commands.cmdListConfig import cmdListConfig
+from .commands.cmdUnsetConfig import cmdUnsetConfig
 
 VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
 
@@ -161,6 +162,13 @@ def cliGetConfig(ctx, key):
 def cliListConfig(ctx):
   checkForContext(ctx)
   return cmdListConfig(ctx)
+
+@cli.command('unset-config', help="Remove configuration value")
+@click.argument('key')
+@click.pass_context
+def cliUnsetConfig(ctx, key):
+  checkForContext(ctx)
+  return cmdUnsetConfig(ctx, key)
 
 #######################
 ##### Category commands
