@@ -18,4 +18,6 @@ The spdxLicenseManager documentation is released under the [Creative Commons Att
 
 This README.md file is documentation, and therefore gets the following:
 
+Copyright (C) The Linux Foundation
+
 SPDX-License-Identifier: CC-BY-4.0
