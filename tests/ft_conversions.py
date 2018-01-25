@@ -70,7 +70,7 @@ class ConversionFuncTestSuite(unittest.TestCase):
 
     # It fails and explains why
     self.assertEqual(1, result.exit_code)
-    self.assertEqual(f"License 'BSD-3-Clause' does not exist yet.\nDid you mean to call add-license first?\n",result.output)
+    self.assertEqual(f"License 'BSD-3-Clause' does not exist yet.\nDid you mean to call add-license first?\n", result.output)
 
   def test_cannot_add_a_duplicate_conversion(self):
     # Edith tries to add a new conversion, but accidentally specifies text
@@ -83,3 +83,42 @@ class ConversionFuncTestSuite(unittest.TestCase):
     # It fails and explains why
     self.assertEqual(1, result.exit_code)
     self.assertEqual(f"Conversion 'BSD-Simplified' already exists.\n",result.output)
+
+  def test_can_change_a_conversion_to_a_different_license(self):
+    # Edith assigned BSD-Simplified to BSD-3-Clause, but then realized that
+    # it should have been BSD-2-Clause instead
+    runcmd(self, slm.cli, "frotz",
+      "add-license", "BSD-3-Clause", "Attribution")
+    runcmd(self, slm.cli, 'frotz',
+      'add-conversion', 'BSD-Simplified', 'BSD-3-Clause')
+    result = runcmd(self, slm.cli, 'frotz',
+      'edit-conversion', 'BSD-Simplified', 'BSD-2-Clause')
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual("Updated license for conversion of BSD-Simplified to BSD-2-Clause\n", result.output)
+
+    # When viewing the conversion, BSD-2-Clause is now listed
+    result = runcmd(self, slm.cli, "frotz", "get-conversion", 'BSD-Simplified')
+    self.assertEqual(0, result.exit_code)
+    self.assertIn("BSD-2-Clause", result.output)
+
+  def test_cannot_change_a_conversion_to_a_nonexistent_license(self):
+    # Edith assigned BSD-Simplified to BSD-2-Clause, and then accidentally
+    # tries to change it to a nonexistent license
+    runcmd(self, slm.cli, 'frotz',
+      'add-conversion', 'BSD-Simplified', 'BSD-2-Clause')
+    result = runcmd(self, slm.cli, 'frotz',
+      'edit-conversion', 'BSD-Simplified', 'BSD-2-Clause-FreeBSD')
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(f"License 'BSD-2-Clause-FreeBSD' does not exist yet.\nDid you mean to call add-license first?\n", result.output)
+
+  def test_cannot_change_a_nonexistent_conversion(self):
+    # Edith accidentally tries to BSD-Simplified to BSD-2-Clause, but has
+    # not created it yet
+    result = runcmd(self, slm.cli, 'frotz',
+      'edit-conversion', 'BSD-Simplified', 'BSD-2-Clause')
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(f"Conversion 'BSD-Simplified' does not exist in project frotz.\nDid you mean to call add-conversion instead?\n", result.output)

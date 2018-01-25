@@ -162,3 +162,12 @@ class DBConversionUnitTestSuite(unittest.TestCase):
   def test_cannot_add_conversion_with_duplicate_name(self):
     with self.assertRaises(ProjectDBInsertError):
       self.db.addConversion(old_text="NC", new_license="293PageEULA")
+
+  def test_can_edit_conversion_license(self):
+    self.db.changeConversion(old_text="NC", new_license="DoAnything")
+    conv = self.db.getConversion(old_text="NC")
+    self.assertEqual(conv.new_license_id, 1)
+
+  def test_cannot_edit_conversion_name_that_does_not_exist(self):
+    with self.assertRaises(ProjectDBUpdateError):
+      self.db.changeConversion(old_text="invalid", new_license="will fail")

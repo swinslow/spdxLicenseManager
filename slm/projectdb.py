@@ -419,7 +419,7 @@ class ProjectDB:
     if name is None or newCat is None:
       raise ProjectDBUpdateError("Missing parameter for changeLicenseCategory")
 
-    # get the category's ID for insertion
+    # get the category's ID for updating
     cat = self.session.query(Category).\
                        filter(Category.name == newCat).first()
     if cat is None:
@@ -474,3 +474,25 @@ class ProjectDB:
     except IntegrityError:
       raise ProjectDBInsertError(f"Conversion '{old_text}' already exists.")
     return conv._id
+
+  def changeConversion(self, old_text, new_license):
+    if old_text is None or new_license is None:
+      raise ProjectDBUpdateError("Missing parameter for changeConversion")
+
+    # get the new license's ID for updating
+    lic = self.session.query(License).\
+                       filter(License.name == new_license).first()
+    if lic is None:
+      raise ProjectDBUpdateError(f"License '{new_license}' does not exist.")
+    new_license_id = lic._id
+
+    conv = self.session.query(Conversion).\
+                       filter(Conversion.old_text == old_text).first()
+    if conv is None:
+      raise ProjectDBUpdateError(f"Conversion {old_text} not found in changeConversion")
+
+    try:
+      conv.new_license_id = new_license_id
+      self.session.commit()
+    except IntegrityError:
+      raise ProjectDBUpdateError(f"Unexpected invalid license ID {new_license_id} for license {new_license} in changeConversion")
