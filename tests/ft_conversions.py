@@ -122,3 +122,11 @@ class ConversionFuncTestSuite(unittest.TestCase):
     # It fails and explains why
     self.assertEqual(1, result.exit_code)
     self.assertEqual(f"Conversion 'BSD-Simplified' does not exist in project frotz.\nDid you mean to call add-conversion instead?\n", result.output)
+
+  def test_can_list_conversions(self):
+    # Edith wants to see what conversions are already present
+    result = runcmd(self, slm.cli, 'frotz', 'list-conversions')
+
+    # The list is formatted in a helpful way
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual(f"Expat => MIT\nGPL-2.0+ => GPL-2.0-or-later\n", result.output)

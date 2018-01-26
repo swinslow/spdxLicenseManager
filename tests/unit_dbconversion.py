@@ -68,6 +68,7 @@ class DBConversionUnitTestSuite(unittest.TestCase):
       Conversion(_id=1, old_text="293", new_license_id=3),
       Conversion(_id=2, old_text="NC", new_license_id=4),
       Conversion(_id=3, old_text="anything", new_license_id=1),
+      Conversion(_id=4, old_text="Anything", new_license_id=1),
     ]
     self.db.session.bulk_save_objects(conversions)
     self.db.session.commit()
@@ -108,19 +109,19 @@ class DBConversionUnitTestSuite(unittest.TestCase):
   def test_can_add_and_retrieve_conversions(self):
     conv_id = self.db.addConversion(old_text="harsh", new_license="HarshEULA")
 
-    # confirm that we now have four conversions
+    # confirm that we now have five conversions
     convs = self.db.getConversionsAll()
-    self.assertEqual(len(convs), 4)
+    self.assertEqual(len(convs), 5)
 
     # and confirm that we can retrieve this one by its text
     conv = self.db.getConversion(old_text="harsh")
-    self.assertEqual(conv._id, 4)
+    self.assertEqual(conv._id, 5)
     self.assertEqual(conv.new_license_id, 2)
     self.assertIsNotNone(conv.new_license)
     self.assertEqual(conv.new_license.name, "HarshEULA")
 
     # and confirm that we can retrieve this one by id
-    conv = self.db.getConversion(_id=4)
+    conv = self.db.getConversion(_id=5)
     self.assertEqual(conv.old_text, "harsh")
     self.assertEqual(conv.new_license_id, 2)
 
@@ -128,11 +129,11 @@ class DBConversionUnitTestSuite(unittest.TestCase):
     conv_id = self.db.addConversion(old_text="will rollback",
       new_license="293PageEULA", commit=False)
     self.db.rollback()
-    # confirm that we still only have three conversions
+    # confirm that we still only have four conversions
     convs = self.db.getConversionsAll()
-    self.assertEqual(len(convs), 3)
+    self.assertEqual(len(convs), 4)
     # and confirm that this conversion ID doesn't exist in database
-    conv = self.db.getConversion(_id=4)
+    conv = self.db.getConversion(_id=5)
     self.assertIsNone(conv)
 
   def test_can_start_adding_and_then_commit_conversions(self):
@@ -141,9 +142,9 @@ class DBConversionUnitTestSuite(unittest.TestCase):
     c2_id = self.db.addConversion(old_text="c2", new_license="293PageEULA",
       commit=False)
     self.db.commit()
-    # confirm that we now have five conversions
+    # confirm that we now have six conversions
     convs = self.db.getConversionsAll()
-    self.assertEqual(len(convs), 5)
+    self.assertEqual(len(convs), 6)
 
   def test_cannot_add_conversion_without_license(self):
     with self.assertRaises(TypeError):
@@ -171,3 +172,12 @@ class DBConversionUnitTestSuite(unittest.TestCase):
   def test_cannot_edit_conversion_name_that_does_not_exist(self):
     with self.assertRaises(ProjectDBUpdateError):
       self.db.changeConversion(old_text="invalid", new_license="will fail")
+
+  def test_can_retrieve_all_conversions(self):
+    convs = self.db.getConversionsAll()
+    self.assertIsInstance(convs, list)
+    self.assertEqual(len(convs), 4)
+    self.assertIsInstance(convs[0], Conversion)
+    # will sort alphabetically
+    self.assertEqual(convs[2]._id, 2)
+    self.assertEqual(convs[2].old_text, "NC")

@@ -42,6 +42,7 @@ from .commands.cmdUnsetConfig import cmdUnsetConfig
 from .commands.cmdGetConversion import cmdGetConversion
 from .commands.cmdAddConversion import cmdAddConversion
 from .commands.cmdEditConversion import cmdEditConversion
+from .commands.cmdListConversions import cmdListConversions
 
 VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
 
@@ -256,3 +257,9 @@ def cliGetConversion(ctx, old_text):
 def cliEditConversion(ctx, old_text, license_name):
   checkForContext(ctx)
   return cmdEditConversion(ctx, old_text, license_name)
+
+@cli.command('list-conversions', help="List conversions")
+@click.pass_context
+def cliListConversions(ctx):
+  checkForContext(ctx)
+  return cmdListConversions(ctx)

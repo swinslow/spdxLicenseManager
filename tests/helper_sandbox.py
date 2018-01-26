@@ -86,6 +86,10 @@ def runSandboxCommands(testCase, cli):
   sandboxcmd(testCase, cli, 'add-license', 'BSD-2-Clause', 'Attribution')
   sandboxcmd(testCase, cli, 'add-license', 'MIT', 'Attribution')
 
+  # and some test conversions
+  sandboxcmd(testCase, cli, 'add-conversion', 'GPL-2.0+', 'GPL-2.0-or-later')
+  sandboxcmd(testCase, cli, 'add-conversion', 'Expat', 'MIT')
+
 def printResultDebug(result):
   tb = result.exc_info[2]
   print(f"exc_info = {result.exc_info}")
