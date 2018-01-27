@@ -55,8 +55,8 @@ class SPDXImportFuncTestSuite(unittest.TestCase):
 
     # They are displayed in a simple text format, alphabetically by file path
     self.assertEqual(0, result.exit_code)
-    self.assertEqual(f"""
-simple/dir1/subfile.txt => No license found
+    self.assertEqual(
+f"""simple/dir1/subfile.txt => No license found
 simple/file1.txt => No license found
 simple/file2.txt => MIT
 simple/file3.txt => No license found
