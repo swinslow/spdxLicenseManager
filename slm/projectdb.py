@@ -18,14 +18,16 @@
 # limitations under the License.
 
 import os
+import datetime
 
-from sqlalchemy import create_engine, desc
+from sqlalchemy import create_engine, desc, extract, and_
 from sqlalchemy.exc import OperationalError, DatabaseError, IntegrityError
 from sqlalchemy.orm import sessionmaker
 
 from .__configs__ import (isValidConfigKey, isInternalConfigKey,
   getConfigKeyDesc)
-from .datatypes import Base, Category, Config, Conversion, License, Subproject
+from .datatypes import (Base, Category, Config, Conversion, License,
+  Scan, Subproject)
 
 class ProjectDBConfigError(Exception):
   """Exception raised for errors in database configuration.
@@ -496,3 +498,68 @@ class ProjectDB:
       self.session.commit()
     except IntegrityError:
       raise ProjectDBUpdateError(f"Unexpected invalid license ID {new_license_id} for license {new_license} in changeConversion")
+
+  ####################
+  ##### Scan functions
+  ####################
+
+  def getScansAll(self):
+    return self.session.query(Scan).order_by(Scan._id).all()
+
+  def getScansFiltered(self, *, subproject=None, month_tuple=None):
+    if subproject is None and month_tuple is None:
+      raise ProjectDBQueryError("Cannot call getScansFiltered without either subproject or month_tuple parameters")
+
+    query = self.session.query(Scan)
+
+    if subproject is not None:
+      # get subproject ID if needed
+      # or raise exception if subproject does not exist
+      subprj = self.session.query(Subproject).\
+                            filter(Subproject.name == subproject).first()
+      if subprj is None:
+        raise ProjectDBQueryError(f"Subproject '{subproject}' does not exist.")
+      subprj_id = subprj._id
+      query = query.filter(Scan.subproject_id == subprj_id)
+
+    if month_tuple is not None:
+      # confirm format is valid
+      if not (isinstance(month_tuple, tuple) and
+              len(month_tuple) == 2 and
+              isinstance(month_tuple[0], int) and
+              isinstance(month_tuple[1], int)):
+        raise ProjectDBQueryError(f"Filter requires month in form (year, month)")
+      yr = month_tuple[0]
+      mt = month_tuple[1]
+      query = query.filter(and_(
+        extract('year', Scan.scan_dt) == yr,
+        extract('month', Scan.scan_dt) == mt,
+      ))
+
+    return query.order_by(Scan._id).all()
+
+  def getScan(self, _id):
+    return self.session.query(Scan).\
+                        filter(Scan._id == _id).first()
+
+  def addScan(self, subproject, scan_dt_str, desc, commit=True):
+    # get the subproject's ID for insertion
+    subprj = self.session.query(Subproject).\
+                          filter(Subproject.name == subproject).first()
+    if subprj is None:
+      raise ProjectDBInsertError(f'Subproject "{subproject}" does not exist.')
+    subproject_id = subprj._id
+
+    # parse the scan date string for insertion
+    try:
+      scan_dt = datetime.datetime.strptime(scan_dt_str, "%Y-%m-%d")
+    except ValueError:
+      raise ProjectDBInsertError("Scan date must be in format YYYY-MM-DD")
+
+    scan = Scan(subproject_id=subproject_id, scan_dt=scan_dt, desc=desc)
+    self.session.add(scan)
+    if commit:
+      self.session.commit()
+    else:
+      self.session.flush()
+    return scan._id

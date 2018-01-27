@@ -17,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -76,3 +76,15 @@ class Conversion(Base):
 
   def __repr__(self):
     return f"Conversion {self._id}: '{self.old_text}' => '{self.new_license.name}'"
+
+class Scan(Base):
+  __tablename__ = 'scans'
+  # columns
+  _id = Column(Integer(), primary_key=True)
+  scan_dt = Column(Date())
+  desc = Column(String())
+  subproject_id = Column(Integer(), ForeignKey('subprojects._id'))
+  # relationships
+  subproject = relationship('Subproject',
+    backref=backref('scans', order_by=_id)
+  )
