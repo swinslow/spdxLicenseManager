@@ -1,0 +1,666 @@
+SPDXVersion: SPDX-2.0
+DataLicense: CC0-1.0
+
+##-------------------------
+## Document Information
+##-------------------------
+
+DocumentNamespace: http://3a25b77ecd93/repo/SPDX2TV_spdxLicenseManager-2018-01-26.zip_1517001792.spdx
+DocumentName: /srv/fossology/repository/report
+SPDXID: SPDXRef-DOCUMENT
+
+##-------------------------
+## Creation Information
+##-------------------------
+
+Creator: Tool: spdx2
+Creator: Person: steve (y)
+CreatorComment: <text>
+This document was created using license information and a generator from Fossology.
+</text>
+Created: 2018-01-26T21:23:15Z
+LicenseListVersion: 2.6
+
+##-------------------------
+## Package Information
+##-------------------------
+
+
+PackageName: spdxLicenseManager-2018-01-26.zip
+PackageFileName: spdxLicenseManager-2018-01-26.zip
+SPDXID: SPDXRef-upload298
+PackageDownloadLocation: NOASSERTION
+PackageVerificationCode: 1752770904f6b03dccb5905c1730f5793de144bb
+PackageChecksum: SHA1: e0b4a1ce2978290e3477e6ff846860f7aa43a119
+PackageChecksum: MD5: b138136b194213558dc1449d6ee9a202
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageLicenseComments: <text> licenseInfoInFile determined by Scanners:
+ - nomos ("3.1.0-8-gaef393d".aef393)
+ - monk ("3.1.0-8-gaef393d".aef393) </text>
+PackageLicenseInfoFromFiles: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-upload298
+
+##--------------------------
+## File Information
+##--------------------------
+
+##File
+
+FileName: spdxLicenseManager-master/.travis.yml
+SPDXID: SPDXRef-item3363407
+FileChecksum: SHA1: 16ea91c8929271cf01dcb4fc980a28edacf98520
+FileChecksum: MD5: 540751f8989b359100d51d40b777f538
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/test-requirements.txt
+SPDXID: SPDXRef-item3363463
+FileChecksum: SHA1: 4942bb97456b1bee477d4ca9e125cd8cf4b084d8
+FileChecksum: MD5: 0f95f524ed75bcb440f2dbcba47630a7
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/setup.py
+SPDXID: SPDXRef-item3363459
+FileChecksum: SHA1: 0c620e0e963bb96f25ea95849fab0c5c8a074f3c
+FileChecksum: MD5: e7e50d605c25328ce5f7c08af161ed8c
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/requirements.txt
+SPDXID: SPDXRef-item3363461
+FileChecksum: SHA1: c766564fd247a6e687c53fd8978ad3dfafaa5fe5
+FileChecksum: MD5: e90bae60717f2ba598e94f948ce897b3
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/README.md
+SPDXID: SPDXRef-item3363460
+FileChecksum: SHA1: 45c32fd8d3e5995576d931ca3fd80e02b59bacd6
+FileChecksum: MD5: 61d988874024019d0dada09dd21b0223
+LicenseConcluded: CC-BY-4.0
+LicenseInfoInFile: Apache-2.0
+LicenseInfoInFile: CC-BY-4.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/Makefile
+SPDXID: SPDXRef-item3363462
+FileChecksum: SHA1: dea212528e0ef080711277f4a8f21c5e98009e42
+FileChecksum: MD5: 4c407e65460cac85d564c68586a5fe72
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/LICENSE-docs.txt
+SPDXID: SPDXRef-item3363428
+FileChecksum: SHA1: f4932f49af04bae0b25f18d44f31c2c4a46da142
+FileChecksum: MD5: c6370def1bf4f0387d13ba8644634f13
+LicenseConcluded: CC-BY-4.0
+LicenseInfoInFile: CC-BY-4.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/LICENSE-code.txt
+SPDXID: SPDXRef-item3363458
+FileChecksum: SHA1: 2b8b815229aa8a61e483fb4ba0588b8b6c491890
+FileChecksum: MD5: 3b83ef96387f14655fc854ddc3c6bd57
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/.gitignore
+SPDXID: SPDXRef-item3363457
+FileChecksum: SHA1: b3337505cbd97608d09a534a6194635412071f49
+FileChecksum: MD5: 01bce1f481f3ef65c00c20b2e8ca5d37
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/tests/unit_slmconfig.py
+SPDXID: SPDXRef-item3363413
+FileChecksum: SHA1: c2644a763b0fc0587a0169a864ba1871ce8a61dc
+FileChecksum: MD5: cb4584253ea9e51d34097110f78ca0fe
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/tests/unit_projectdb.py
+SPDXID: SPDXRef-item3363412
+FileChecksum: SHA1: 4b979e384f603b3def222d315ea6b4b9c54b0b8b
+FileChecksum: MD5: 15419176c6355838fe19eda87f2ac6e7
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/tests/unit_init.py
+SPDXID: SPDXRef-item3363417
+FileChecksum: SHA1: 9a0017ea4cd28e442aa475dfb1303414960d3870
+FileChecksum: MD5: cfb32d296c851c665d912d690339ef7f
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/tests/unit_dbsubproject.py
+SPDXID: SPDXRef-item3363414
+FileChecksum: SHA1: 681250fd46dd1bd34cabb1e9c64bf430ec91e18c
+FileChecksum: MD5: a9e7f39c735f66432858e39f72b91fa2
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/tests/unit_dblicense.py
+SPDXID: SPDXRef-item3363424
+FileChecksum: SHA1: 785f2fb360f998f72edcb5e890554e7f118a2b83
+FileChecksum: MD5: 5b87dcc91eafce8ad41763e96da28ee4
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/tests/unit_dbconversion.py
+SPDXID: SPDXRef-item3363422
+FileChecksum: SHA1: 69a6e9b2fac2f5521ea179e4aa2bb26267bdaeb8
+FileChecksum: MD5: e6474bd16376a87acc14c3bec44f341d
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/tests/unit_dbconfig.py
+SPDXID: SPDXRef-item3363410
+FileChecksum: SHA1: c1ce04b68a06509fd78db5bbef3a074b9a96fc23
+FileChecksum: MD5: fe9169dbcfa03b9b5f98fdb2d25dd187
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/tests/unit_dbcategory.py
+SPDXID: SPDXRef-item3363427
+FileChecksum: SHA1: 13679acb501017eb8b88687f4f11aebf7e5a177d
+FileChecksum: MD5: 251200f3769033a1215186410d19b558
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/tests/unit_createproject.py
+SPDXID: SPDXRef-item3363415
+FileChecksum: SHA1: 73675ac01d702844c4173a53e4ead878e91502aa
+FileChecksum: MD5: 3c505034d03189229522abf7271ffffc
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/tests/__init__.py
+SPDXID: SPDXRef-item3363420
+FileChecksum: SHA1: da39a3ee5e6b4b0d3255bfef95601890afd80709
+FileChecksum: MD5: d41d8cd98f00b204e9800998ecf8427e
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/tests/helper_sandbox.py
+SPDXID: SPDXRef-item3363409
+FileChecksum: SHA1: c9aa8362374e3df4cd88cfc1700eaf2b0b099115
+FileChecksum: MD5: 1be9120c0d57c4709cac06807d671eb1
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: GPL-2.0+
+LicenseInfoInFile: Apache-2.0
+LicenseInfoInFile: LicenseRef-BSD
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/tests/helper_check.py
+SPDXID: SPDXRef-item3363411
+FileChecksum: SHA1: fd86b3e7d62d3b393f35b8743b8818661705c332
+FileChecksum: MD5: 96defacd412ee3146201776f0934b393
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/tests/ft_smoke.py
+SPDXID: SPDXRef-item3363419
+FileChecksum: SHA1: b6dae0f4a02e0575071bc35e186234d205f81007
+FileChecksum: MD5: 387632e461124f5d94d64f3b86bcb8cd
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/tests/ft_projects.py
+SPDXID: SPDXRef-item3363426
+FileChecksum: SHA1: c1ea98cb1ff342086e85b2deec5464b7e06cfb72
+FileChecksum: MD5: b70f1b71d3443203640c86961281a70e
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/tests/ft_licenses.py
+SPDXID: SPDXRef-item3363425
+FileChecksum: SHA1: 1c0bb4cf684b709bd7ac43debb1db2a8eea9d6dc
+FileChecksum: MD5: e0b93f3930ebe08f1cb7be9efa402538
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: GPL-2.0+
+LicenseInfoInFile: Apache-2.0
+LicenseInfoInFile: MIT
+LicenseInfoInFile: LicenseRef-BSD
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/tests/ft_init.py
+SPDXID: SPDXRef-item3363421
+FileChecksum: SHA1: 6d4b07a15f78d5c5fe7bda2b3909af9797733dd1
+FileChecksum: MD5: 6e8653f97dfe54e7e7df293ba77273f2
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/tests/ft_conversions.py
+SPDXID: SPDXRef-item3363423
+FileChecksum: SHA1: 410ea3e7441c9795265286d270b260b62c2e283e
+FileChecksum: MD5: b4f40091f92ecae9c640cdc6ab9142f5
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: GPL-2.0+
+LicenseInfoInFile: Apache-2.0
+LicenseInfoInFile: LicenseRef-BSD
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/tests/ft_config.py
+SPDXID: SPDXRef-item3363418
+FileChecksum: SHA1: 0a94f2d3a9dc2b8d62912d7d7dc4e758e6823326
+FileChecksum: MD5: 9fecd9944e554ab4b1c7af57912c2578
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/tests/ft_categories.py
+SPDXID: SPDXRef-item3363416
+FileChecksum: SHA1: 962ce4cd183a4bfa35e4fb13f66c724afef8e484
+FileChecksum: MD5: 43fd8fbbcd818f8fc4bc7cff28ec01ca
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/slm.py
+SPDXID: SPDXRef-item3363430
+FileChecksum: SHA1: 76c7b2e356f3aa88d4fd9a286eab5fb3fa66636f
+FileChecksum: MD5: 95c7232cd96b5a3ab77338f0ea6a12ed
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/slmconfig.py
+SPDXID: SPDXRef-item3363451
+FileChecksum: SHA1: 2e2a9a3978735883f44cc19e6e48eee95abb86d1
+FileChecksum: MD5: c33635990afb3d031995f1066c2d178f
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/projectdb.py
+SPDXID: SPDXRef-item3363455
+FileChecksum: SHA1: 50429cb7579c19e277aee63cba7bb6e9586cbfb2
+FileChecksum: MD5: 75a6d8a4a402242bda66f8960069a5b4
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+LicenseInfoInFile: MIT
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/__init__.py
+SPDXID: SPDXRef-item3363452
+FileChecksum: SHA1: da39a3ee5e6b4b0d3255bfef95601890afd80709
+FileChecksum: MD5: d41d8cd98f00b204e9800998ecf8427e
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/datatypes.py
+SPDXID: SPDXRef-item3363454
+FileChecksum: SHA1: 0d9296104657a461cd67ba5a9e0d89ae27def1b9
+FileChecksum: MD5: 86ef0e34da04832449e752d2ed0f7ff3
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/__configs__.py
+SPDXID: SPDXRef-item3363453
+FileChecksum: SHA1: 963c4962928341370a83e9b4221a029c483876e4
+FileChecksum: MD5: cb6d16791d8140700b0ace9806ddf4eb
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/__about__.py
+SPDXID: SPDXRef-item3363456
+FileChecksum: SHA1: 81a0456b487076ffd6b4233e95877137bd804807
+FileChecksum: MD5: b7e134bb60fd2a3e9e8862409be1fca7
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/commands/__init__.py
+SPDXID: SPDXRef-item3363438
+FileChecksum: SHA1: da39a3ee5e6b4b0d3255bfef95601890afd80709
+FileChecksum: MD5: d41d8cd98f00b204e9800998ecf8427e
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/commands/helperContext.py
+SPDXID: SPDXRef-item3363444
+FileChecksum: SHA1: 215c9191db0f1ce0fb50d7716141f274699937f9
+FileChecksum: MD5: 11485859e5d5ed2962d5a96f1323d8dd
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/commands/cmdUnsetConfig.py
+SPDXID: SPDXRef-item3363432
+FileChecksum: SHA1: 0d99fdda7eb56e484cdd87fc48e36a56957361f4
+FileChecksum: MD5: 806f171059595103bf54659747f631af
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/commands/cmdSetConfig.py
+SPDXID: SPDXRef-item3363435
+FileChecksum: SHA1: 8e67aa0fc8a54106357b21d32c35d95ce44f978a
+FileChecksum: MD5: 1f3973042e69c373369eb4a5a08c9712
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/commands/cmdList.py
+SPDXID: SPDXRef-item3363447
+FileChecksum: SHA1: a1833aaddc8518b8c6916d4ee03eb706cfa80ca4
+FileChecksum: MD5: 88cc70b675f1c44c73d238068b4e75e5
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/commands/cmdListLicenses.py
+SPDXID: SPDXRef-item3363449
+FileChecksum: SHA1: 044f0a94e0bf0b8812220eceda2b5e28faf75502
+FileChecksum: MD5: 945b51b9ada5a21d4b9ff26c7a85a9ae
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/commands/cmdListConversions.py
+SPDXID: SPDXRef-item3363450
+FileChecksum: SHA1: 2dca0d05c36c31de161b1f36057655a705efda99
+FileChecksum: MD5: e5a8b36357c52968ad7c932a4a263080
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/commands/cmdListConfig.py
+SPDXID: SPDXRef-item3363436
+FileChecksum: SHA1: 410dc2c4b88f43b91c9a46742bd464f040cf9793
+FileChecksum: MD5: f93bc61954e216d6e1a8832edec2c726
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/commands/cmdListCategories.py
+SPDXID: SPDXRef-item3363448
+FileChecksum: SHA1: 82b06a3cdb97014de66a9c6de1349c89e8b8efc4
+FileChecksum: MD5: b681f07e91fbd86a40fc29f500894404
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/commands/cmdInit.py
+SPDXID: SPDXRef-item3363439
+FileChecksum: SHA1: ed574f205029cebc1e4c2f6b08d6bbf573a157d1
+FileChecksum: MD5: 7b670bd77d67fb97584648ff006dc299
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/commands/cmdGetConversion.py
+SPDXID: SPDXRef-item3363437
+FileChecksum: SHA1: 4be784f54d3aa964a7beac2bdec67c0883622c8b
+FileChecksum: MD5: da74a163b84ad438720c79cd3d2d8c81
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/commands/cmdGetConfig.py
+SPDXID: SPDXRef-item3363443
+FileChecksum: SHA1: 0e4261ed2a41805509dbde8326b0c3923d856d27
+FileChecksum: MD5: 8af61190aaf564a65c1431e9c8b432b5
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/commands/cmdEditLicense.py
+SPDXID: SPDXRef-item3363441
+FileChecksum: SHA1: ba513b04fcb5136a54c9291b76e4b96c075c1ce2
+FileChecksum: MD5: 006c2ee2cafdbd4f78db459a45647852
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/commands/cmdEditConversion.py
+SPDXID: SPDXRef-item3363440
+FileChecksum: SHA1: b401bcc36916599fb1502548ff149aa2823f2810
+FileChecksum: MD5: 3683e5f1165fbed88e9013c0801261be
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/commands/cmdEditCategory.py
+SPDXID: SPDXRef-item3363434
+FileChecksum: SHA1: 7751c7bb7b25c58b27c6f62842b6d17e0b075adc
+FileChecksum: MD5: 3168f30dbad58667e918eabd36376022
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/commands/cmdCreate.py
+SPDXID: SPDXRef-item3363433
+FileChecksum: SHA1: 4816b4d5d87ec0b56ba1598683665c3670ac3560
+FileChecksum: MD5: f73c86211f0b8add2ca7997037719fa0
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/commands/cmdAddLicense.py
+SPDXID: SPDXRef-item3363445
+FileChecksum: SHA1: 961f095dbc84f1e21de39d6b21ba6e94e81b7255
+FileChecksum: MD5: 1acd180af71540d19c71add5963c78d6
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/commands/cmdAddConversion.py
+SPDXID: SPDXRef-item3363446
+FileChecksum: SHA1: 912460f37dd4154f1f6232632e77db01e18e0cb4
+FileChecksum: MD5: d17210b466cd5a5f848ddae65f6a4b4c
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: spdxLicenseManager-master/slm/commands/cmdAddCategory.py
+SPDXID: SPDXRef-item3363442
+FileChecksum: SHA1: ec4069a583216f2e9e0c1bcce59216d85e8bd945
+FileChecksum: MD5: 6811f8fed3c295f04d53f0f723debf68
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+
+
+##-------------------------
+## License Information
+##-------------------------
+
+LicenseID: LicenseRef-BSD
+LicenseName: LicenseRef-BSD
+ExtractedText: <text> BSD is referenced without a version number. Please look up BSD in the License Admin to view the different versions. </text>
+
+LicenseID: LicenseRef-No_license_found
+LicenseName: LicenseRef-No_license_found
+ExtractedText: <text> Not find any license in the scanned file </text>
+

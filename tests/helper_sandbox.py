@@ -77,6 +77,7 @@ def runSandboxCommands(testCase, cli):
   sandboxcmd(testCase, cli, 'add-category', 'Project Licenses')
   sandboxcmd(testCase, cli, 'add-category', 'Copyleft')
   sandboxcmd(testCase, cli, 'add-category', 'Attribution')
+  sandboxcmd(testCase, cli, 'add-category', 'No license found')
 
   # and some test licenses
   sandboxcmd(testCase, cli, 'add-license', 'Apache-2.0', 'Project Licenses')
@@ -85,10 +86,13 @@ def runSandboxCommands(testCase, cli):
   sandboxcmd(testCase, cli, 'add-license', 'GPL-2.0-or-later', 'Copyleft')
   sandboxcmd(testCase, cli, 'add-license', 'BSD-2-Clause', 'Attribution')
   sandboxcmd(testCase, cli, 'add-license', 'MIT', 'Attribution')
+  sandboxcmd(testCase, cli, 'add-license', 'No license found', 'No license found')
 
   # and some test conversions
   sandboxcmd(testCase, cli, 'add-conversion', 'GPL-2.0+', 'GPL-2.0-or-later')
   sandboxcmd(testCase, cli, 'add-conversion', 'Expat', 'MIT')
+  sandboxcmd(testCase, cli, 'add-conversion', 'NOASSERTION', 'No license found')
+  sandboxcmd(testCase, cli, 'add-conversion', 'NONE', 'No license found')
 
 def printResultDebug(result):
   tb = result.exc_info[2]
