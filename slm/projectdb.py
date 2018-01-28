@@ -26,7 +26,7 @@ from sqlalchemy.orm import sessionmaker
 
 from .__configs__ import (isValidConfigKey, isInternalConfigKey,
   getConfigKeyDesc)
-from .datatypes import (Base, Category, Config, Conversion, License,
+from .datatypes import (Base, Category, Config, Conversion, File, License,
   Scan, Subproject)
 
 class ProjectDBConfigError(Exception):
@@ -563,3 +563,73 @@ class ProjectDB:
     else:
       self.session.flush()
     return scan._id
+
+  ####################
+  ##### File functions
+  ####################
+
+  def getFiles(self, scan_id):
+    if scan_id is None:
+      raise ProjectDBQueryError("Cannot call getFiles without a scan ID")
+
+    # raise exception if scan does not exist
+    scan = self.session.query(Scan).\
+                        filter(Scan._id == scan_id).first()
+    if scan is None:
+      raise ProjectDBQueryError(f"Scan ID '{scan_id}' does not exist.")
+
+    return self.session.query(File).\
+                        filter(File.scan_id == scan_id).\
+                        order_by(File.path).all()
+
+  def getFile(self, *, _id=None, scan_id=None, path=None):
+    if _id is None and (scan_id is None or path is None):
+      raise ProjectDBQueryError("Cannot call getFile without required params")
+
+    if _id is not None and (scan_id is not None or path is not None):
+      raise ProjectDBQueryError("Cannot call getFile with both ID and other params")
+
+    query = self.session.query(File)
+    if _id is not None:
+      return query.filter(File._id == _id).first()
+    else:
+      return query.filter(and_(File.scan_id == scan_id,
+                               File.path == path)).first()
+
+  def addFile(self, *, scan_id, path, license_id,
+      sha1=None, md5=None, sha256=None, commit=True):
+    file = File(scan_id=scan_id, path=path, license_id=license_id,
+      sha1=sha1, md5=md5, sha256=sha256)
+    self.session.add(file)
+    if commit:
+      self.session.commit()
+    else:
+      self.session.flush()
+    return file._id
+
+  def addBulkFiles(self, *, scan_id, file_tuples, commit=True):
+    """
+    Add multiple files with one function call.
+    file_tuples is a list of tuples in the following order:
+      ft[0]: path
+      ft[1]: license ID
+      ft[2]: SHA1   (can be None)
+      ft[3]: MD5    (can be None)
+      ft[4]: SHA256 (can be None)
+    """
+    files = []
+    for ft in file_tuples:
+      file = File(
+        scan_id=scan_id,
+        path=ft[0],
+        license_id=ft[1],
+        sha1=ft[2],
+        md5=ft[3],
+        sha256=ft[4]
+      )
+      files.append(file)
+    self.session.bulk_save_objects(files)
+    if commit:
+      self.session.commit()
+    else:
+      self.session.flush()

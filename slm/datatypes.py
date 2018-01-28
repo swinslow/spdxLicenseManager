@@ -88,3 +88,21 @@ class Scan(Base):
   subproject = relationship('Subproject',
     backref=backref('scans', order_by=_id)
   )
+
+class File(Base):
+  __tablename__ = 'files'
+  # columns
+  _id = Column(Integer(), primary_key=True)
+  path = Column(String())
+  md5 = Column(String())
+  sha1 = Column(String())
+  sha256 = Column(String())
+  scan_id = Column(Integer(), ForeignKey('scans._id'))
+  license_id = Column(Integer(), ForeignKey('licenses._id'))
+  # relationships
+  scan = relationship('Scan',
+    backref=backref('files', order_by=path)
+  )
+  license = relationship('License',
+    backref=backref('files', order_by=path)
+  )
