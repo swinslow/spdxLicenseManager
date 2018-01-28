@@ -43,7 +43,7 @@ class LicenseFuncTestSuite(unittest.TestCase):
 
     # they are sorted alphabetically
     self.assertEqual(0, result.exit_code)
-    self.assertEqual("Apache-2.0\nBSD-2-Clause\nCC-BY-4.0\nGPL-2.0-only\nGPL-2.0-or-later\nMIT\n",
+    self.assertEqual("Apache-2.0\nBSD-2-Clause\nCC-BY-4.0\nGPL-2.0-only\nGPL-2.0-or-later\nMIT\nNo license found\n",
       result.output)
 
   def test_can_list_licenses_by_category(self):
@@ -52,7 +52,7 @@ class LicenseFuncTestSuite(unittest.TestCase):
 
     # they are sorted in category order and subsorted alphabetically
     self.assertEqual(0, result.exit_code)
-    self.assertEqual("Project Licenses:\n  Apache-2.0\n  CC-BY-4.0\nCopyleft:\n  GPL-2.0-only\n  GPL-2.0-or-later\nAttribution:\n  BSD-2-Clause\n  MIT\n",
+    self.assertEqual("Project Licenses:\n  Apache-2.0\n  CC-BY-4.0\nCopyleft:\n  GPL-2.0-only\n  GPL-2.0-or-later\nAttribution:\n  BSD-2-Clause\n  MIT\nNo license found:\n  No license found\n",
       result.output)
 
   def test_can_add_and_retrieve_a_license(self):

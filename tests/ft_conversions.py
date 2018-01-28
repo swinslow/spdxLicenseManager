@@ -129,4 +129,4 @@ class ConversionFuncTestSuite(unittest.TestCase):
 
     # The list is formatted in a helpful way
     self.assertEqual(0, result.exit_code)
-    self.assertEqual(f"Expat => MIT\nGPL-2.0+ => GPL-2.0-or-later\n", result.output)
+    self.assertEqual(f"Expat => MIT\nGPL-2.0+ => GPL-2.0-or-later\nNOASSERTION => No license found\nNONE => No license found\n", result.output)

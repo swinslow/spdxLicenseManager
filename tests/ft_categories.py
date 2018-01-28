@@ -42,7 +42,7 @@ class CategoryFuncTestSuite(unittest.TestCase):
     # Edith asks for a list of all current categories
     result = runcmd(self, slm.cli, "frotz", "list-categories")
     self.assertEqual(0, result.exit_code)
-    self.assertEqual("Project Licenses\nCopyleft\nAttribution\n",
+    self.assertEqual("Project Licenses\nCopyleft\nAttribution\nNo license found\n",
       result.output)
 
   def test_can_create_and_retrieve_a_category(self):
@@ -107,7 +107,7 @@ class CategoryFuncTestSuite(unittest.TestCase):
     # When listing the categories, Permissive is now listed
     result = runcmd(self, slm.cli, "frotz", "list-categories")
     self.assertEqual(0, result.exit_code)
-    self.assertEqual("Project Licenses\nCopyleft\nPermissive\n",
+    self.assertEqual("Project Licenses\nCopyleft\nPermissive\nNo license found\n",
       result.output)
 
   def test_cannot_edit_a_category_that_does_not_exist(self):
@@ -147,7 +147,7 @@ class CategoryFuncTestSuite(unittest.TestCase):
     # When listing the categories, Attribution now shows up first
     result = runcmd(self, slm.cli, "frotz", "list-categories")
     self.assertEqual(0, result.exit_code)
-    self.assertEqual("Project Licenses\nAttribution\nCopyleft\n",
+    self.assertEqual("Project Licenses\nAttribution\nCopyleft\nNo license found\n",
       result.output)
 
   def test_can_move_a_category_from_lower_to_higher(self):
@@ -161,7 +161,7 @@ class CategoryFuncTestSuite(unittest.TestCase):
     # Category listing should be updated correctly now
     result = runcmd(self, slm.cli, "frotz", "list-categories")
     self.assertEqual(0, result.exit_code)
-    self.assertEqual("Copyleft\nProject Licenses\nAttribution\n",
+    self.assertEqual("Copyleft\nProject Licenses\nAttribution\nNo license found\n",
       result.output)
 
   def test_cannot_move_a_category_before_a_nonexistent_category(self):
