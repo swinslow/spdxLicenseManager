@@ -39,6 +39,7 @@ class TVReaderTestSuite(unittest.TestCase):
     self.assertEqual(self.reader.currentLine, 0)
     self.assertEqual(self.reader.currentTag, "")
     self.assertEqual(self.reader.currentValue, "")
+    self.assertEqual(self.reader.errorMessage, "")
 
   @mock.patch('slm.tvReader.TVReader._readNextLineFromReady')
   def test_will_call_correct_helper_for_ready_state(self, ready_mock):
@@ -72,6 +73,7 @@ class TVReaderTestSuite(unittest.TestCase):
     self.reader.state = 17
     self.reader.readNextLine("test")
     self.assertEqual(self.reader.STATE_ERROR, self.reader.state)
+    self.assertEqual("Tag-value reader in invalid state at line 1: 17", self.reader.errorMessage)
 
   def test_current_line_increases_on_each_read_call(self):
     self.reader.readNextLine("Tag: value")
@@ -103,6 +105,7 @@ class TVReaderTestSuite(unittest.TestCase):
     self.reader.readNextLine("No colon is an error")
     self.assertEqual(self.reader.tvList, [])
     self.assertEqual(self.reader.state, self.reader.STATE_ERROR)
+    self.assertEqual("No colon found at line 1: 'No colon is an error'", self.reader.errorMessage)
 
   def test_ready_text_tag_switches_to_midtext_state(self):
     self.reader.readNextLine("Tag: <text>This begins a multiline value")

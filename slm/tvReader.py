@@ -45,6 +45,7 @@ class TVReader:
       return
     else:
       # invalid state, set to error state
+      self.errorMessage = f"Tag-value reader in invalid state at line {self.currentLine}: {self.state}"
       self.state = self.STATE_ERROR
 
   def isError(self):
@@ -65,6 +66,7 @@ class TVReader:
 
     # if no colon found, this is an error
     if colonLoc == -1:
+      self.errorMessage = f"No colon found at line {self.currentLine}: '{line}'"
       self.state = self.STATE_ERROR
       return
 
@@ -123,6 +125,7 @@ class TVReader:
     self.currentLine = 0
     self.currentTag = ""
     self.currentValue = ""
+    self.errorMessage = ""
 
   def _resetCurrentTagValue(self):
     self.currentTag = ""

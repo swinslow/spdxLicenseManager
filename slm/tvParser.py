@@ -53,6 +53,7 @@ class TVParser:
       return
     else:
       # invalid state, set to error state
+      self.errorMessage = f"Tag-value parser in invalid state for pair ('{tag}', '{value}'): {self.state}"
       self.state = self.STATE_ERROR
 
   def finalize(self):
@@ -84,16 +85,19 @@ class TVParser:
   def _parseFileChecksum(self, value):
     sp = value.split(":")
     if len(sp) != 2:
+      self.errorMessage = f"Invalid FileChecksum format: '{value}'"
       self.state = self.STATE_ERROR
       return
+    checksumType = sp[0]
     checksum = sp[1].strip()
-    if sp[0] == "SHA1":
+    if checksumType == "SHA1":
       self.currentFileData.sha1 = checksum
-    elif sp[0] == "MD5":
+    elif checksumType == "MD5":
       self.currentFileData.md5 = checksum
-    elif sp[0] == "SHA256":
+    elif checksumType == "SHA256":
       self.currentFileData.sha256 = checksum
     else:
+      self.errorMessage = f"Unknown FileChecksum type: '{checksumType}'"
       self.state = self.STATE_ERROR
 
   ##### Other helper functions
@@ -102,3 +106,4 @@ class TVParser:
     self.state = self.STATE_READY
     self.fdList = []
     self.currentFileData = None
+    self.errorMessage = ""
