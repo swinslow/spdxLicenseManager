@@ -1,0 +1,104 @@
+# tvParser.py
+#
+# Module to parse a list of SPDX tag-value tuples and create a corresponding
+# list of relevant file data, for spdxLicenseManager to subsequently clean
+# and import into a project database.
+#
+# Copyright (C) The Linux Foundation
+# SPDX-License-Identifier: Apache-2.0
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+class ParsedFileData:
+  def __init__(self):
+    super(ParsedFileData, self).__init__()
+    self.path = ""
+    self.license = ""
+    self.md5 = ""
+    self.sha1 = ""
+    self.sha256 = ""
+
+class TVParser:
+  # Possible parser state values
+  # ready to read first file-related tag/value pair
+  STATE_READY = 1
+  # in the middle of reading a file-related tag/value pair
+  STATE_MIDFILE = 2
+  # encountered an error from which we can't recover
+  STATE_ERROR = 99
+
+  def __init__(self):
+    super(TVParser, self).__init__()
+    self._reset()
+
+  ##### Main tag-value parsing functions
+  ##### External usage shouldn't require calling anything except these
+
+  def parseNextPair(self, tag, value):
+    if self.state == self.STATE_READY:
+      self._parseNextPairFromReady(tag, value)
+    elif self.state == self.STATE_MIDFILE:
+      self._parseNextPairFromMidfile(tag, value)
+    elif self.state == self.STATE_ERROR:
+      return
+    else:
+      # invalid state, set to error state
+      self.state = self.STATE_ERROR
+
+  def finalize(self):
+    # record current file data record
+    self.fdList.append(self.currentFileData)
+    # and clean up
+    self.currentFileData = None
+
+  ##### Tag-value reading main helper functions
+
+  def _parseNextPairFromReady(self, tag, value):
+    if tag == "FileName":
+      self.currentFileData = ParsedFileData()
+      self.currentFileData.path = value
+      self.state = self.STATE_MIDFILE
+
+  def _parseNextPairFromMidfile(self, tag, value):
+    if tag == "LicenseConcluded":
+      self.currentFileData.license = value
+    elif tag == "FileChecksum":
+      self._parseFileChecksum(value)
+    elif tag == "FileName":
+      # record current file data record
+      self.fdList.append(self.currentFileData)
+      # and start a new one
+      self.currentFileData = ParsedFileData()
+      self.currentFileData.path = value
+
+  def _parseFileChecksum(self, value):
+    sp = value.split(":")
+    if len(sp) != 2:
+      self.state = self.STATE_ERROR
+      return
+    checksum = sp[1].strip()
+    if sp[0] == "SHA1":
+      self.currentFileData.sha1 = checksum
+    elif sp[0] == "MD5":
+      self.currentFileData.md5 = checksum
+    elif sp[0] == "SHA256":
+      self.currentFileData.sha256 = checksum
+    else:
+      self.state = self.STATE_ERROR
+
+  ##### Other helper functions
+
+  def _reset(self):
+    self.state = self.STATE_READY
+    self.fdList = []
+    self.currentFileData = None
