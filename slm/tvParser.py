@@ -59,8 +59,13 @@ class TVParser:
   def finalize(self):
     # record current file data record
     self.fdList.append(self.currentFileData)
-    # and clean up
+    # clean up
     self.currentFileData = None
+    # and return file data list
+    return self.fdList
+
+  def isError(self):
+    return self.state == self.STATE_ERROR
 
   ##### Tag-value reading main helper functions
 

@@ -150,7 +150,7 @@ class TVParserTestSuite(unittest.TestCase):
     self.assertEqual(self.parser.currentFileData.md5, "bbbbbb")
     self.assertEqual(self.parser.currentFileData.sha256, "eeeeee")
 
-  def test_at_end_will_save_last_file_data(self):
+  def test_finalize_will_save_last_file_data(self):
     self.parser.parseNextPair("FileName", "/tmp/hi")
     self.parser.parseNextPair("LicenseConcluded", "EULA")
     self.parser.parseNextPair("FileChecksum", "SHA1: abc123")
@@ -164,3 +164,26 @@ class TVParserTestSuite(unittest.TestCase):
     self.assertEqual(self.parser.fdList[0].md5, "456789")
     self.assertEqual(self.parser.fdList[0].sha256, "0def12")
     self.assertIsNone(self.parser.currentFileData)
+
+  def test_finalize_will_return_file_data_list(self):
+    self.parser.parseNextPair("FileName", "/tmp/file1")
+    self.parser.parseNextPair("LicenseConcluded", "EULA")
+    self.parser.parseNextPair("FileName", "/tmp/file2")
+    self.parser.parseNextPair("LicenseConcluded", "EULA")
+    self.parser.parseNextPair("FileName", "/tmp/file3")
+    self.parser.parseNextPair("LicenseConcluded", "EULA")
+    fdList = self.parser.finalize()
+    self.assertEqual(type(fdList), list)
+    self.assertEqual(len(fdList), 3)
+    self.assertEqual(type(fdList[0]), ParsedFileData)
+    self.assertEqual(fdList[0].path, "/tmp/file1")
+    self.assertEqual(fdList[0].license, "EULA")
+    self.assertEqual(fdList[1].path, "/tmp/file2")
+    self.assertEqual(fdList[1].license, "EULA")
+    self.assertEqual(fdList[2].path, "/tmp/file3")
+    self.assertEqual(fdList[2].license, "EULA")
+
+  def test_can_check_whether_in_error_state(self):
+    self.assertFalse(self.parser.isError())
+    self.parser.state = self.parser.STATE_ERROR
+    self.assertTrue(self.parser.isError())
