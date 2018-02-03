@@ -30,6 +30,9 @@ from ..tvImporter import TVImporter
 def cmdImportScan(ctx, subproject, spdx_path, scan_dt, desc):
   slmhome, mainconfig, project, db = extractContext(ctx)
 
+  if subproject is None:
+    sys.exit(f'Usage: slm --subproject SUBPROJECT import-scan SPDX_PATH [OPTIONS]\n\nError: Missing argument "subproject". Include "--subproject SUBPROJECT" before import-scan command, or set SLM_SUBPROJECT environment variable.')
+
   # first, check and validate that the SPDX tag-value doc is good to go
   with open(spdx_path, 'r') as f:
     # read in the tag-value pairs line-by-line

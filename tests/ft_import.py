@@ -62,3 +62,13 @@ simple/file1.txt => BSD-2-Clause
 simple/file2.txt => MIT
 simple/file3.txt => BSD-2-Clause
 """, result.output)
+
+  def test_cannot_import_spdx_file_without_specifying_a_subproject(self):
+    # Edith forgets to list a subproject when she tries to import an SPDX file
+    result = runcmd(self, slm.cli, "frotz",
+      "import-scan", PATH_SIMPLE_ALL_KNOWN_SPDX, "--scan_date", "2017-05-05",
+      "--desc", "frotz-dim initial scan")
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(f'Usage: slm --subproject SUBPROJECT import-scan SPDX_PATH [OPTIONS]\n\nError: Missing argument "subproject". Include "--subproject SUBPROJECT" before import-scan command, or set SLM_SUBPROJECT environment variable.\n',result.output)
