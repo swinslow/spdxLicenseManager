@@ -28,13 +28,11 @@ class TVImporter:
   ##### Main tag-value importing functions
   ##### External usage shouldn't require calling anything except these
 
-  def importFileDataList(self, *, fdList=None, db=None, scan_id=None):
+  def checkFileDataList(self, *, fdList=None, db=None):
     if fdList is None:
-      raise ProjectDBInsertError("Cannot import FileData list without providing list to import")
+      raise ProjectDBInsertError("Cannot check FileData list without providing list to import")
     if db is None:
-      raise ProjectDBInsertError("Cannot import FileData list without providing database")
-    if scan_id is None:
-      raise ProjectDBInsertError("Cannot import FileData list without providing scan ID")
+      raise ProjectDBInsertError("Cannot check FileData list without providing database")
 
     # check filenames and return early if any are duplicates
     retval = self._checkFileDataListForDuplicatePaths(fdList=fdList)
@@ -45,6 +43,22 @@ class TVImporter:
     retval = self._checkFileDataListForLicenses(fdList=fdList, db=db)
     if retval is False:
       return False
+
+    # all good
+    self.scanChecked = True
+    return True
+
+  def importFileDataList(self, *, fdList=None, db=None, scan_id=None):
+    if fdList is None:
+      raise ProjectDBInsertError("Cannot import FileData list without providing list to import")
+    if db is None:
+      raise ProjectDBInsertError("Cannot import FileData list without providing database")
+    if scan_id is None:
+      raise ProjectDBInsertError("Cannot import FileData list without providing scan ID")
+
+    # fails if not checked first
+    if self.scanChecked != True:
+      raise ProjectDBInsertError("Must call checkFileDataList before importing")
 
     # set up and import files
     file_tuples = []
@@ -112,6 +126,7 @@ class TVImporter:
   ##### Other helper functions
 
   def _reset(self):
+    self.scanChecked = False
     self.licensesAll = []
     self.licensesUnknown = []
     self.pathDuplicates = []

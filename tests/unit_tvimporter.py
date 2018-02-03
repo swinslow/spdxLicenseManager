@@ -105,12 +105,77 @@ class TVImporterTestSuite(unittest.TestCase):
   ##### Test cases below
 
   def test_new_importer_is_in_expected_reset_state(self):
+    self.assertEqual(self.importer.scanChecked, False)
     self.assertEqual(self.importer.licensesAll, [])
     self.assertEqual(self.importer.licensesUnknown, [])
     self.assertEqual(self.importer.licensesMapping, {})
     self.assertEqual(self.importer.pathDuplicates, [])
     self.assertEqual(self.importer.errorMessage, "")
     self.assertEqual(self.importer.importedCount, 0)
+
+  def test_import_fails_if_scan_not_checked_first(self):
+    with self.assertRaises(ProjectDBInsertError):
+      self.importer.importFileDataList(fdList=self.fdList, db=self.db,
+        scan_id=self.scan_id)
+
+  def test_cannot_check_without_providing_valid_fdList(self):
+    with self.assertRaises(ProjectDBInsertError):
+      self.importer.checkFileDataList(db=self.db)
+
+  def test_cannot_check_without_providing_database(self):
+    with self.assertRaises(ProjectDBInsertError):
+      self.importer.checkFileDataList(fdList=self.fdList)
+
+  def test_checking_valid_fdList_returns_true(self):
+    retval = self.importer.checkFileDataList(fdList=self.fdList, db=self.db)
+    self.assertEqual(True, retval)
+
+  def test_checker_returns_false_if_any_licenses_are_unknown(self):
+    self.fdList.append(self.fd5)
+    retval = self.importer.checkFileDataList(fdList=self.fdList, db=self.db)
+    self.assertEqual(False, retval)
+
+  def test_can_get_license_list_if_any_are_unknown(self):
+    self.fdList.append(self.fd5)
+    self.importer.checkFileDataList(fdList=self.fdList, db=self.db)
+    unknowns = self.importer.getUnknowns()
+    self.assertIn("UnknownLicense", unknowns)
+    self.assertNotIn("DoAnything", unknowns)
+    self.assertNotIn("HarshEULA", unknowns)
+
+  def test_checker_returns_true_if_all_paths_are_unique(self):
+    retval = self.importer.checkFileDataList(fdList=self.fdList, db=self.db)
+    self.assertEqual(True, retval)
+
+  def test_checker_returns_false_if_any_paths_are_duplicates(self):
+    fdup = createFD("/tmp/f2", "DoAnythingNoncommercial", sha256="abcdef")
+    self.fdList.append(fdup)
+    retval = self.importer.checkFileDataList(fdList=self.fdList, db=self.db)
+    self.assertEqual(False, retval)
+
+  def test_duplicates_list_is_empty_if_all_paths_are_unique(self):
+    self.importer.checkFileDataList(fdList=self.fdList, db=self.db)
+    dups = self.importer.getDuplicatePaths()
+    self.assertEqual([], dups)
+
+  def test_duplicates_list_has_paths_if_any_paths_are_duplicates(self):
+    fdup = createFD("/tmp/f2", "DoAnythingNoncommercial", sha256="abcdef")
+    self.fdList.append(fdup)
+    self.importer.checkFileDataList(fdList=self.fdList, db=self.db)
+    dups = self.importer.getDuplicatePaths()
+    self.assertEqual(["/tmp/f2"], dups)
+
+  def test_can_get_duplicate_paths_after_checker_if_any(self):
+    fdup = createFD("/tmp/f2", "DoAnythingNoncommercial", sha256="abcdef")
+    self.fdList.append(fdup)
+    retval = self.importer.checkFileDataList(fdList=self.fdList, db=self.db)
+    dups = self.importer.getDuplicatePaths()
+    self.assertIn("/tmp/f2", dups)
+    self.assertNotIn("/tmp/f1", dups)
+
+  def test_checker_returns_true_if_all_is_good(self):
+    retval = self.importer.checkFileDataList(fdList=self.fdList, db=self.db)
+    self.assertEqual(True, retval)
 
   def test_reads_licenses_into_licensesAll(self):
     self.importer._checkFileDataListForLicenses(fdList=self.fdList, db=self.db)
@@ -141,40 +206,29 @@ class TVImporterTestSuite(unittest.TestCase):
     self.assertEqual(False, retval)
 
   def test_cannot_import_without_providing_valid_fdList(self):
+    self.importer.checkFileDataList(fdList=self.fdList, db=self.db)
     with self.assertRaises(ProjectDBInsertError):
       self.importer.importFileDataList(db=self.db, scan_id=self.scan_id)
 
   def test_cannot_import_without_providing_database(self):
+    self.importer.checkFileDataList(fdList=self.fdList, db=self.db)
     with self.assertRaises(ProjectDBInsertError):
       self.importer.importFileDataList(fdList=self.fdList,
         scan_id=self.scan_id)
 
   def test_cannot_import_without_providing_scan_id(self):
+    self.importer.checkFileDataList(fdList=self.fdList, db=self.db)
     with self.assertRaises(ProjectDBInsertError):
       self.importer.importFileDataList(fdList=self.fdList, db=self.db)
 
   def test_cannot_import_with_positional_args(self):
+    self.importer.checkFileDataList(fdList=self.fdList, db=self.db)
     with self.assertRaises(TypeError):
       self.importer.importFileDataList(self.fdList)
     with self.assertRaises(TypeError):
       self.importer.importFileDataList(self.fdList, self.db)
     with self.assertRaises(TypeError):
       self.importer.importFileDataList(self.fdList, self.db, self.scan_id)
-
-  def test_importer_returns_false_if_any_licenses_are_unknown(self):
-    self.fdList.append(self.fd5)
-    retval = self.importer.importFileDataList(fdList=self.fdList, db=self.db,
-      scan_id=self.scan_id)
-    self.assertEqual(False, retval)
-
-  def test_can_get_lic_list_if_any_are_unknown(self):
-    self.fdList.append(self.fd5)
-    self.importer.importFileDataList(fdList=self.fdList, db=self.db,
-      scan_id=self.scan_id)
-    unknowns = self.importer.getUnknowns()
-    self.assertIn("UnknownLicense", unknowns)
-    self.assertNotIn("DoAnything", unknowns)
-    self.assertNotIn("HarshEULA", unknowns)
 
   def test_checker_returns_true_if_all_paths_are_unique(self):
     retval = self.importer._checkFileDataListForDuplicatePaths(fdList=self.fdList)
@@ -186,49 +240,11 @@ class TVImporterTestSuite(unittest.TestCase):
     retval = self.importer._checkFileDataListForDuplicatePaths(fdList=self.fdList)
     self.assertEqual(False, retval)
 
-  def test_importer_returns_true_if_all_paths_are_unique(self):
+  def test_files_are_imported_if_all_is_good(self):
+    self.importer.checkFileDataList(fdList=self.fdList, db=self.db)
     retval = self.importer.importFileDataList(fdList=self.fdList, db=self.db,
       scan_id=self.scan_id)
     self.assertEqual(True, retval)
-
-  def test_importer_returns_false_if_any_paths_are_duplicates(self):
-    fdup = createFD("/tmp/f2", "DoAnythingNoncommercial", sha256="abcdef")
-    self.fdList.append(fdup)
-    retval = self.importer.importFileDataList(fdList=self.fdList, db=self.db,
-      scan_id=self.scan_id)
-    self.assertEqual(False, retval)
-
-  def test_duplicates_list_is_empty_if_all_paths_are_unique(self):
-    self.importer.importFileDataList(fdList=self.fdList, db=self.db,
-      scan_id=self.scan_id)
-    dups = self.importer.getDuplicatePaths()
-    self.assertEqual([], dups)
-
-  def test_duplicates_list_has_paths_if_any_paths_are_duplicates(self):
-    fdup = createFD("/tmp/f2", "DoAnythingNoncommercial", sha256="abcdef")
-    self.fdList.append(fdup)
-    self.importer.importFileDataList(fdList=self.fdList, db=self.db,
-      scan_id=self.scan_id)
-    dups = self.importer.getDuplicatePaths()
-    self.assertEqual(["/tmp/f2"], dups)
-
-  def test_can_get_duplicate_paths_if_any(self):
-    fdup = createFD("/tmp/f2", "DoAnythingNoncommercial", sha256="abcdef")
-    self.fdList.append(fdup)
-    retval = self.importer.importFileDataList(fdList=self.fdList, db=self.db,
-      scan_id=self.scan_id)
-    dups = self.importer.getDuplicatePaths()
-    self.assertIn("/tmp/f2", dups)
-    self.assertNotIn("/tmp/f1", dups)
-
-  def test_importer_returns_true_if_all_are_known(self):
-    retval = self.importer.importFileDataList(fdList=self.fdList, db=self.db,
-      scan_id=self.scan_id)
-    self.assertEqual(True, retval)
-
-  def test_files_are_imported_if_all_licenses_are_known(self):
-    self.importer.importFileDataList(fdList=self.fdList, db=self.db,
-      scan_id=self.scan_id)
     f1 = self.db.getFile(scan_id=self.scan_id, path="/tmp/f1")
     self.assertEqual("/tmp/f1", f1.path)
     self.assertEqual("abcdef", f1.md5)
@@ -239,6 +255,7 @@ class TVImporterTestSuite(unittest.TestCase):
     self.assertEqual("HarshEULA", f4.license.name)
 
   def test_can_get_count_of_imported_files_if_all_licenses_are_known(self):
+    self.importer.checkFileDataList(fdList=self.fdList, db=self.db)
     self.importer.importFileDataList(fdList=self.fdList, db=self.db,
       scan_id=self.scan_id)
     count = self.importer.getImportedCount()
@@ -246,7 +263,9 @@ class TVImporterTestSuite(unittest.TestCase):
 
   def test_files_are_not_imported_if_any_licenses_are_unknown(self):
     self.fdList.append(self.fd5)
-    self.importer.importFileDataList(fdList=self.fdList, db=self.db,
-      scan_id=self.scan_id)
+    self.importer.checkFileDataList(fdList=self.fdList, db=self.db)
+    with self.assertRaises(ProjectDBInsertError):
+      self.importer.importFileDataList(fdList=self.fdList, db=self.db,
+        scan_id=self.scan_id)
     f1 = self.db.getFile(scan_id=self.scan_id, path="/tmp/f1")
     self.assertIsNone(f1)
