@@ -43,6 +43,8 @@ from .commands.cmdGetConversion import cmdGetConversion
 from .commands.cmdAddConversion import cmdAddConversion
 from .commands.cmdEditConversion import cmdEditConversion
 from .commands.cmdListConversions import cmdListConversions
+from .commands.cmdImportScan import cmdImportScan
+from .commands.cmdListScanResults import cmdListScanResults
 
 VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
 
@@ -52,14 +54,17 @@ VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
   help='path to spdxLicenseManager data directory')
 @click.option('--project', default=None, envvar='SLM_PROJECT',
   help='project short name')
+@click.option('--subproject', default=None, envvar='SLM_SUBPROJECT',
+  help='subproject short name')
 @click.option('-v', '--verbose', is_flag=True, help='Enables verbose mode')
 @click.pass_context
-def cli(ctx, slmhome, project, verbose):
+def cli(ctx, slmhome, project, subproject, verbose):
   ctx.obj = {}
 
   # parse any top-level options
   ctx.obj['SLMHOME'] = slmhome
   ctx.obj['PROJECT'] = project
+  ctx.obj['SUBPROJECT'] = subproject
   ctx.obj['VERBOSE'] = verbose
 
   # if slmhome is set, load config file and set on context
@@ -263,3 +268,24 @@ def cliEditConversion(ctx, old_text, license_name):
 def cliListConversions(ctx):
   checkForContext(ctx)
   return cmdListConversions(ctx)
+
+###################
+##### Scan commands
+###################
+
+@cli.command('import-scan', help="Import an SPDX tag-value file as a new scan")
+@click.argument('spdx_path')
+@click.option('--scan_date', default=None, help='Scan date')
+@click.option('--desc', default=None, help='Scan description')
+@click.pass_context
+def cliImportScan(ctx, spdx_path, scan_date, desc):
+  checkForContext(ctx)
+  subproject = ctx.obj['SUBPROJECT']
+  return cmdImportScan(ctx, subproject, spdx_path, scan_date, desc)
+
+@cli.command('list-scan-results', help="List all files and licenses in a scan")
+@click.option('--scan_id', default=None, help='Scan ID')
+@click.pass_context
+def cliListScanResults(ctx, scan_id):
+  checkForContext(ctx)
+  return cmdListScanResults(ctx, scan_id)

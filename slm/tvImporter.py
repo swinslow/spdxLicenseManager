@@ -58,7 +58,7 @@ class TVImporter:
 
     # fails if not checked first
     if self.scanChecked != True:
-      raise ProjectDBInsertError("Must call checkFileDataList before importing")
+      raise ProjectDBInsertError("Must successfully pass checkFileDataList before importing")
 
     # set up and import files
     file_tuples = []

@@ -26,7 +26,7 @@ from slm import slm
 from helper_sandbox import (setUpSandbox, runSandboxCommands, tearDownSandbox,
   runcmd, printResultDebug)
 
-PATH_SIMPLE_SPDX = "tests/testfiles/simple.spdx"
+PATH_SIMPLE_ALL_KNOWN_SPDX = "tests/testfiles/simpleAllKnown.spdx"
 
 class SPDXImportFuncTestSuite(unittest.TestCase):
   """spdxLicenseManager tag-value importer FT suite."""
@@ -43,21 +43,22 @@ class SPDXImportFuncTestSuite(unittest.TestCase):
     # Edith has a very short SPDX file. She imports it as a new scan in
     # the frotz subproject frotz-dim
     result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
-      "import-scan", PATH_SIMPLE_SPDX)
+      "import-scan", PATH_SIMPLE_ALL_KNOWN_SPDX, "--scan_date", "2017-05-05",
+      "--desc", "frotz-dim initial scan")
 
     # It tells her that the scan was successfully added, and how to find it
     self.assertEqual(0, result.exit_code)
-    self.assertEqual(f"Successfully imported {PATH_SIMPLE_SPDX}\nScan ID is 1\n", result.output)
+    self.assertEqual(f"Successfully imported 4 files from {PATH_SIMPLE_ALL_KNOWN_SPDX}\nScan ID is 1\n", result.output)
 
     # She now tries to print the scan results
     result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
-      "print-scan-results", "--id", "1")
+      "list-scan-results", "--scan_id", "1")
 
     # They are displayed in a simple text format, alphabetically by file path
     self.assertEqual(0, result.exit_code)
     self.assertEqual(
-f"""simple/dir1/subfile.txt => No license found
-simple/file1.txt => No license found
+f"""simple/dir1/subfile.txt => BSD-2-Clause
+simple/file1.txt => BSD-2-Clause
 simple/file2.txt => MIT
-simple/file3.txt => No license found
+simple/file3.txt => BSD-2-Clause
 """, result.output)
