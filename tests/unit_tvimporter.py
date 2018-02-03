@@ -110,7 +110,6 @@ class TVImporterTestSuite(unittest.TestCase):
     self.assertEqual(self.importer.licensesUnknown, [])
     self.assertEqual(self.importer.licensesMapping, {})
     self.assertEqual(self.importer.pathDuplicates, [])
-    self.assertEqual(self.importer.errorMessage, "")
     self.assertEqual(self.importer.importedCount, 0)
 
   def test_import_fails_if_scan_not_checked_first(self):

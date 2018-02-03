@@ -131,5 +131,4 @@ class TVImporter:
     self.licensesUnknown = []
     self.pathDuplicates = []
     self.licensesMapping = {}
-    self.errorMessage = ""
     self.importedCount = 0
