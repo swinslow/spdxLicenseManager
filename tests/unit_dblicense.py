@@ -137,7 +137,6 @@ class DBLicenseUnitTestSuite(unittest.TestCase):
       "UnknownLicense",
     ]
     ldict = self.db.getMultipleLicenses(licenses)
-    print(ldict)
     self.assertEqual(ldict["293PageEULA"], 3)
     self.assertEqual(ldict["DoAnything"], 1)
     self.assertIsNone(ldict["UnknownLicense"])
