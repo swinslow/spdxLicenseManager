@@ -67,7 +67,7 @@ class TVParser:
   def isError(self):
     return self.state == self.STATE_ERROR
 
-  ##### Tag-value reading main helper functions
+  ##### Tag-value parsing main helper functions
 
   def _parseNextPairFromReady(self, tag, value):
     if tag == "FileName":
