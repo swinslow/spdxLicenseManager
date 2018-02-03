@@ -130,6 +130,18 @@ class DBLicenseUnitTestSuite(unittest.TestCase):
     license = self.db.getLicense(name="noSuchLicense")
     self.assertIsNone(license)
 
+  def test_can_retrieve_multiple_licenses_by_name(self):
+    licenses = [
+      "293PageEULA",
+      "DoAnything",
+      "UnknownLicense",
+    ]
+    ldict = self.db.getMultipleLicenses(licenses)
+    print(ldict)
+    self.assertEqual(ldict["293PageEULA"], 3)
+    self.assertEqual(ldict["DoAnything"], 1)
+    self.assertIsNone(ldict["UnknownLicense"])
+
   def test_can_add_and_retrieve_licenses(self):
     license_id = self.db.addLicense(name="SomeOtherEULA",
       category="blah category")

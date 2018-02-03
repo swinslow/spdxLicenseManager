@@ -403,6 +403,18 @@ class ProjectDB:
       return self.session.query(License).\
                           filter(License.name == name).first()
 
+  def getMultipleLicenses(self, licenses):
+    l_tup = self.session.query(License.name, License._id).\
+                         filter(License.name.in_(licenses)).all()
+    ldict = dict(l_tup)
+    # make sure any items in licenses that weren't found are added as 'None'
+    licensesAll = set(licenses)
+    licensesFound = set(ldict.keys())
+    licensesNotFound = licensesAll.difference(licensesFound)
+    for lnf in licensesNotFound:
+      ldict[lnf] = None
+    return ldict
+
   def changeLicenseName(self, name, newName):
     if name is None or newName is None:
       raise ProjectDBUpdateError("Missing parameter for changeLicenseName")
