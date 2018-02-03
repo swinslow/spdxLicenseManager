@@ -57,6 +57,10 @@ class TVReader:
     # strip whitespace from beginning of line
     line = line.lstrip()
 
+    # ignore empty lines
+    if line == '':
+      return
+
     # ignore comment lines
     if line.startswith("#"):
       return

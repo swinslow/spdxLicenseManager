@@ -164,6 +164,44 @@ class TVReaderTestSuite(unittest.TestCase):
     self.assertEqual(self.reader.currentTag, "Multiline")
     self.assertEqual(self.reader.currentValue, "First line\n# This is part of multiline text\n")
 
+  def test_ready_ignores_empty_lines(self):
+    self.reader.readNextLine("")
+    self.assertEqual(self.reader.state, self.reader.STATE_READY)
+    self.assertEqual(self.reader.tvList, [])
+    self.assertEqual(self.reader.currentLine, 1)
+    self.assertEqual(self.reader.currentTag, "")
+    self.assertEqual(self.reader.currentValue, "")
+
+  def test_midtext_includes_empty_lines(self):
+    self.reader.state = self.reader.STATE_MIDTEXT
+    self.reader.currentTag = "Multiline"
+    self.reader.currentValue = "First line\n"
+    self.reader.readNextLine("")
+    # should still be in midtext
+    self.assertEqual(self.reader.state, self.reader.STATE_MIDTEXT)
+    self.assertEqual(self.reader.tvList, [])
+    self.assertEqual(self.reader.currentTag, "Multiline")
+    self.assertEqual(self.reader.currentValue, "First line\n\n")
+
+  def test_ready_ignores_whitespace_only_lines(self):
+    self.reader.readNextLine("   \t\t\t ")
+    self.assertEqual(self.reader.state, self.reader.STATE_READY)
+    self.assertEqual(self.reader.tvList, [])
+    self.assertEqual(self.reader.currentLine, 1)
+    self.assertEqual(self.reader.currentTag, "")
+    self.assertEqual(self.reader.currentValue, "")
+
+  def test_midtext_includes_whitespace_only_lines(self):
+    self.reader.state = self.reader.STATE_MIDTEXT
+    self.reader.currentTag = "Multiline"
+    self.reader.currentValue = "First line\n"
+    self.reader.readNextLine("     \t\t  ")
+    # should still be in midtext
+    self.assertEqual(self.reader.state, self.reader.STATE_MIDTEXT)
+    self.assertEqual(self.reader.tvList, [])
+    self.assertEqual(self.reader.currentTag, "Multiline")
+    self.assertEqual(self.reader.currentValue, "First line\n     \t\t  \n")
+
   def test_ready_ignores_spaces_before_tag(self):
     self.reader.readNextLine("      Tag:value")
     self.assertEqual(self.reader.tvList, [("Tag", "value")])
