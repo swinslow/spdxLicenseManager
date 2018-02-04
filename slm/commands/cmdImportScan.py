@@ -40,6 +40,9 @@ def cmdImportScan(ctx, subproject, spdx_path, scan_dt, desc):
       reader = TVReader()
       for line in f:
         reader.readNextLine(line)
+      # check for errors
+      if reader.isError():
+        sys.exit(f"Error reading {spdx_path}: {reader.errorMessage}")
       tvList = reader.tvList
 
       # parse the tag-value pairs

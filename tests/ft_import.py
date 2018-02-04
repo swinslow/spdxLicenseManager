@@ -27,6 +27,7 @@ from helper_sandbox import (setUpSandbox, runSandboxCommands, tearDownSandbox,
   runcmd, printResultDebug)
 
 PATH_SIMPLE_ALL_KNOWN_SPDX = "tests/testfiles/simpleAllKnown.spdx"
+PATH_BROKEN_READING_NO_COLON_SPDX = "tests/testfiles/brokenReadingNoColon.spdx"
 
 class SPDXImportFuncTestSuite(unittest.TestCase):
   """spdxLicenseManager tag-value importer FT suite."""
@@ -77,8 +78,19 @@ simple/file3.txt => BSD-2-Clause
     # Edith accidentally tries to import an SPDX file with an invalid path
     result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
       "import-scan", "DOES_NOT_EXIST", "--scan_date", "2017-05-05",
-      "--desc", "frotz-dim initial scan")
+      "--desc", "missing spdx file")
 
     # It fails and explains why
     self.assertEqual(1, result.exit_code)
     self.assertEqual(f'File not found: DOES_NOT_EXIST\n',result.output)
+
+  def test_cannot_import_spdx_file_with_missing_colon(self):
+    # Edith accidentally tries to import an SPDX file which has a line
+    # with a tag, but no colon or value
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "import-scan", PATH_BROKEN_READING_NO_COLON_SPDX,
+      "--scan_date", "2017-05-05", "--desc", "invalid file missing colon")
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertIn(f'Error reading {PATH_BROKEN_READING_NO_COLON_SPDX}: No colon found at line', result.output)

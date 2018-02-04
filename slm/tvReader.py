@@ -70,7 +70,7 @@ class TVReader:
 
     # if no colon found, this is an error
     if colonLoc == -1:
-      self.errorMessage = f"No colon found at line {self.currentLine}: '{line}'"
+      self.errorMessage = f"No colon found at line {self.currentLine}: '{line.strip()}'"
       self.state = self.STATE_ERROR
       return
 
