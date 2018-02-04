@@ -34,33 +34,38 @@ def cmdImportScan(ctx, subproject, spdx_path, scan_dt, desc):
     sys.exit(f'Usage: slm --subproject SUBPROJECT import-scan SPDX_PATH [OPTIONS]\n\nError: Missing argument "subproject". Include "--subproject SUBPROJECT" before import-scan command, or set SLM_SUBPROJECT environment variable.')
 
   # first, check and validate that the SPDX tag-value doc is good to go
-  with open(spdx_path, 'r') as f:
-    # read in the tag-value pairs line-by-line
-    reader = TVReader()
-    for line in f:
-      reader.readNextLine(line)
-    tvList = reader.tvList
+  try:
+    with open(spdx_path, 'r') as f:
+      # read in the tag-value pairs line-by-line
+      reader = TVReader()
+      for line in f:
+        reader.readNextLine(line)
+      tvList = reader.tvList
 
-    # parse the tag-value pairs
-    parser = TVParser()
-    for tag, value in tvList:
-      parser.parseNextPair(tag, value)
-    fdList = parser.finalize()
+      # parse the tag-value pairs
+      parser = TVParser()
+      for tag, value in tvList:
+        parser.parseNextPair(tag, value)
+      fdList = parser.finalize()
 
-    # check the parsed file data
-    importer = TVImporter()
-    importer.checkFileDataList(fdList=fdList, db=db)
+      # check the parsed file data
+      importer = TVImporter()
+      importer.checkFileDataList(fdList=fdList, db=db)
 
-    # create new scan and get ID
-    scan_id = db.addScan(subproject=subproject, scan_dt_str=scan_dt, desc=desc)
+      # create new scan and get ID
+      scan_id = db.addScan(subproject=subproject, scan_dt_str=scan_dt,
+        desc=desc)
 
-    # import the validated file data
-    importer.importFileDataList(fdList=fdList, db=db, scan_id=scan_id)
+      # import the validated file data
+      importer.importFileDataList(fdList=fdList, db=db, scan_id=scan_id)
 
-    # and report on how many files were imported
-    count = importer.getImportedCount()
-    click.echo(f"Successfully imported {count} files from {spdx_path}")
-    click.echo(f"Scan ID is {scan_id}")
+      # and report on how many files were imported
+      count = importer.getImportedCount()
+      click.echo(f"Successfully imported {count} files from {spdx_path}")
+      click.echo(f"Scan ID is {scan_id}")
+
+  except FileNotFoundError as e:
+    sys.exit(f"File not found: {spdx_path}")
 
   # clean up database
   db.closeDB()

@@ -72,3 +72,13 @@ simple/file3.txt => BSD-2-Clause
     # It fails and explains why
     self.assertEqual(1, result.exit_code)
     self.assertEqual(f'Usage: slm --subproject SUBPROJECT import-scan SPDX_PATH [OPTIONS]\n\nError: Missing argument "subproject". Include "--subproject SUBPROJECT" before import-scan command, or set SLM_SUBPROJECT environment variable.\n',result.output)
+
+  def test_cannot_import_spdx_file_that_does_not_exist(self):
+    # Edith accidentally tries to import an SPDX file with an invalid path
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "import-scan", "DOES_NOT_EXIST", "--scan_date", "2017-05-05",
+      "--desc", "frotz-dim initial scan")
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(f'File not found: DOES_NOT_EXIST\n',result.output)
