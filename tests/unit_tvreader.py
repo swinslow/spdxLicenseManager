@@ -41,6 +41,31 @@ class TVReaderTestSuite(unittest.TestCase):
     self.assertEqual(self.reader.currentValue, "")
     self.assertEqual(self.reader.errorMessage, "")
 
+  def test_can_get_tv_list_with_finalize(self):
+    self.reader.readNextLine("Tag:value")
+    isError = self.reader.isError()
+    self.assertFalse(isError)
+    tvList = self.reader.finalize()
+    self.assertEqual([("Tag", "value")], tvList)
+
+  def test_can_get_tv_list_including_multiline_with_finalize(self):
+    self.reader.readNextLine("Tag:<text>value")
+    self.reader.readNextLine("rest of value</text>")
+    isError = self.reader.isError()
+    self.assertFalse(isError)
+    tvList = self.reader.finalize()
+    self.assertEqual([("Tag", "value\nrest of value")], tvList)
+
+  def test_cannot_finalize_if_in_midtext_state(self):
+    self.reader.readNextLine("Tag:<text>value")
+    isError = self.reader.isError()
+    self.assertFalse(isError)
+    tvList = self.reader.finalize()
+    isError = self.reader.isError()
+    self.assertTrue(isError)
+    self.assertEqual(None, tvList)
+    self.assertEqual("No closing </text> tag found", self.reader.errorMessage)
+
   @mock.patch('slm.tvReader.TVReader._readNextLineFromReady')
   def test_will_call_correct_helper_for_ready_state(self, ready_mock):
     self.reader.state = self.reader.STATE_READY
@@ -112,7 +137,7 @@ class TVReaderTestSuite(unittest.TestCase):
     self.assertEqual(self.reader.state, self.reader.STATE_MIDTEXT)
     self.assertEqual(self.reader.currentLine, 1)
     self.assertEqual(self.reader.currentTag, "Tag")
-    self.assertEqual(self.reader.currentValue, "This begins a multiline value")
+    self.assertEqual(self.reader.currentValue, "This begins a multiline value\n")
     # nothing is added to the tag-value list until we close the <text> value
     self.assertEqual(self.reader.tvList, [])
 
@@ -120,6 +145,15 @@ class TVReaderTestSuite(unittest.TestCase):
     self.reader.readNextLine("Tag: <text>Just one line</text>")
     self.assertEqual(self.reader.state, self.reader.STATE_READY)
     self.assertEqual(self.reader.tvList, [("Tag", "Just one line")])
+    self.assertEqual(self.reader.currentTag, "")
+    self.assertEqual(self.reader.currentValue, "")
+
+  def test_can_read_multiline_text_across_three_lines(self):
+    self.reader.readNextLine("Tag: <text>This value")
+    self.reader.readNextLine("is three")
+    self.reader.readNextLine("lines long</text>")
+    self.assertEqual(self.reader.state, self.reader.STATE_READY)
+    self.assertEqual(self.reader.tvList, [("Tag", "This value\nis three\nlines long")])
     self.assertEqual(self.reader.currentTag, "")
     self.assertEqual(self.reader.currentValue, "")
 

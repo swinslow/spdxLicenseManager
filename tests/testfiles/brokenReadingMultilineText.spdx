@@ -1,0 +1,20 @@
+# broken for reading because <text> tag on line 19 is never closed
+SPDXVersion: SPDX-2.0
+DataLicense: CC0-1.0
+
+##-------------------------
+## Document Information
+##-------------------------
+
+DocumentNamespace: http://3a25b77ecd93/repo/SPDX2TV_simple.tar.gz_1517059409.spdx
+DocumentName: /srv/fossology/repository/report
+SPDXID: SPDXRef-DOCUMENT
+
+##-------------------------
+## Creation Information
+##-------------------------
+
+Creator: Tool: spdx2
+Creator: Person: steve (y)
+CreatorComment: <text>
+This document was created using license information and a generator from Fossology.

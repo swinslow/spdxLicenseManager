@@ -28,6 +28,7 @@ from helper_sandbox import (setUpSandbox, runSandboxCommands, tearDownSandbox,
 
 PATH_SIMPLE_ALL_KNOWN_SPDX = "tests/testfiles/simpleAllKnown.spdx"
 PATH_BROKEN_READING_NO_COLON_SPDX = "tests/testfiles/brokenReadingNoColon.spdx"
+PATH_BROKEN_READING_MULTILINE_TEXT_SPDX = "tests/testfiles/brokenReadingMultilineText.spdx"
 
 class SPDXImportFuncTestSuite(unittest.TestCase):
   """spdxLicenseManager tag-value importer FT suite."""
@@ -94,3 +95,14 @@ simple/file3.txt => BSD-2-Clause
     # It fails and explains why
     self.assertEqual(1, result.exit_code)
     self.assertIn(f'Error reading {PATH_BROKEN_READING_NO_COLON_SPDX}: No colon found at line', result.output)
+
+  def test_cannot_import_spdx_file_with_no_closing_text_field(self):
+    # Edith accidentally tries to import an SPDX file which has a multiline
+    # <text> value that never closes
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "import-scan", PATH_BROKEN_READING_MULTILINE_TEXT_SPDX,
+      "--scan_date", "2017-05-05", "--desc", "invalid file missing colon")
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertIn(f'Error reading {PATH_BROKEN_READING_MULTILINE_TEXT_SPDX}: No closing </text> tag found', result.output)

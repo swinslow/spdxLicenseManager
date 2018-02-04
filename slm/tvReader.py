@@ -48,6 +48,17 @@ class TVReader:
       self.errorMessage = f"Tag-value reader in invalid state at line {self.currentLine}: {self.state}"
       self.state = self.STATE_ERROR
 
+  def finalize(self):
+    if self.state == self.STATE_ERROR:
+      # error message should already be set
+      return None
+    elif self.state == self.STATE_MIDTEXT:
+      self.state = self.STATE_ERROR
+      self.errorMessage = "No closing </text> tag found"
+      return None
+    else:
+      return self.tvList
+
   def isError(self):
     return self.state == self.STATE_ERROR
 
@@ -91,8 +102,9 @@ class TVReader:
       # is there a closing </text>?
       endTagLoc = self.currentValue.find("</text>")
       if endTagLoc == -1:
-        # no closing </text>, so go to multi-line reading
+        # no closing </text>, so go to multi-line reading and add a newline
         self.state = self.STATE_MIDTEXT
+        self.currentValue += '\n'
         return
       else:
         # found a closing </text>, so just one line
