@@ -17,12 +17,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
 import click
 
 from .helperContext import extractContext
 
 def cmdListScanResults(ctx, scan_id):
   slmhome, mainconfig, project, db = extractContext(ctx)
+
+  # confirm that scan with this ID exists
+  scan = db.getScan(_id=scan_id)
+  if scan is None:
+    sys.exit(f"Scan ID {scan_id} does not exist.")
 
   for file in db.getFiles(scan_id):
     click.echo(f"{file.path} => {file.license.name}")

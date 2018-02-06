@@ -221,3 +221,13 @@ All duplicates should be removed from the SPDX file before importing.
     self.assertEqual(1, result.exit_code)
     self.assertIn("The following duplicate file paths were detected", result.output)
     self.assertNotIn("The following unknown licenses were detected", result.output)
+
+  def test_cannot_list_results_for_a_nonexistent_scan(self):
+    # Edith accidentally tries to list the files and licenses for an
+    # incorrect scan ID
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "list-scan-results", "--scan_id", "2")
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(f"Scan ID 2 does not exist.\n", result.output)
