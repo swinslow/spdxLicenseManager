@@ -42,6 +42,7 @@ class TVParserTestSuite(unittest.TestCase):
   def test_new_parsed_file_data_is_in_expected_initial_state(self):
     fd = ParsedFileData()
     self.assertEqual(fd.path, "")
+    self.assertEqual(fd.finalPath, "")
     self.assertEqual(fd.license, "")
     self.assertEqual(fd.finalLicense, "")
     self.assertEqual(fd.md5, "")

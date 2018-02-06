@@ -23,6 +23,7 @@ class ParsedFileData:
   def __init__(self):
     super(ParsedFileData, self).__init__()
     self.path = ""
+    self.finalPath = ""
     self.license = ""
     self.finalLicense = ""
     self.md5 = ""

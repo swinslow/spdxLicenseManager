@@ -18,7 +18,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .projectdb import ProjectDBInsertError
+import os
+
+from .projectdb import ProjectDBInsertError, ProjectDBQueryError
 
 class TVImporter:
   def __init__(self):
@@ -36,6 +38,9 @@ class TVImporter:
 
     # apply conversions
     self._applyConversions(fdList=fdList, db=db)
+
+    # apply removal of common path prefixes, if config value is set
+    self._applyPathPrefixStrip(fdList=fdList, db=db)
 
     # check filenames and return early if any are duplicates
     retval = self._checkFileDataListForDuplicatePaths(fdList=fdList)
@@ -70,7 +75,7 @@ class TVImporter:
       lic_id = self.licensesMapping.get(fd.finalLicense, None)
       if lic_id is None:
         raise ProjectDBInsertError(f"Error, license {fd.finalLicense} not found after checking all licenses; shouldn't happen")
-      ft = (fd.path, lic_id, fd.sha1, fd.md5, fd.sha256)
+      ft = (fd.finalPath, lic_id, fd.sha1, fd.md5, fd.sha256)
       file_tuples.append(ft)
     db.addBulkFiles(scan_id=scan_id, file_tuples=file_tuples)
     self.importedCount = len(file_tuples)
@@ -100,6 +105,35 @@ class TVImporter:
     for fd in fdList:
       fd.finalLicense = convsDict.get(fd.license, fd.license)
 
+  def _applyPathPrefixStrip(self, fdList, db):
+    paths = [fd.path for fd in fdList]
+
+    # set prefix to "" unless the right config value is set
+    try:
+      isStrip = str(db.getConfigValue("strip_path_prefixes"))
+    except ProjectDBQueryError:
+      isStrip = "no"
+
+    if isStrip.lower() == "yes":
+      try:
+        prefix = os.path.commonpath(paths)
+      except ValueError:
+        # means that we were mixing absolute and relative paths
+        # which also means that there's no common prefix
+        prefix = ""
+    else:
+      prefix = ""
+
+    # fill in finalPath either way, but only strip prefix if config'd and found
+    if prefix != None and prefix != '':
+      startloc = len(prefix)
+      for fd in fdList:
+        fd.finalPath = fd.path[startloc:]
+    else:
+      for fd in fdList:
+        fd.finalPath = fd.path
+    return prefix
+
   def _checkFileDataListForLicenses(self, fdList, db):
     # import all FDs into licenses set so we can see what's unknown
     lset = set()
@@ -123,6 +157,9 @@ class TVImporter:
     return self.licensesUnknown == []
 
   def _checkFileDataListForDuplicatePaths(self, fdList):
+    # this correctly checks path, not finalPath.
+    # if there are duplicates, we want to report them back with the full
+    # path, not the path with a potentially stripped prefix.
     paths = []
     for fd in fdList:
       paths.append(fd.path)

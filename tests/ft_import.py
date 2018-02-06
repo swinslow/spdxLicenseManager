@@ -240,3 +240,28 @@ All duplicates should be removed from the SPDX file before importing.
     # It fails and explains why
     self.assertEqual(1, result.exit_code)
     self.assertEqual(f'Usage: slm list-scan-results --scan_id SCAN_ID\n\nError: "scan_id" not provided.\n', result.output)
+
+  def test_will_strip_path_prefixes_if_configured(self):
+    # Edith configures the importer to strip out common path prefixes
+    result = runcmd(self, slm.cli, "frotz", "set-config",
+      "strip_path_prefixes", "yes")
+    self.assertEqual(0, result.exit_code)
+
+    # She imports a simple scan
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "import-scan", PATH_SIMPLE_ALL_KNOWN_SPDX, "--scan_date", "2017-05-05",
+      "--desc", "frotz-dim initial scan")
+    self.assertEqual(0, result.exit_code)
+
+    # She then prints the scan results
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "list-scan-results", "--scan_id", "2")
+
+    # They are displayed with common path prefixes stripped
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual(
+f"""/dir1/subfile.txt => BSD-2-Clause
+/file1.txt => BSD-2-Clause
+/file2.txt => MIT
+/file3.txt => BSD-2-Clause
+""", result.output)

@@ -310,3 +310,62 @@ class TVImporterTestSuite(unittest.TestCase):
     retval = self.importer.checkFileDataList(fdList=self.fdList, db=self.db)
     self.assertTrue(retval)
     self.assertEqual("293PageEULA", self.fdConvert.finalLicense)
+
+  def test_path_prefixes_are_stripped_if_config_is_yes(self):
+    self.db.setConfigValue("strip_path_prefixes", "Yes")
+    prefix = self.importer._applyPathPrefixStrip(fdList=self.fdList,
+      db=self.db)
+    self.assertEqual("/tmp", prefix)
+    self.assertEqual("/tmp/f1", self.fd1.path)
+    self.assertEqual("/f1", self.fd1.finalPath)
+
+  def test_path_prefixes_are_not_stripped_if_config_is_no(self):
+    self.db.setConfigValue("strip_path_prefixes", "no")
+    prefix = self.importer._applyPathPrefixStrip(fdList=self.fdList,
+      db=self.db)
+    self.assertEqual("", prefix)
+    self.assertEqual("/tmp/f1", self.fd1.path)
+    self.assertEqual("/tmp/f1", self.fd1.finalPath)
+
+  def test_path_prefixes_are_not_stripped_if_config_is_not_set(self):
+    prefix = self.importer._applyPathPrefixStrip(fdList=self.fdList,
+      db=self.db)
+    self.assertEqual("", prefix)
+    self.assertEqual("/tmp/f1", self.fd1.path)
+    self.assertEqual("/tmp/f1", self.fd1.finalPath)
+
+  def test_path_prefixes_are_not_stripped_if_mixing_abs_and_rel_paths(self):
+    self.db.setConfigValue("strip_path_prefixes", "yes")
+    self.fdDifferentPath = createFD("absolutePath", "293PageEULA")
+    self.fdList.append(self.fdDifferentPath)
+    prefix = self.importer._applyPathPrefixStrip(fdList=self.fdList,
+      db=self.db)
+    self.assertEqual("", prefix)
+    self.assertEqual("/tmp/f1", self.fd1.path)
+    self.assertEqual("/tmp/f1", self.fd1.finalPath)
+
+  def test_path_prefixes_are_not_stripped_if_no_common_prefix(self):
+    self.db.setConfigValue("strip_path_prefixes", "yes")
+    fdDifferentPath1 = createFD("somewhereElse", "293PageEULA")
+    fdDifferentPath2 = createFD("something", "293PageEULA")
+    tmpFDList = [fdDifferentPath1, fdDifferentPath2]
+    prefix = self.importer._applyPathPrefixStrip(fdList=tmpFDList,
+      db=self.db)
+    self.assertEqual("", prefix)
+    self.assertEqual("somewhereElse", fdDifferentPath1.finalPath)
+    self.assertEqual("something", fdDifferentPath2.finalPath)
+
+  def test_file_path_prefixes_are_stripped_on_import_if_configured(self):
+    self.db.setConfigValue("strip_path_prefixes", "yes")
+    self.importer.checkFileDataList(fdList=self.fdList, db=self.db)
+    retval = self.importer.importFileDataList(fdList=self.fdList, db=self.db,
+      scan_id=self.scan_id)
+    self.assertEqual(True, retval)
+    f1 = self.db.getFile(scan_id=self.scan_id, path="/f1")
+    self.assertEqual("/f1", f1.path)
+    self.assertEqual("DoAnything", f1.license.name)
+    f4 = self.db.getFile(scan_id=self.scan_id, path="/f4")
+    self.assertEqual("/f4", f4.path)
+    self.assertEqual("HarshEULA", f4.license.name)
+    wrongPathFile = self.db.getFile(scan_id=self.scan_id, path="/tmp/f1")
+    self.assertIsNone(wrongPathFile)
