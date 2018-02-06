@@ -53,6 +53,9 @@ def cmdImportScan(ctx, subproject, spdx_path, scan_dt, desc):
       # check for errors
       if parser.isError():
         sys.exit(f"Error parsing {spdx_path}: {parser.errorMessage}")
+      # empty list means no file data found
+      if fdList == []:
+        sys.exit(f"Error parsing {spdx_path}: No file data found")
 
       # check the parsed file data
       importer = TVImporter()

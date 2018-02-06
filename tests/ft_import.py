@@ -26,11 +26,13 @@ from slm import slm
 from helper_sandbox import (setUpSandbox, runSandboxCommands, tearDownSandbox,
   runcmd, printResultDebug)
 
+# paths to various SPDX test files
 PATH_SIMPLE_ALL_KNOWN_SPDX = "tests/testfiles/simpleAllKnown.spdx"
 PATH_BROKEN_READING_NO_COLON_SPDX = "tests/testfiles/brokenReadingNoColon.spdx"
 PATH_BROKEN_READING_MULTILINE_TEXT_SPDX = "tests/testfiles/brokenReadingMultilineText.spdx"
 PATH_BROKEN_PARSING_BAD_FILECHECKSUM_TYPE_SPDX = "tests/testfiles/brokenParsingBadFileChecksumType.spdx"
 PATH_BROKEN_PARSING_BAD_FILECHECKSUM_FORMAT_SPDX = "tests/testfiles/brokenParsingBadFileChecksumFormat.spdx"
+PATH_BROKEN_IMPORTING_NO_FILE_DATA_SPDX = "tests/testfiles/brokenImportingNoFileData.spdx"
 
 class SPDXImportFuncTestSuite(unittest.TestCase):
   """spdxLicenseManager tag-value importer FT suite."""
@@ -131,3 +133,14 @@ simple/file3.txt => BSD-2-Clause
     self.assertEqual(1, result.exit_code)
     self.assertIn(f"Error parsing {PATH_BROKEN_PARSING_BAD_FILECHECKSUM_FORMAT_SPDX}: Invalid FileChecksum format:", result.output)
     self.assertIn(f"found for file simple/file3.txt", result.output)
+
+  def test_cannot_import_spdx_file_with_no_filedata(self):
+    # Edith accidentally tries to import an SPDX file which has some tag-value
+    # pairs but no filedata
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "import-scan", PATH_BROKEN_IMPORTING_NO_FILE_DATA_SPDX,
+      "--scan_date", "2017-05-05", "--desc", "no FileName tag-values")
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(f"Error parsing {PATH_BROKEN_IMPORTING_NO_FILE_DATA_SPDX}: No file data found\n", result.output)

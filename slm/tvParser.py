@@ -61,6 +61,9 @@ class TVParser:
     if self.state == self.STATE_ERROR:
       return None
 
+    if self.fdList == [] and self.currentFileData is None:
+      return []
+
     # record current file data record
     self.fdList.append(self.currentFileData)
     # clean up

@@ -197,3 +197,7 @@ class TVParserTestSuite(unittest.TestCase):
     self.assertTrue(isError)
     fdList = self.parser.finalize()
     self.assertIsNone(fdList)
+
+  def test_finalize_with_no_filedata_returns_empty_list(self):
+    fdList = self.parser.finalize()
+    self.assertEqual(fdList, [])

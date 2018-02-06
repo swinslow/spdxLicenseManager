@@ -1,0 +1,50 @@
+# no FileName / LicenseConcluded data
+SPDXVersion: SPDX-2.0
+DataLicense: CC0-1.0
+
+##-------------------------
+## Document Information
+##-------------------------
+
+DocumentNamespace: http://3a25b77ecd93/repo/SPDX2TV_simple.tar.gz_1517059409.spdx
+DocumentName: /srv/fossology/repository/report
+SPDXID: SPDXRef-DOCUMENT
+
+##-------------------------
+## Creation Information
+##-------------------------
+
+Creator: Tool: spdx2
+Creator: Person: steve (y)
+CreatorComment: <text>
+This document was created using license information and a generator from Fossology.
+</text>
+Created: 2018-01-27T13:23:30Z
+LicenseListVersion: 2.6
+
+##-------------------------
+## Package Information
+##-------------------------
+
+
+PackageName: simple.tar.gz
+PackageFileName: simple.tar.gz
+SPDXID: SPDXRef-upload300
+PackageDownloadLocation: NOASSERTION
+PackageVerificationCode: 9052bd261aa08821527ff18c9c35b8a90be3b3eb
+PackageChecksum: SHA1: c1980212b3073194847ef823151465f07d1e8ecc
+PackageChecksum: MD5: 9ff50e6c0ee23086f1f06b650410eae0
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageLicenseComments: <text> licenseInfoInFile determined by Scanners:
+ - nomos ("3.1.0-8-gaef393d".aef393)
+ - monk ("3.1.0-8-gaef393d".aef393) </text>
+PackageLicenseInfoFromFiles: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-upload300
+
+##--------------------------
+## File Information
+##--------------------------
+
