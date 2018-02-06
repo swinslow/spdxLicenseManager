@@ -22,8 +22,12 @@ import click
 
 from .helperContext import extractContext
 
-def cmdListScanResults(ctx, scan_id):
+def cmdListScanResults(ctx, scan_id=None):
   slmhome, mainconfig, project, db = extractContext(ctx)
+
+  # check whether a scan ID was provided
+  if scan_id is None:
+    sys.exit(f'Usage: slm list-scan-results --scan_id SCAN_ID\n\nError: "scan_id" not provided.')
 
   # confirm that scan with this ID exists
   scan = db.getScan(_id=scan_id)

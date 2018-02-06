@@ -225,9 +225,18 @@ All duplicates should be removed from the SPDX file before importing.
   def test_cannot_list_results_for_a_nonexistent_scan(self):
     # Edith accidentally tries to list the files and licenses for an
     # incorrect scan ID
-    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+    result = runcmd(self, slm.cli, "frotz",
       "list-scan-results", "--scan_id", "2")
 
     # It fails and explains why
     self.assertEqual(1, result.exit_code)
     self.assertEqual(f"Scan ID 2 does not exist.\n", result.output)
+
+  def test_cannot_list_results_without_scan_id(self):
+    # Edith accidentally tries to list files and licenses for a scan but
+    # forgets to provide a scan ID
+    result = runcmd(self, slm.cli, "frotz", "list-scan-results")
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(f'Usage: slm list-scan-results --scan_id SCAN_ID\n\nError: "scan_id" not provided.\n', result.output)
