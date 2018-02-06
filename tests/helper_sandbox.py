@@ -77,6 +77,7 @@ def runSandboxCommands(testCase, cli):
   sandboxcmd(testCase, cli, 'add-category', 'Project Licenses')
   sandboxcmd(testCase, cli, 'add-category', 'Copyleft')
   sandboxcmd(testCase, cli, 'add-category', 'Attribution')
+  sandboxcmd(testCase, cli, 'add-category', 'Other')
   sandboxcmd(testCase, cli, 'add-category', 'No license found')
 
   # and some test licenses
@@ -86,6 +87,7 @@ def runSandboxCommands(testCase, cli):
   sandboxcmd(testCase, cli, 'add-license', 'GPL-2.0-or-later', 'Copyleft')
   sandboxcmd(testCase, cli, 'add-license', 'BSD-2-Clause', 'Attribution')
   sandboxcmd(testCase, cli, 'add-license', 'MIT', 'Attribution')
+  sandboxcmd(testCase, cli, 'add-license', 'CC0-1.0', 'Other')
   sandboxcmd(testCase, cli, 'add-license', 'No license found', 'No license found')
 
   # and some test conversions
@@ -98,6 +100,9 @@ def runSandboxCommands(testCase, cli):
   sandboxcmd(testCase, cli, "--subproject", "frotz-nuclear",
       "import-scan", "tests/testfiles/slm-2018-01-26.spdx",
       "--scan_date", "2018-01-26", "--desc", "frotz-nuclear initial scan")
+  sandboxcmd(testCase, cli, "--subproject", "frotz-dim",
+      "import-scan", "tests/testfiles/slm-2018-02-06.spdx",
+      "--scan_date", "2018-02-06", "--desc", "frotz-dim initial scan")
 
 def printResultDebug(result):
   tb = result.exc_info[2]
@@ -107,5 +112,6 @@ def printResultDebug(result):
   print(f"output = {result.output}")
   print(f"output_bytes = {result.output_bytes}")
   print(f"runner = {result.runner}")
-  print(f"=====TRACEBACK=====")
+  print(f"=====BEGIN TRACEBACK=====")
   print_tb(tb)
+  print(f"=====END TRACEBACK=====")

@@ -58,11 +58,11 @@ class SPDXImportFuncTestSuite(unittest.TestCase):
 
     # It tells her that the scan was successfully added, and how to find it
     self.assertEqual(0, result.exit_code)
-    self.assertEqual(f"Successfully imported 4 files from {PATH_SIMPLE_ALL_KNOWN_SPDX}\nScan ID is 2\n", result.output)
+    self.assertEqual(f"Successfully imported 4 files from {PATH_SIMPLE_ALL_KNOWN_SPDX}\nScan ID is 3\n", result.output)
 
     # She now tries to print the scan results
     result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
-      "list-scan-results", "--scan_id", "2")
+      "list-scan-results", "--scan_id", "3")
 
     # They are displayed in a simple text format, alphabetically by file path
     self.assertEqual(0, result.exit_code)
@@ -159,11 +159,11 @@ simple/file3.txt => BSD-2-Clause
 
     # It tells her that the scan was successfully added, and how to find it
     self.assertEqual(0, result.exit_code)
-    self.assertEqual(f"Successfully imported 4 files from {PATH_SIMPLE_SPDX}\nScan ID is 2\n", result.output)
+    self.assertEqual(f"Successfully imported 4 files from {PATH_SIMPLE_SPDX}\nScan ID is 3\n", result.output)
 
     # She now tries to print the scan results
     result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
-      "list-scan-results", "--scan_id", "2")
+      "list-scan-results", "--scan_id", "3")
 
     # They are displayed in a simple text format, alphabetically by file path
     self.assertEqual(0, result.exit_code)
@@ -226,11 +226,11 @@ All duplicates should be removed from the SPDX file before importing.
     # Edith accidentally tries to list the files and licenses for an
     # incorrect scan ID
     result = runcmd(self, slm.cli, "frotz",
-      "list-scan-results", "--scan_id", "2")
+      "list-scan-results", "--scan_id", "13")
 
     # It fails and explains why
     self.assertEqual(1, result.exit_code)
-    self.assertEqual(f"Scan ID 2 does not exist.\n", result.output)
+    self.assertEqual(f"Scan ID 13 does not exist.\n", result.output)
 
   def test_cannot_list_results_without_scan_id(self):
     # Edith accidentally tries to list files and licenses for a scan but
@@ -255,7 +255,7 @@ All duplicates should be removed from the SPDX file before importing.
 
     # She then prints the scan results
     result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
-      "list-scan-results", "--scan_id", "2")
+      "list-scan-results", "--scan_id", "3")
 
     # They are displayed with common path prefixes stripped
     self.assertEqual(0, result.exit_code)
