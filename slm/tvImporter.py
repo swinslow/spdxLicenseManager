@@ -118,6 +118,8 @@ class TVImporter:
       else:
         self.licensesMapping[lic] = _id
 
+    self.licensesUnknown.sort()
+
     return self.licensesUnknown == []
 
   def _checkFileDataListForDuplicatePaths(self, fdList):

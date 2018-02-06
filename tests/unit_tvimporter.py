@@ -64,6 +64,7 @@ class TVImporterTestSuite(unittest.TestCase):
     self.fdList = [self.fd1, self.fd2, self.fd3, self.fd4]
     # not in fdList by default
     self.fd5 = createFD("/tmp/badLicense", "UnknownLicense")
+    self.fd6 = createFD("/tmp/badLic2", "SecondUnknownLic")
     self.fdConvert = createFD("/tmp/needsConvert", "293")
 
   def tearDown(self):
@@ -153,6 +154,14 @@ class TVImporterTestSuite(unittest.TestCase):
     self.assertIn("UnknownLicense", unknowns)
     self.assertNotIn("DoAnything", unknowns)
     self.assertNotIn("HarshEULA", unknowns)
+
+  def test_license_list_is_sorted_if_multiple_are_unknown(self):
+    self.fdList.append(self.fd5)
+    self.fdList.append(self.fd6)
+    self.importer.checkFileDataList(fdList=self.fdList, db=self.db)
+    unknowns = self.importer.getUnknowns()
+    self.assertEqual("SecondUnknownLic", unknowns[0])
+    self.assertEqual("UnknownLicense", unknowns[1])
 
   def test_checker_returns_true_if_all_paths_are_unique(self):
     retval = self.importer.checkFileDataList(fdList=self.fdList, db=self.db)

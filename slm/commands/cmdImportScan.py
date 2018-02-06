@@ -61,13 +61,7 @@ def cmdImportScan(ctx, subproject, spdx_path, scan_dt, desc):
       importer = TVImporter()
       retval = importer.checkFileDataList(fdList=fdList, db=db)
       if not retval:
-        # failed because of unknown licenses?
-        if importer.licensesUnknown != []:
-          exitMessage = "The following unknown licenses were detected:\n=====\n"
-          for lic in importer.licensesUnknown:
-            exitMessage += f"{lic}\n"
-          exitMessage += "=====\nFor each, run 'slm add-license' or 'slm add-conversion' before importing."
-          sys.exit(exitMessage)
+        _handleImporterFailure(importer=importer)
 
       # create new scan and get ID
       scan_id = db.addScan(subproject=subproject, scan_dt_str=scan_dt,
@@ -86,3 +80,20 @@ def cmdImportScan(ctx, subproject, spdx_path, scan_dt, desc):
 
   # clean up database
   db.closeDB()
+
+def _handleImporterFailure(importer):
+  # failed because of unknown licenses?
+  if importer.licensesUnknown != []:
+    exitMessage = "The following unknown licenses were detected:\n=====\n"
+    for lic in importer.licensesUnknown:
+      exitMessage += f"{lic}\n"
+    exitMessage += "=====\nFor each, run 'slm add-license' or 'slm add-conversion' before importing."
+    sys.exit(exitMessage)
+
+  # failed because of duplicate paths?
+  if importer.pathDuplicates != []:
+    exitMessage = "The following duplicate file paths were detected:\n=====\n"
+    for path in importer.pathDuplicates:
+      exitMessage += f"{path}\n"
+    exitMessage += "=====\nAll duplicates should be removed from the SPDX file before importing."
+    sys.exit(exitMessage)

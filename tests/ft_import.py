@@ -30,6 +30,8 @@ from helper_sandbox import (setUpSandbox, runSandboxCommands, tearDownSandbox,
 PATH_SIMPLE_SPDX = "tests/testfiles/simple.spdx"
 PATH_SIMPLE_ALL_KNOWN_SPDX = "tests/testfiles/simpleAllKnown.spdx"
 PATH_SIMPLE_TWO_UNKNOWN_SPDX = "tests/testfiles/simpleTwoUnknown.spdx"
+PATH_SIMPLE_DUPLICATE_PATHS_SPDX = "tests/testfiles/simpleDuplicatePaths.spdx"
+PATH_SIMPLE_DUPLICATES_AND_UNKNOWNS_SPDX = "tests/testfiles/simpleDuplicatesAndUnknowns.spdx"
 PATH_BROKEN_READING_NO_COLON_SPDX = "tests/testfiles/brokenReadingNoColon.spdx"
 PATH_BROKEN_READING_MULTILINE_TEXT_SPDX = "tests/testfiles/brokenReadingMultilineText.spdx"
 PATH_BROKEN_PARSING_BAD_FILECHECKSUM_TYPE_SPDX = "tests/testfiles/brokenParsingBadFileChecksumType.spdx"
@@ -172,15 +174,14 @@ simple/file2.txt => MIT
 simple/file3.txt => No license found
 """, result.output)
 
-  def test_lists_unknown_licenses_on_import(self):
+  def test_fails_and_lists_unknown_licenses_on_import(self):
     # Edith tries to import an SPDX file which has some unknown licenses with
     # no conversions in the database
     result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
       "import-scan", PATH_SIMPLE_TWO_UNKNOWN_SPDX,
-      "--scan_date", "2017-05-05", "--desc", "no FileName tag-values")
+      "--scan_date", "2017-05-05", "--desc", "unknown licenses")
 
     # It fails and explains which licenses / conversions need to be added
-    printResultDebug(result)
     self.assertEqual(1, result.exit_code)
     self.assertEqual(
 f"""The following unknown licenses were detected:
@@ -190,3 +191,33 @@ NCSA
 =====
 For each, run 'slm add-license' or 'slm add-conversion' before importing.
 """, result.output)
+
+  def test_fails_and_lists_duplicate_paths_on_import(self):
+    # Edith tries to import an SPDX file which has some duplicate paths
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "import-scan", PATH_SIMPLE_DUPLICATE_PATHS_SPDX,
+      "--scan_date", "2017-05-05", "--desc", "duplicate paths")
+
+    # It fails and explains which paths were duplicates
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(
+f"""The following duplicate file paths were detected:
+=====
+simple/dir1/subfile.txt
+simple/file3.txt
+=====
+All duplicates should be removed from the SPDX file before importing.
+""", result.output)
+
+  def test_prints_duplicates_not_unknowns_if_both_present(self):
+    # Edith tries to import an SPDX file which has both (a) some duplicate
+    # paths, and (b) some unknown licenses
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "import-scan", PATH_SIMPLE_DUPLICATES_AND_UNKNOWNS_SPDX,
+      "--scan_date", "2017-05-05",
+      "--desc", "duplicate paths and unknown licenses")
+
+    # It fails and prints the duplicate paths, but not the unknown licenses
+    self.assertEqual(1, result.exit_code)
+    self.assertIn("The following duplicate file paths were detected", result.output)
+    self.assertNotIn("The following unknown licenses were detected", result.output)
