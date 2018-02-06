@@ -94,6 +94,11 @@ def runSandboxCommands(testCase, cli):
   sandboxcmd(testCase, cli, 'add-conversion', 'NOASSERTION', 'No license found')
   sandboxcmd(testCase, cli, 'add-conversion', 'NONE', 'No license found')
 
+  # and import a scan
+  sandboxcmd(testCase, cli, "--subproject", "frotz-nuclear",
+      "import-scan", "tests/testfiles/slm-2018-01-26.spdx",
+      "--scan_date", "2018-01-26", "--desc", "frotz-nuclear initial scan")
+
 def printResultDebug(result):
   tb = result.exc_info[2]
   print(f"exc_info = {result.exc_info}")

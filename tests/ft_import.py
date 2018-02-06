@@ -58,11 +58,11 @@ class SPDXImportFuncTestSuite(unittest.TestCase):
 
     # It tells her that the scan was successfully added, and how to find it
     self.assertEqual(0, result.exit_code)
-    self.assertEqual(f"Successfully imported 4 files from {PATH_SIMPLE_ALL_KNOWN_SPDX}\nScan ID is 1\n", result.output)
+    self.assertEqual(f"Successfully imported 4 files from {PATH_SIMPLE_ALL_KNOWN_SPDX}\nScan ID is 2\n", result.output)
 
     # She now tries to print the scan results
     result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
-      "list-scan-results", "--scan_id", "1")
+      "list-scan-results", "--scan_id", "2")
 
     # They are displayed in a simple text format, alphabetically by file path
     self.assertEqual(0, result.exit_code)
@@ -159,11 +159,11 @@ simple/file3.txt => BSD-2-Clause
 
     # It tells her that the scan was successfully added, and how to find it
     self.assertEqual(0, result.exit_code)
-    self.assertEqual(f"Successfully imported 4 files from {PATH_SIMPLE_SPDX}\nScan ID is 1\n", result.output)
+    self.assertEqual(f"Successfully imported 4 files from {PATH_SIMPLE_SPDX}\nScan ID is 2\n", result.output)
 
     # She now tries to print the scan results
     result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
-      "list-scan-results", "--scan_id", "1")
+      "list-scan-results", "--scan_id", "2")
 
     # They are displayed in a simple text format, alphabetically by file path
     self.assertEqual(0, result.exit_code)
