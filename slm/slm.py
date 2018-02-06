@@ -45,6 +45,7 @@ from .commands.cmdEditConversion import cmdEditConversion
 from .commands.cmdListConversions import cmdListConversions
 from .commands.cmdImportScan import cmdImportScan
 from .commands.cmdListScanResults import cmdListScanResults
+from .commands.cmdListScans import cmdListScans
 
 VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
 
@@ -289,3 +290,10 @@ def cliImportScan(ctx, spdx_path, scan_date, desc):
 def cliListScanResults(ctx, scan_id):
   checkForContext(ctx)
   return cmdListScanResults(ctx, scan_id)
+
+@cli.command('list-scans', help="List scans")
+@click.pass_context
+def cliListScans(ctx):
+  checkForContext(ctx)
+  subproject = ctx.obj['SUBPROJECT']
+  return cmdListScans(ctx, subproject=subproject)
