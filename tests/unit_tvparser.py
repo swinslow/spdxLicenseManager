@@ -39,6 +39,15 @@ class TVParserTestSuite(unittest.TestCase):
     self.assertIsNone(self.parser.currentFileData)
     self.assertEqual(self.parser.errorMessage, "")
 
+  def test_new_parsed_file_data_is_in_expected_initial_state(self):
+    fd = ParsedFileData()
+    self.assertEqual(fd.path, "")
+    self.assertEqual(fd.license, "")
+    self.assertEqual(fd.finalLicense, "")
+    self.assertEqual(fd.md5, "")
+    self.assertEqual(fd.sha1, "")
+    self.assertEqual(fd.sha256, "")
+
   @mock.patch('slm.tvParser.TVParser._parseNextPairFromReady')
   def test_will_call_correct_helper_for_ready_state(self, r_mock):
     self.parser.state = self.parser.STATE_READY

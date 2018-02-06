@@ -34,6 +34,9 @@ class TVImporter:
     if db is None:
       raise ProjectDBInsertError("Cannot check FileData list without providing database")
 
+    # apply conversions
+    self._applyConversions(fdList=fdList, db=db)
+
     # check filenames and return early if any are duplicates
     retval = self._checkFileDataListForDuplicatePaths(fdList=fdList)
     if retval is False:
@@ -64,9 +67,9 @@ class TVImporter:
     file_tuples = []
     for fd in fdList:
       # create tuples with args in order from projectdb.addBulkFiles
-      lic_id = self.licensesMapping.get(fd.license, None)
+      lic_id = self.licensesMapping.get(fd.finalLicense, None)
       if lic_id is None:
-        raise ProjectDBInsertError(f"Error, license {fd.license} not found after checking all licenses; shouldn't happen")
+        raise ProjectDBInsertError(f"Error, license {fd.finalLicense} not found after checking all licenses; shouldn't happen")
       ft = (fd.path, lic_id, fd.sha1, fd.md5, fd.sha256)
       file_tuples.append(ft)
     db.addBulkFiles(scan_id=scan_id, file_tuples=file_tuples)
@@ -84,11 +87,24 @@ class TVImporter:
 
   ##### Tag-value importing main helper functions
 
+  def _applyConversions(self, fdList, db):
+    # load all conversions once, so we don't have to keep querying the database
+    convsList = db.getConversionsAll()
+
+    # convert to a dict for easier lookups
+    convsDict = {}
+    for conv in convsList:
+      convsDict[conv.old_text] = conv.new_license.name
+
+    # for each license, check whether we have a conversion available
+    for fd in fdList:
+      fd.finalLicense = convsDict.get(fd.license, fd.license)
+
   def _checkFileDataListForLicenses(self, fdList, db):
     # import all FDs into licenses set so we can see what's unknown
     lset = set()
     for fd in fdList:
-      lset.add(fd.license)
+      lset.add(fd.finalLicense)
     self.licensesAll = sorted(list(lset))
 
     # FIXME add checks here for other license name cleanup

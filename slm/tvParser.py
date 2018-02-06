@@ -24,6 +24,7 @@ class ParsedFileData:
     super(ParsedFileData, self).__init__()
     self.path = ""
     self.license = ""
+    self.finalLicense = ""
     self.md5 = ""
     self.sha1 = ""
     self.sha256 = ""

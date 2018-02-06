@@ -27,6 +27,7 @@ from helper_sandbox import (setUpSandbox, runSandboxCommands, tearDownSandbox,
   runcmd, printResultDebug)
 
 # paths to various SPDX test files
+PATH_SIMPLE_SPDX = "tests/testfiles/simple.spdx"
 PATH_SIMPLE_ALL_KNOWN_SPDX = "tests/testfiles/simpleAllKnown.spdx"
 PATH_BROKEN_READING_NO_COLON_SPDX = "tests/testfiles/brokenReadingNoColon.spdx"
 PATH_BROKEN_READING_MULTILINE_TEXT_SPDX = "tests/testfiles/brokenReadingMultilineText.spdx"
@@ -144,3 +145,28 @@ simple/file3.txt => BSD-2-Clause
     # It fails and explains why
     self.assertEqual(1, result.exit_code)
     self.assertEqual(f"Error parsing {PATH_BROKEN_IMPORTING_NO_FILE_DATA_SPDX}: No file data found\n", result.output)
+
+  def test_conversions_are_correctly_applied_on_import(self):
+    # Edith has a very short SPDX file, which requires some conversions (e.g.
+    # "NOASSERTION" => "No license found"). She imports it as a new scan in
+    # the frotz subproject frotz-dim
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "import-scan", PATH_SIMPLE_SPDX, "--scan_date", "2017-05-05",
+      "--desc", "frotz-dim initial scan")
+
+    # It tells her that the scan was successfully added, and how to find it
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual(f"Successfully imported 4 files from {PATH_SIMPLE_SPDX}\nScan ID is 1\n", result.output)
+
+    # She now tries to print the scan results
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "list-scan-results", "--scan_id", "1")
+
+    # They are displayed in a simple text format, alphabetically by file path
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual(
+f"""simple/dir1/subfile.txt => No license found
+simple/file1.txt => No license found
+simple/file2.txt => MIT
+simple/file3.txt => No license found
+""", result.output)

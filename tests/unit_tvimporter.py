@@ -23,7 +23,7 @@ from unittest import mock
 
 from slm.tvImporter import TVImporter
 from slm.tvParser import ParsedFileData
-from slm.datatypes import Category, License, Scan, Subproject
+from slm.datatypes import Category, Conversion, License, Scan, Subproject
 from slm.projectdb import (ProjectDB, ProjectDBQueryError,
   ProjectDBInsertError, ProjectDBUpdateError, ProjectDBDeleteError)
 
@@ -52,6 +52,7 @@ class TVImporterTestSuite(unittest.TestCase):
     # insert sample data
     self.insertSampleCategoryData()
     self.insertSampleLicenseData()
+    self.insertSampleConversionData()
     self.insertSampleSubprojectData()
     self.insertSampleScanData()
 
@@ -63,6 +64,7 @@ class TVImporterTestSuite(unittest.TestCase):
     self.fdList = [self.fd1, self.fd2, self.fd3, self.fd4]
     # not in fdList by default
     self.fd5 = createFD("/tmp/badLicense", "UnknownLicense")
+    self.fdConvert = createFD("/tmp/needsConvert", "293")
 
   def tearDown(self):
     pass
@@ -84,6 +86,16 @@ class TVImporterTestSuite(unittest.TestCase):
       License(_id=4, name="DoAnythingNoncommercial", category_id=1),
     ]
     self.db.session.bulk_save_objects(licenses)
+    self.db.session.commit()
+
+  def insertSampleConversionData(self):
+    conversions = [
+      Conversion(_id=1, old_text="293", new_license_id=3),
+      Conversion(_id=2, old_text="NC", new_license_id=4),
+      Conversion(_id=3, old_text="anything", new_license_id=1),
+      Conversion(_id=4, old_text="Anything", new_license_id=1),
+    ]
+    self.db.session.bulk_save_objects(conversions)
     self.db.session.commit()
 
   def insertSampleSubprojectData(self):
@@ -177,28 +189,43 @@ class TVImporterTestSuite(unittest.TestCase):
     self.assertEqual(True, retval)
 
   def test_reads_licenses_into_licensesAll(self):
+    # fill in finalLicense, since we are skipping _applyConversions
+    for fd in self.fdList:
+      fd.finalLicense = fd.license
     self.importer._checkFileDataListForLicenses(fdList=self.fdList, db=self.db)
     self.assertIn("DoAnything", self.importer.licensesAll)
 
   def test_reads_only_unknown_licenses_into_licensesUnknown(self):
     self.fdList.append(self.fd5)
+    # fill in finalLicense, since we are skipping _applyConversions
+    for fd in self.fdList:
+      fd.finalLicense = fd.license
     self.importer._checkFileDataListForLicenses(fdList=self.fdList, db=self.db)
     self.assertIn("UnknownLicense", self.importer.licensesUnknown)
     self.assertNotIn("DoAnything", self.importer.licensesUnknown)
 
   def test_reads_only_known_licenses_into_licensesMapping(self):
     self.fdList.append(self.fd5)
+    # fill in finalLicense, since we are skipping _applyConversions
+    for fd in self.fdList:
+      fd.finalLicense = fd.license
     self.importer._checkFileDataListForLicenses(fdList=self.fdList, db=self.db)
     self.assertEqual(1, self.importer.licensesMapping.get("DoAnything", None))
     self.assertEqual(2, self.importer.licensesMapping.get("HarshEULA", None))
     self.assertEqual(None, self.importer.licensesMapping.get("UnknownLicense", None))
 
   def test_checker_returns_true_if_all_licenses_are_known(self):
+    # fill in finalLicense, since we are skipping _applyConversions
+    for fd in self.fdList:
+      fd.finalLicense = fd.license
     retval = self.importer._checkFileDataListForLicenses(fdList=self.fdList,
       db=self.db)
     self.assertEqual(True, retval)
 
   def test_checker_returns_false_if_any_licenses_are_unknown(self):
+    # fill in finalLicense, since we are skipping _applyConversions
+    for fd in self.fdList:
+      fd.finalLicense = fd.license
     self.fdList.append(self.fd5)
     retval = self.importer._checkFileDataListForLicenses(fdList=self.fdList,
       db=self.db)
@@ -268,3 +295,9 @@ class TVImporterTestSuite(unittest.TestCase):
         scan_id=self.scan_id)
     f1 = self.db.getFile(scan_id=self.scan_id, path="/tmp/f1")
     self.assertIsNone(f1)
+
+  def test_checker_applies_conversions(self):
+    self.fdList.append(self.fdConvert)
+    retval = self.importer.checkFileDataList(fdList=self.fdList, db=self.db)
+    self.assertTrue(retval)
+    self.assertEqual("293PageEULA", self.fdConvert.finalLicense)
