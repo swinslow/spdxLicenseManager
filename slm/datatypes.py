@@ -89,6 +89,9 @@ class Scan(Base):
     backref=backref('scans', order_by=_id)
   )
 
+  def __repr__(self):
+    return f"Scan {self._id}: {self.scan_dt}, {self.desc}"
+
 class File(Base):
   __tablename__ = 'files'
   # columns
@@ -106,3 +109,10 @@ class File(Base):
   license = relationship('License',
     backref=backref('files', order_by=path)
   )
+
+  def __repr__(self):
+    if self.license:
+      lic_name = self.license.name
+    else:
+      lic_name = "NULL"
+    return f"File {self._id}: scan {self.scan_id}, path {self.path}, license {lic_name} ({self.license_id})"
