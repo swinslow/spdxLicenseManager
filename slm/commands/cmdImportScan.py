@@ -59,7 +59,15 @@ def cmdImportScan(ctx, subproject, spdx_path, scan_dt, desc):
 
       # check the parsed file data
       importer = TVImporter()
-      importer.checkFileDataList(fdList=fdList, db=db)
+      retval = importer.checkFileDataList(fdList=fdList, db=db)
+      if not retval:
+        # failed because of unknown licenses?
+        if importer.licensesUnknown != []:
+          exitMessage = "The following unknown licenses were detected:\n=====\n"
+          for lic in importer.licensesUnknown:
+            exitMessage += f"{lic}\n"
+          exitMessage += "=====\nFor each, run 'slm add-license' or 'slm add-conversion' before importing."
+          sys.exit(exitMessage)
 
       # create new scan and get ID
       scan_id = db.addScan(subproject=subproject, scan_dt_str=scan_dt,

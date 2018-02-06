@@ -29,6 +29,7 @@ from helper_sandbox import (setUpSandbox, runSandboxCommands, tearDownSandbox,
 # paths to various SPDX test files
 PATH_SIMPLE_SPDX = "tests/testfiles/simple.spdx"
 PATH_SIMPLE_ALL_KNOWN_SPDX = "tests/testfiles/simpleAllKnown.spdx"
+PATH_SIMPLE_TWO_UNKNOWN_SPDX = "tests/testfiles/simpleTwoUnknown.spdx"
 PATH_BROKEN_READING_NO_COLON_SPDX = "tests/testfiles/brokenReadingNoColon.spdx"
 PATH_BROKEN_READING_MULTILINE_TEXT_SPDX = "tests/testfiles/brokenReadingMultilineText.spdx"
 PATH_BROKEN_PARSING_BAD_FILECHECKSUM_TYPE_SPDX = "tests/testfiles/brokenParsingBadFileChecksumType.spdx"
@@ -169,4 +170,23 @@ f"""simple/dir1/subfile.txt => No license found
 simple/file1.txt => No license found
 simple/file2.txt => MIT
 simple/file3.txt => No license found
+""", result.output)
+
+  def test_lists_unknown_licenses_on_import(self):
+    # Edith tries to import an SPDX file which has some unknown licenses with
+    # no conversions in the database
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "import-scan", PATH_SIMPLE_TWO_UNKNOWN_SPDX,
+      "--scan_date", "2017-05-05", "--desc", "no FileName tag-values")
+
+    # It fails and explains which licenses / conversions need to be added
+    printResultDebug(result)
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(
+f"""The following unknown licenses were detected:
+=====
+GFDL-1.3-only
+NCSA
+=====
+For each, run 'slm add-license' or 'slm add-conversion' before importing.
 """, result.output)
