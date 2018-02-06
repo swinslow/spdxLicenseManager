@@ -30,6 +30,8 @@ setup(
   packages=find_packages(),
   install_requires=[
     'Click',
+    'SQLAlchemy',
+    'openpyxl',
   ],
   entry_points='''
     [console_scripts]
