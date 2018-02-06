@@ -50,6 +50,9 @@ def cmdImportScan(ctx, subproject, spdx_path, scan_dt, desc):
       for tag, value in tvList:
         parser.parseNextPair(tag, value)
       fdList = parser.finalize()
+      # check for errors
+      if parser.isError():
+        sys.exit(f"Error parsing {spdx_path}: {parser.errorMessage}")
 
       # check the parsed file data
       importer = TVImporter()

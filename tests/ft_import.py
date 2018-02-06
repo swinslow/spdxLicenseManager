@@ -29,6 +29,8 @@ from helper_sandbox import (setUpSandbox, runSandboxCommands, tearDownSandbox,
 PATH_SIMPLE_ALL_KNOWN_SPDX = "tests/testfiles/simpleAllKnown.spdx"
 PATH_BROKEN_READING_NO_COLON_SPDX = "tests/testfiles/brokenReadingNoColon.spdx"
 PATH_BROKEN_READING_MULTILINE_TEXT_SPDX = "tests/testfiles/brokenReadingMultilineText.spdx"
+PATH_BROKEN_PARSING_BAD_FILECHECKSUM_TYPE_SPDX = "tests/testfiles/brokenParsingBadFileChecksumType.spdx"
+PATH_BROKEN_PARSING_BAD_FILECHECKSUM_FORMAT_SPDX = "tests/testfiles/brokenParsingBadFileChecksumFormat.spdx"
 
 class SPDXImportFuncTestSuite(unittest.TestCase):
   """spdxLicenseManager tag-value importer FT suite."""
@@ -106,3 +108,26 @@ simple/file3.txt => BSD-2-Clause
     # It fails and explains why
     self.assertEqual(1, result.exit_code)
     self.assertIn(f'Error reading {PATH_BROKEN_READING_MULTILINE_TEXT_SPDX}: No closing </text> tag found', result.output)
+
+  def test_cannot_import_spdx_file_with_unknown_filechecksum_type(self):
+    # Edith accidentally tries to import an SPDX file which has a
+    # FileChecksum tag with an invalid (unknown) type
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "import-scan", PATH_BROKEN_PARSING_BAD_FILECHECKSUM_TYPE_SPDX,
+      "--scan_date", "2017-05-05", "--desc", "invalid FileChecksum type")
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(f"Error parsing {PATH_BROKEN_PARSING_BAD_FILECHECKSUM_TYPE_SPDX}: Unknown FileChecksum type: 'INVALID' found for file simple/file3.txt\n", result.output)
+
+  def test_cannot_import_spdx_file_with_bad_filechecksum_format(self):
+    # Edith accidentally tries to import an SPDX file which has a
+    # FileChecksum tag with an invalid format
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "import-scan", PATH_BROKEN_PARSING_BAD_FILECHECKSUM_FORMAT_SPDX,
+      "--scan_date", "2017-05-05", "--desc", "invalid FileChecksum format")
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertIn(f"Error parsing {PATH_BROKEN_PARSING_BAD_FILECHECKSUM_FORMAT_SPDX}: Invalid FileChecksum format:", result.output)
+    self.assertIn(f"found for file simple/file3.txt", result.output)

@@ -101,19 +101,19 @@ class TVParserTestSuite(unittest.TestCase):
     self.parser.parseNextPair("FileName", "/tmp/hi")
     self.parser._parseFileChecksum("blah")
     self.assertEqual(self.parser.STATE_ERROR, self.parser.state)
-    self.assertEqual("Invalid FileChecksum format: 'blah'", self.parser.errorMessage)
+    self.assertEqual("Invalid FileChecksum format: 'blah' found for file /tmp/hi", self.parser.errorMessage)
 
   def test_error_for_invalid_long_filechecksum_format(self):
     self.parser.parseNextPair("FileName", "/tmp/hi")
     self.parser._parseFileChecksum("MD5: 12390834: other")
     self.assertEqual(self.parser.STATE_ERROR, self.parser.state)
-    self.assertEqual("Invalid FileChecksum format: 'MD5: 12390834: other'", self.parser.errorMessage)
+    self.assertEqual("Invalid FileChecksum format: 'MD5: 12390834: other' found for file /tmp/hi", self.parser.errorMessage)
 
   def test_error_for_unknown_filechecksum_type(self):
     self.parser.parseNextPair("FileName", "/tmp/hi")
     self.parser._parseFileChecksum("ECDSA: 12390834")
     self.assertEqual(self.parser.STATE_ERROR, self.parser.state)
-    self.assertEqual("Unknown FileChecksum type: 'ECDSA'", self.parser.errorMessage)
+    self.assertEqual("Unknown FileChecksum type: 'ECDSA' found for file /tmp/hi", self.parser.errorMessage)
 
   def test_will_record_data_in_current_file_data(self):
     self.parser.parseNextPair("FileName", "/tmp/hi")
@@ -187,3 +187,13 @@ class TVParserTestSuite(unittest.TestCase):
     self.assertFalse(self.parser.isError())
     self.parser.state = self.parser.STATE_ERROR
     self.assertTrue(self.parser.isError())
+
+  def test_finalize_will_fail_if_in_error_state(self):
+    self.parser.parseNextPair("FileName", "/tmp/file1")
+    isError = self.parser.isError()
+    self.assertFalse(isError)
+    self.parser.state = self.parser.STATE_ERROR
+    isError = self.parser.isError()
+    self.assertTrue(isError)
+    fdList = self.parser.finalize()
+    self.assertIsNone(fdList)

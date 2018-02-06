@@ -57,6 +57,10 @@ class TVParser:
       self.state = self.STATE_ERROR
 
   def finalize(self):
+    # if error, don't return the list
+    if self.state == self.STATE_ERROR:
+      return None
+
     # record current file data record
     self.fdList.append(self.currentFileData)
     # clean up
@@ -90,7 +94,7 @@ class TVParser:
   def _parseFileChecksum(self, value):
     sp = value.split(":")
     if len(sp) != 2:
-      self.errorMessage = f"Invalid FileChecksum format: '{value}'"
+      self.errorMessage = f"Invalid FileChecksum format: '{value}' found for file {self.currentFileData.path}"
       self.state = self.STATE_ERROR
       return
     checksumType = sp[0]
@@ -102,7 +106,7 @@ class TVParser:
     elif checksumType == "SHA256":
       self.currentFileData.sha256 = checksum
     else:
-      self.errorMessage = f"Unknown FileChecksum type: '{checksumType}'"
+      self.errorMessage = f"Unknown FileChecksum type: '{checksumType}' found for file {self.currentFileData.path}"
       self.state = self.STATE_ERROR
 
   ##### Other helper functions
