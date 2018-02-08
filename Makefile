@@ -28,4 +28,10 @@ unittest: FORCE
 %.py: FORCE
 	python -m unittest discover -s tests -p $@
 
+coverage: FORCE
+	coverage run --source slm -m unittest discover -s tests -p "*.py"
+
+coverage_report: coverage
+	coverage report -m
+
 FORCE:
