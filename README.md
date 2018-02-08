@@ -2,7 +2,7 @@
 
 # spdxLicenseManager
 
-[![Build Status](https://travis-ci.org/swinslow/spdxLicenseManager.svg?branch=master)](https://travis-ci.org/swinslow/spdxLicenseManager)
+[![Build Status](https://travis-ci.org/swinslow/spdxLicenseManager.svg?branch=master)](https://travis-ci.org/swinslow/spdxLicenseManager) [![Coverage Status](https://coveralls.io/repos/github/swinslow/spdxLicenseManager/badge.svg?branch=master)](https://coveralls.io/github/swinslow/spdxLicenseManager?branch=master)
 
 ## About
 
