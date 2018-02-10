@@ -83,7 +83,6 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     ]
     self.db.session.bulk_save_objects(scans)
     self.db.session.commit()
-    self.scan_id = 1
 
   def insertSampleFileData(self):
     files = [
@@ -142,3 +141,44 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     (c_id3, c3) = self.analyzer.primaryScanCategories.popitem(last=False)
     self.assertEqual(1, c_id3)
     self.assertEqual("a category", c3.name)
+
+  def test_analyzer_cannot_add_files_before_categories_are_built(self):
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer._addFiles(scan_id=1)
+
+  def test_analyzer_can_add_files_to_categories_for_a_scan(self):
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+
+    # check category 1, with one license and NO FILES
+    (c_id1, c1) = self.analyzer.primaryScanCategories.popitem(last=False)
+    self.assertEqual("blah category", c1.name)
+    (l_id11, l11) = c1.licensesSorted.popitem(last=False)
+    self.assertEqual("293PageEULA", l11.name)
+    self.assertEqual([], list(l11.filesSorted.items()))
+
+    # check category 2, with one license and two files
+    (c_id2, c2) = self.analyzer.primaryScanCategories.popitem(last=False)
+    self.assertEqual("cat", c2.name)
+    (l_id21, l21) = c2.licensesSorted.popitem(last=False)
+    self.assertEqual("HarshEULA", l21.name)
+    (f_id211, f211) = l21.filesSorted.popitem(last=False)
+    self.assertEqual(f_id211, 3)
+    self.assertEqual(f211.path, "/tmp/f3")
+    (f_id212, f212) = l21.filesSorted.popitem(last=False)
+    self.assertEqual(f_id212, 4)
+    self.assertEqual(f212.path, "/tmp/f4")
+
+    # check category 3, with two licenses and two files
+    (c_id3, c3) = self.analyzer.primaryScanCategories.popitem(last=False)
+    self.assertEqual("a category", c3.name)
+    (l_id31, l31) = c3.licensesSorted.popitem(last=False)
+    self.assertEqual("DoAnything", l31.name)
+    (f_id311, f311) = l31.filesSorted.popitem(last=False)
+    self.assertEqual(f_id311, 1)
+    self.assertEqual(f311.path, "/tmp/f1")
+    (l_id32, l32) = c3.licensesSorted.popitem(last=False)
+    self.assertEqual("DoAnythingNoncommercial", l32.name)
+    (f_id321, f321) = l32.filesSorted.popitem(last=False)
+    self.assertEqual(f_id321, 2)
+    self.assertEqual(f321.path, "/tmp/f2")

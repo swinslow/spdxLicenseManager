@@ -49,6 +49,19 @@ class Analyzer:
       # so we can just copy them into an OrderedDict, in order
       for license in cat.licenses:
         cat.licensesSorted[license._id] = license
+        license.filesSorted = OrderedDict()
+
+  def _addFiles(self, scan_id):
+    if self.primaryScanCategories == OrderedDict():
+      raise ReportAnalysisError("Cannot call _addFiles before _buildScanCategories")
+
+    files = self.db.getFiles(scan_id=scan_id)
+    for file in files:
+      l_id = file.license._id
+      c_id = file.license.category._id
+      cat = self.primaryScanCategories[c_id]
+      lic = cat.licensesSorted[l_id]
+      lic.filesSorted[file._id] = file
 
   ##### Other helper functions
 
