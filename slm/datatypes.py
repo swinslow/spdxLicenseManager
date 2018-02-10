@@ -103,9 +103,7 @@ class File(Base):
   scan_id = Column(Integer(), ForeignKey('scans._id'))
   license_id = Column(Integer(), ForeignKey('licenses._id'))
   # relationships
-  scan = relationship('Scan',
-    backref=backref('files', order_by=path)
-  )
+  scan = relationship('Scan')
   license = relationship('License')
 
   def __repr__(self):
