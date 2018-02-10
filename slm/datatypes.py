@@ -106,9 +106,7 @@ class File(Base):
   scan = relationship('Scan',
     backref=backref('files', order_by=path)
   )
-  license = relationship('License',
-    backref=backref('files', order_by=path)
-  )
+  license = relationship('License')
 
   def __repr__(self):
     if self.license:
