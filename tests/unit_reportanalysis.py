@@ -45,7 +45,7 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self.insertSampleFileData()
 
     # create analyzer
-    self.analyzer = Analyzer(self.db)
+    self.analyzer = Analyzer(db=self.db)
 
   def tearDown(self):
     pass
@@ -101,6 +101,7 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self.assertFalse(self.analyzer.isReady)
     self.assertIsNone(self.analyzer.primaryScan)
     self.assertEqual(OrderedDict(), self.analyzer.primaryScanCategories)
+    self.assertEqual({}, self.analyzer.kwConfig)
 
   def test_analyzer_retrieves_all_categories_for_report(self):
     self.analyzer._buildScanCategories()
@@ -182,3 +183,24 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     (f_id321, f321) = l32.filesSorted.popitem(last=False)
     self.assertEqual(f_id321, 2)
     self.assertEqual(f321.path, "/tmp/f2")
+
+  def test_analyzer_can_take_optional_config_params(self):
+    configDict = {
+      "analyze-extensions": "yes",
+      "analyze-extensions-list": "json;jpeg;png"
+    }
+    newAnalyzer = Analyzer(db=self.db, config=configDict)
+    self.assertEqual("yes", newAnalyzer.kwConfig["analyze-extensions"])
+    self.assertEqual("json;jpeg;png",
+      newAnalyzer.kwConfig["analyze-extensions-list"])
+
+  def test_can_get_analyze_final_config_from_analyzer(self):
+    self.db.setConfigValue(key="analyze-extensions", value="yes")
+    exts = self.analyzer._getFinalConfigValue(key="analyze-extensions")
+    self.assertEqual(exts, "yes")
+
+  def test_can_override_db_config_in_analyzer_final_config(self):
+    self.db.setConfigValue(key="analyze-extensions", value="yes")
+    newAnalyzer = Analyzer(db=self.db, config={"analyze-extensions": "no"})
+    exts = newAnalyzer._getFinalConfigValue(key="analyze-extensions")
+    self.assertEqual(exts, "no")

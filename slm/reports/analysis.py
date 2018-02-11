@@ -25,15 +25,24 @@ from .common import ReportAnalysisError
 
 class Analyzer:
 
-  def __init__(self, db):
+  def __init__(self, db, config={}):
     super(Analyzer, self).__init__()
-    self.db = db
     self._reset()
+    self.db = db
+    # copy over config entries into new dict
+    for key, value in config.items():
+      self.kwConfig[key] = value
 
   ##### Main common report analysis functions
   ##### External usage shouldn't require calling anything except these
 
   ##### Reporting analysis main helper functions
+
+  def _getFinalConfigValue(self, key):
+    kwValue = self.kwConfig.get(key, None)
+    if kwValue is not None:
+      return kwValue
+    return self.db.getConfigValue(key)
 
   def _buildScanCategories(self):
     if self.primaryScanCategories != OrderedDict():
@@ -69,3 +78,4 @@ class Analyzer:
     self.isReady = False
     self.primaryScan = None
     self.primaryScanCategories = OrderedDict()
+    self.kwConfig = {}

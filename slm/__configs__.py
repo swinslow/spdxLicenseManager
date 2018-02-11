@@ -23,12 +23,20 @@
 # [2]: description
 
 __valid_configs__ = [
+
+  # System configuration keys
   ('magic', True, 'Magic number to validate spdxLicenseManager database'),
   ('initialized', True, 'Is this spdxLicenseManager database initialized?'),
+
+  # Other configs
   ('strip_path_prefixes', False, 'Remove common file path prefixes from a scan before importing?'),
   ('strip_LicenseRef', False, 'Remove "LicenseRef-" tags from licenses in reports?'),
   ('vendor_dirs', False, 'Directories to flag as third-party files'),
   ('ignore_extensions', False, 'File extensions to flag as ignored if no license found'),
+
+  # Analyzer configurations; can be overridden on command line
+  ('analyze-extensions', False, 'Flag: Analyze file extensions (for "No license found" results)'),
+  ('analyze-extensions-list', False, 'Semicolon-separated string: If analyze-extensions is set, list of file extensions to analyze'),
 ]
 
 def isValidConfigKey(key):
