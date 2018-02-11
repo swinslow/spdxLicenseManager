@@ -37,6 +37,8 @@ __valid_configs__ = [
   # Analyzer configurations; can be overridden on command line
   ('analyze-extensions', False, 'Flag: Analyze file extensions (for "No license found" results)'),
   ('analyze-extensions-list', False, 'Semicolon-separated string: If analyze-extensions is set, list of file extensions to analyze'),
+  ('analyze-thirdparty', False, 'Flag: Analyze file paths for "third party" directories'),
+  ('analyze-emptyfile', False, 'Flag: Analyze file checksums for empty files'),
 ]
 
 def isValidConfigKey(key):

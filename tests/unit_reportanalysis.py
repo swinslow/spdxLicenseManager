@@ -204,3 +204,60 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     newAnalyzer = Analyzer(db=self.db, config={"analyze-extensions": "no"})
     exts = newAnalyzer._getFinalConfigValue(key="analyze-extensions")
     self.assertEqual(exts, "no")
+
+  def test_analyzer_cannot_analyze_before_categories_are_built(self):
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer._runAnalysis()
+
+  @mock.patch('slm.reports.analysis.Analyzer._analyzeExtensions')
+  def test_analyzer_runs_extensions_check_if_set(self, ext_mock):
+    self.db.setConfigValue(key="analyze-extensions", value="yes")
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+    ext_mock.assert_called()
+
+  @mock.patch('slm.reports.analysis.Analyzer._analyzeExtensions')
+  def test_analyzer_does_not_run_extensions_check_if_not_set(self, ext_mock):
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+    ext_mock.assert_not_called()
+
+  @mock.patch('slm.reports.analysis.Analyzer._analyzeExtensions')
+  def test_analyzer_does_not_run_extensions_check_if_set_to_no(self, ext_mock):
+    self.db.setConfigValue(key="analyze-extensions", value="no")
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+    ext_mock.assert_not_called()
+
+  @mock.patch('slm.reports.analysis.Analyzer._analyzeThirdparty')
+  def test_analyzer_runs_thirparty_check_if_set(self, tp_mock):
+    self.db.setConfigValue(key="analyze-thirdparty", value="yes")
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+    tp_mock.assert_called()
+
+  @mock.patch('slm.reports.analysis.Analyzer._analyzeThirdparty')
+  def test_analyzer_does_not_run_thirdparty_check_if_not_set(self, tp_mock):
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+    tp_mock.assert_not_called()
+
+  @mock.patch('slm.reports.analysis.Analyzer._analyzeEmptyFile')
+  def test_analyzer_runs_emptyfile_check_if_set(self, empty_mock):
+    self.db.setConfigValue(key="analyze-emptyfile", value="yes")
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+    empty_mock.assert_called()
+
+  @mock.patch('slm.reports.analysis.Analyzer._analyzeEmptyFile')
+  def test_analyzer_does_not_run_emptyfile_check_if_not_set(self, empty_mock):
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+    empty_mock.assert_not_called()

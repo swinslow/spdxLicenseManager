@@ -22,6 +22,7 @@ import os
 from collections import OrderedDict
 
 from .common import ReportAnalysisError
+from ..projectdb import ProjectDBQueryError
 
 class Analyzer:
 
@@ -41,8 +42,12 @@ class Analyzer:
   def _getFinalConfigValue(self, key):
     kwValue = self.kwConfig.get(key, None)
     if kwValue is not None:
-      return kwValue
-    return self.db.getConfigValue(key)
+      return str(kwValue).lower()
+    try:
+      value = self.db.getConfigValue(key)
+      return str(value).lower()
+    except ProjectDBQueryError:
+      return ""
 
   def _buildScanCategories(self):
     if self.primaryScanCategories != OrderedDict():
@@ -71,6 +76,27 @@ class Analyzer:
       cat = self.primaryScanCategories[c_id]
       lic = cat.licensesSorted[l_id]
       lic.filesSorted[file._id] = file
+
+  def _runAnalysis(self):
+    if self.primaryScanCategories == OrderedDict():
+      raise ReportAnalysisError("Cannot call _runAnalysis before _buildScanCategories")
+
+    # run analyses based on config in DB, overridable by keywords
+    if self._getFinalConfigValue('analyze-extensions') == "yes":
+      self._analyzeExtensions()
+    if self._getFinalConfigValue('analyze-thirdparty') == "yes":
+      self._analyzeThirdparty()
+    if self._getFinalConfigValue('analyze-emptyfile') == "yes":
+      self._analyzeEmptyFile()
+
+  def _analyzeExtensions(self):
+    pass
+
+  def _analyzeThirdparty(self):
+    pass
+
+  def _analyzeEmptyFile(self):
+    pass
 
   ##### Other helper functions
 
