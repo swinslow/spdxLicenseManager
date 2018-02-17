@@ -100,7 +100,7 @@ class ExcelReporter:
       raise ReportFileError(f"File already exists at {path}")
 
     # check whether we have write permission for this path
-    if not os.access(path=path, mode=os.W_OK):
+    if not os.access(path=os.path.dirname(path), mode=os.W_OK):
       raise ReportFileError(f"Permission denied to save to {path}")
 
   ##### Other helper functions
