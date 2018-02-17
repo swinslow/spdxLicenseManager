@@ -37,17 +37,19 @@ class Analyzer:
   ##### Main common report analysis functions
   ##### External usage shouldn't require calling anything except these
 
-  ##### Reporting analysis main helper functions
+  def runAnalysis(self, scan_id):
+    # check whether scan exists
+    scan = self.db.getScan(_id=scan_id)
+    if scan is None:
+      raise ReportAnalysisError(f"Scan ID {scan_id} does not exist")
 
-  def _getFinalConfigValue(self, key):
-    kwValue = self.kwConfig.get(key, None)
-    if kwValue is not None:
-      return str(kwValue).lower()
-    try:
-      value = self.db.getConfigValue(key)
-      return str(value).lower()
-    except ProjectDBQueryError:
-      return ""
+    # build and run analysis
+    self._buildScanCategories()
+    self._addFiles(scan_id=scan_id)
+    self._runAnalysis()
+    return self.primaryScanCategories
+
+  ##### Reporting analysis main helper functions
 
   def _buildScanCategories(self):
     if self.primaryScanCategories != OrderedDict():
@@ -69,7 +71,10 @@ class Analyzer:
     if self.primaryScanCategories == OrderedDict():
       raise ReportAnalysisError("Cannot call _addFiles before _buildScanCategories")
 
-    files = self.db.getFiles(scan_id=scan_id)
+    try:
+      files = self.db.getFiles(scan_id=scan_id)
+    except ProjectDBQueryError:
+      raise ReportAnalysisError(f"Couldn't get files for scan {scan_id}")
     for file in files:
       # add empty findings dict
       file.findings = {}
@@ -104,9 +109,11 @@ class Analyzer:
             file.findings["extension"] = "yes"
 
   def _analyzeThirdparty(self):
+    # FIXME implement
     pass
 
   def _analyzeEmptyFile(self):
+    # FIXME implement
     pass
 
   ##### Other helper functions
@@ -116,6 +123,16 @@ class Analyzer:
     self.primaryScan = None
     self.primaryScanCategories = OrderedDict()
     self.kwConfig = {}
+
+  def _getFinalConfigValue(self, key):
+    kwValue = self.kwConfig.get(key, None)
+    if kwValue is not None:
+      return str(kwValue).lower()
+    try:
+      value = self.db.getConfigValue(key)
+      return str(value).lower()
+    except ProjectDBQueryError:
+      return ""
 
   def _parseExtConfig(self):
     extString = self._getFinalConfigValue('analyze-extensions-list')

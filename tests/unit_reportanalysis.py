@@ -169,6 +169,11 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     with self.assertRaises(ReportAnalysisError):
       self.analyzer._addFiles(scan_id=1)
 
+  def test_analyzer_cannot_add_files_from_invalid_scan_id(self):
+    self.analyzer._buildScanCategories()
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer._addFiles(scan_id=187)
+
   def test_analyzer_can_add_files_to_categories_for_a_scan(self):
     self.analyzer._buildScanCategories()
     self.analyzer._addFiles(scan_id=1)
@@ -288,6 +293,8 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self.analyzer._runAnalysis()
     empty_mock.assert_not_called()
 
+  ##### file extension analysis tests
+
   def test_can_parse_file_extension_string(self):
     extString = "json;jpeg;png;gif"
     self.db.setConfigValue(key="analyze-extensions-list", value=extString)
@@ -344,3 +351,17 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self._checkFileExtFindingIsNone(9)
     self._checkFileExtFindingIsYes(10)
     self._checkFileExtFindingIsYes(11)
+
+  ##### main analysis function tests
+
+  def test_can_analyze_and_get_results(self):
+    self.db.setConfigValue(key="analyze-extensions", value="yes")
+    results = self.analyzer.runAnalysis(scan_id=1)
+    self.assertEqual(OrderedDict, type(results))
+    self.assertEqual(4, len(results.items()))
+    cat1 = results[1]
+    self.assertEqual("a category", cat1.name)
+
+  def test_cannot_analyze_invalid_scan_id(self):
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer.runAnalysis(scan_id=187)
