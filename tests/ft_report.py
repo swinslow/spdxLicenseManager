@@ -23,6 +23,7 @@ import click
 from click.testing import CliRunner
 
 from testfixtures import TempDirectory
+import os
 from openpyxl import load_workbook
 
 from slm import slm
@@ -63,18 +64,34 @@ class SPDXReportFuncTestSuite(unittest.TestCase):
     # an initial summary sheet
     reportPath = self.reportDir.path + "/report.xlsx"
     result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
-      "create-report", "--scan_id", "3", "--format", "xlsx",
-      "--report-path", reportPath, "--no-summary")
+      "create-report", "--scan_id", "3", "--report_format", "xlsx",
+      "--report_path", reportPath, "--no_summary")
+
+    # The output message tells her it succeeded
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual(f"Report successfully created at {reportPath}.\n", result.output)
 
     # She confirms that the file was created successfully
-    self.assertEqual(0, result.exit_code)
-    self.assertTrue(checkForFileExists(reportPath))
+    self.assertTrue(os.path.isfile(reportPath))
 
     # Looking inside the workbook, she sees that the expected license
     # sheets are present
-    wb = load_workbook(filename=reportPath, read_only=True)
-    self.assertEqual(['Attribution', 'No license found'], wb.get_sheet_names())
+    wb = load_workbook(filename=reportPath)
+    self.assertEqual(['Attribution', 'No license found'], wb.sheetnames)
 
     # and that the appropriate headers are present
+    for sheet in wb:
+      self.assertEqual("File", sheet['A1'].value)
+      self.assertEqual("License", sheet['B1'].value)
+
     # and that the file and license results are in the expected locations
-    self.assertFail("Finish the test!")
+    ws1 = wb["Attribution"]
+    self.assertEqual("simple/file2.txt", ws1['A2'].value)
+    self.assertEqual("MIT", ws1['B2'].value)
+    ws2 = wb["No license found"]
+    self.assertEqual("simple/dir1/subfile.txt", ws2['A2'].value)
+    self.assertEqual("No license found", ws2['B2'].value)
+    self.assertEqual("simple/file1.txt", ws2['A3'].value)
+    self.assertEqual("No license found", ws2['B3'].value)
+    self.assertEqual("simple/file3.txt", ws2['A4'].value)
+    self.assertEqual("No license found", ws2['B4'].value)

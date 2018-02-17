@@ -46,6 +46,7 @@ from .commands.cmdListConversions import cmdListConversions
 from .commands.cmdImportScan import cmdImportScan
 from .commands.cmdListScanResults import cmdListScanResults
 from .commands.cmdListScans import cmdListScans
+from .commands.cmdCreateReport import cmdCreateReport
 
 VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
 
@@ -297,3 +298,19 @@ def cliListScans(ctx):
   checkForContext(ctx)
   subproject = ctx.obj['SUBPROJECT']
   return cmdListScans(ctx, subproject=subproject)
+
+#####################
+##### Report commands
+#####################
+
+@cli.command('create-report', help="Create report from scan in database")
+@click.option('--scan_id', default=None, help='Scan ID')
+@click.option('--report_path', default=None, help='Output file path')
+@click.option('--report_format', default=None, help='Report format')
+@click.option('--no_summary', is_flag=True, help='Omit summary report')
+@click.pass_context
+def cliCreateReport(ctx, scan_id, report_path, report_format, no_summary):
+  checkForContext(ctx)
+  subproject = ctx.obj['SUBPROJECT']
+  return cmdCreateReport(ctx, subproject, scan_id, report_path,
+    report_format, no_summary)
