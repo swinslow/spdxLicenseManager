@@ -71,6 +71,10 @@ class Analyzer:
 
     files = self.db.getFiles(scan_id=scan_id)
     for file in files:
+      # add empty findings dict
+      file.findings = {}
+
+      # and add to category => license mapping
       l_id = file.license._id
       c_id = file.license.category._id
       cat = self.primaryScanCategories[c_id]
@@ -90,7 +94,14 @@ class Analyzer:
       self._analyzeEmptyFile()
 
   def _analyzeExtensions(self):
-    pass
+    extList = self._parseExtConfig()
+    for cat in self.primaryScanCategories.values():
+      for lic in cat.licensesSorted.values():
+        for file in lic.filesSorted.values():
+          # get the extension from the tuple, and strip off the leading period
+          ext = os.path.splitext(file.path)[1].lstrip(".")
+          if ext in extList:
+            file.findings["extension"] = "yes"
 
   def _analyzeThirdparty(self):
     pass
@@ -105,3 +116,34 @@ class Analyzer:
     self.primaryScan = None
     self.primaryScanCategories = OrderedDict()
     self.kwConfig = {}
+
+  def _parseExtConfig(self):
+    extString = self._getFinalConfigValue('analyze-extensions-list')
+    if extString == '':
+      return []
+
+    extList = extString.split(';')
+    extStripped = []
+    for ext in extList:
+      extStripped.append(ext.strip())
+    return sorted(extStripped)
+
+  def _getFile(self, file_id):
+    if self.primaryScanCategories == OrderedDict():
+      raise ReportAnalysisError("Cannot call _getFile before _buildScanCategories")
+    try:
+      f = self.db.getFile(_id=file_id)
+    except ProjectDBQueryError:
+      return None
+    if f is None:
+      return None
+
+    l_id = f.license_id
+    c_id = f.license.category_id
+    cat = self.primaryScanCategories[c_id]
+    if cat is None:
+      return None
+    lic = cat.licensesSorted[l_id]
+    if lic is None:
+      return None
+    return lic.filesSorted.get(file_id, None)

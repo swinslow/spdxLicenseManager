@@ -55,6 +55,7 @@ class ReportAnalysisTestSuite(unittest.TestCase):
       Category(_id=1, name="a category", order=3),
       Category(_id=2, name="cat", order=2),
       Category(_id=3, name="blah category", order=1),
+      Category(_id=4, name="no lic category", order=4),
     ]
     self.db.session.bulk_save_objects(categories)
     self.db.session.commit()
@@ -65,6 +66,8 @@ class ReportAnalysisTestSuite(unittest.TestCase):
       License(_id=2, name="HarshEULA", category_id=2),
       License(_id=3, name="293PageEULA", category_id=3),
       License(_id=4, name="DoAnythingNoncommercial", category_id=1),
+      License(_id=5, name="No license found", category_id=4),
+      License(_id=6, name="Also no license found", category_id=4),
     ]
     self.db.session.bulk_save_objects(licenses)
     self.db.session.commit()
@@ -85,14 +88,33 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self.db.session.commit()
 
   def insertSampleFileData(self):
+    self.f1 = File(_id=1, scan_id=1, license_id=1, path="/tmp/f1", sha1=None, md5="abcdef", sha256=None)
+    self.f2 = File(_id=2, scan_id=1, license_id=4, path="/tmp/f2", sha1=None, md5=None, sha256="abcdef")
+    self.f3 = File(_id=3, scan_id=1, license_id=2, path="/tmp/f3", sha1="abcdef", md5=None, sha256=None)
+    self.f4 = File(_id=4, scan_id=1, license_id=2, path="/tmp/f4", sha1=None, md5=None, sha256=None)
+    self.f5 = File(_id=5, scan_id=1, license_id=5, path="/tmp/nolic/image.png", sha1=None, md5=None, sha256=None)
+    self.f6 = File(_id=6, scan_id=1, license_id=2, path="/tmp/nolic/vendor/whatever", sha1=None, md5=None, sha256=None)
+    self.f7 = File(_id=7, scan_id=1, license_id=6, path="/tmp/nolic/vendor/image-both.png", sha1=None, md5=None, sha256=None)
+    self.f8 = File(_id=8, scan_id=1, license_id=6, path="/tmp/nolic/emptyfile", sha1=None, md5="d41d8cd98f00b204e9800998ecf8427e", sha256=None)
+    self.f9 = File(_id=9, scan_id=1, license_id=6, path="/tmp/nolic/vendor/emptyfile", sha1=None, md5="d41d8cd98f00b204e9800998ecf8427e", sha256=None)
+    self.f10 = File(_id=10, scan_id=1, license_id=6, path="/tmp/nolic/emptyfile.png", sha1=None, md5="d41d8cd98f00b204e9800998ecf8427e", sha256=None)
+    self.f11 = File(_id=11, scan_id=1, license_id=6, path="/tmp/nolic/vendor/emptyfile.json", sha1=None, md5="d41d8cd98f00b204e9800998ecf8427e", sha256=None)
     files = [
-      File(_id=1, scan_id=1, license_id=1, path="/tmp/f1", sha1=None, md5="abcdef", sha256=None),
-      File(_id=2, scan_id=1, license_id=4, path="/tmp/f2", sha1=None, md5=None, sha256="abcdef"),
-      File(_id=3, scan_id=1, license_id=2, path="/tmp/f3", sha1="abcdef", md5=None, sha256=None),
-      File(_id=4, scan_id=1, license_id=2, path="/tmp/f4", sha1=None, md5=None, sha256=None),
+      self.f1, self.f2, self.f3, self.f4, self.f5,
+      self.f6, self.f7, self.f8, self.f9, self.f10, self.f11
     ]
     self.db.session.bulk_save_objects(files)
     self.db.session.commit()
+
+  ##### Helpers for tests
+
+  def _checkFileExtFindingIsNone(self, file_id):
+    ext = self.analyzer._getFile(file_id).findings.get("extension", None)
+    self.assertIsNone(ext)
+
+  def _checkFileExtFindingIsYes(self, file_id):
+    ext = self.analyzer._getFile(file_id).findings.get("extension", None)
+    self.assertEqual("yes", ext)
 
   ##### Test cases below
 
@@ -105,7 +127,7 @@ class ReportAnalysisTestSuite(unittest.TestCase):
 
   def test_analyzer_retrieves_all_categories_for_report(self):
     self.analyzer._buildScanCategories()
-    self.assertEqual(len(self.analyzer.primaryScanCategories), 3)
+    self.assertEqual(len(self.analyzer.primaryScanCategories), 4)
 
   def test_analyzer_still_not_ready_after_just_buildScanCategories(self):
     self.analyzer._buildScanCategories()
@@ -166,9 +188,11 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     (f_id211, f211) = l21.filesSorted.popitem(last=False)
     self.assertEqual(f_id211, 3)
     self.assertEqual(f211.path, "/tmp/f3")
+    self.assertEqual(f211.findings, {})
     (f_id212, f212) = l21.filesSorted.popitem(last=False)
     self.assertEqual(f_id212, 4)
     self.assertEqual(f212.path, "/tmp/f4")
+    self.assertEqual(f212.findings, {})
 
     # check category 3, with two licenses and two files
     (c_id3, c3) = self.analyzer.primaryScanCategories.popitem(last=False)
@@ -178,11 +202,13 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     (f_id311, f311) = l31.filesSorted.popitem(last=False)
     self.assertEqual(f_id311, 1)
     self.assertEqual(f311.path, "/tmp/f1")
+    self.assertEqual(f311.findings, {})
     (l_id32, l32) = c3.licensesSorted.popitem(last=False)
     self.assertEqual("DoAnythingNoncommercial", l32.name)
     (f_id321, f321) = l32.filesSorted.popitem(last=False)
     self.assertEqual(f_id321, 2)
     self.assertEqual(f321.path, "/tmp/f2")
+    self.assertEqual(f321.findings, {})
 
   def test_analyzer_can_take_optional_config_params(self):
     configDict = {
@@ -261,3 +287,60 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self.analyzer._addFiles(scan_id=1)
     self.analyzer._runAnalysis()
     empty_mock.assert_not_called()
+
+  def test_can_parse_file_extension_string(self):
+    extString = "json;jpeg;png;gif"
+    self.db.setConfigValue(key="analyze-extensions-list", value=extString)
+    exts = self.analyzer._parseExtConfig()
+    # extensions are sorted in alphabetical order
+    self.assertEqual(["gif","jpeg","json","png"], exts)
+
+  def test_extension_string_parser_returns_empty_list_if_not_set(self):
+    exts = self.analyzer._parseExtConfig()
+    self.assertEqual([], exts)
+
+  def test_ignore_whitespace_in_file_extension_string(self):
+    extString = "   json ;  jpeg;   png  ;gif     "
+    self.db.setConfigValue(key="analyze-extensions-list", value=extString)
+    exts = self.analyzer._parseExtConfig()
+    # extensions are sorted in alphabetical order
+    self.assertEqual(["gif","jpeg","json","png"], exts)
+
+  def test_analyzer_can_get_specific_file_by_id(self):
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+    f = self.analyzer._getFile(7)
+    self.assertEqual("/tmp/nolic/vendor/image-both.png", f.path)
+
+  def test_analyzer_cannot_get_specific_file_before_building_categories(self):
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer._getFile(7)
+
+  def test_analyzer_returns_none_if_getting_specific_file_by_unknown_id(self):
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+    f = self.analyzer._getFile(77)
+    self.assertIsNone(f)
+
+  def test_files_with_extension_match_get_extra_flag_and_others_dont(self):
+    self.db.setConfigValue(key="analyze-extensions", value="yes")
+    extString = "json;jpeg;png;gif"
+    self.db.setConfigValue(key="analyze-extensions-list", value=extString)
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+
+    # check specific files
+    self._checkFileExtFindingIsNone(1)
+    self._checkFileExtFindingIsNone(2)
+    self._checkFileExtFindingIsNone(3)
+    self._checkFileExtFindingIsNone(4)
+    self._checkFileExtFindingIsYes(5)
+    self._checkFileExtFindingIsNone(6)
+    self._checkFileExtFindingIsYes(7)
+    self._checkFileExtFindingIsNone(8)
+    self._checkFileExtFindingIsNone(9)
+    self._checkFileExtFindingIsYes(10)
+    self._checkFileExtFindingIsYes(11)
