@@ -68,6 +68,7 @@ class ReportAnalysisTestSuite(unittest.TestCase):
       License(_id=4, name="DoAnythingNoncommercial", category_id=1),
       License(_id=5, name="No license found", category_id=4),
       License(_id=6, name="Also no license found", category_id=4),
+      License(_id=7, name="LicWithNoFiles", category_id=4),
     ]
     self.db.session.bulk_save_objects(licenses)
     self.db.session.commit()
@@ -165,6 +166,8 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self.assertEqual(1, c_id3)
     self.assertEqual("a category", c3.name)
 
+  ##### Analyzer adding files tests
+
   def test_analyzer_cannot_add_files_before_categories_are_built(self):
     with self.assertRaises(ReportAnalysisError):
       self.analyzer._addFiles(scan_id=1)
@@ -215,6 +218,28 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self.assertEqual(f321.path, "/tmp/f2")
     self.assertEqual(f321.findings, {})
 
+  def test_analyzer_marks_cats_and_lics_that_have_files(self):
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+
+    # check categories
+    c1 = self.analyzer._getCategory(category_id=1)
+    self.assertTrue(c1.hasFiles)
+    c2 = self.analyzer._getCategory(category_id=2)
+    self.assertTrue(c2.hasFiles)
+    c3 = self.analyzer._getCategory(category_id=3)
+    self.assertFalse(c3.hasFiles)
+
+    # check licenses
+    l2 = self.analyzer._getLicense(license_id=2)
+    self.assertTrue(l2.hasFiles)
+    l4 = self.analyzer._getLicense(license_id=4)
+    self.assertTrue(l4.hasFiles)
+    l7 = self.analyzer._getLicense(license_id=7)
+    self.assertFalse(l7.hasFiles)
+
+  ##### Analyzer config params tests
+
   def test_analyzer_can_take_optional_config_params(self):
     configDict = {
       "analyze-extensions": "yes",
@@ -235,6 +260,8 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     newAnalyzer = Analyzer(db=self.db, config={"analyze-extensions": "no"})
     exts = newAnalyzer._getFinalConfigValue(key="analyze-extensions")
     self.assertEqual(exts, "no")
+
+  ##### Analyzer main analysis function tests
 
   def test_analyzer_cannot_analyze_before_categories_are_built(self):
     with self.assertRaises(ReportAnalysisError):
@@ -293,6 +320,62 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self.analyzer._runAnalysis()
     empty_mock.assert_not_called()
 
+  ##### getter helper tests
+
+  def test_analyzer_cannot_get_specific_cat_before_building_categories(self):
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer._getCategory(category_id=3)
+
+  def test_analyzer_returns_none_if_getting_specific_cat_by_unknown_id(self):
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+    cat = self.analyzer._getCategory(category_id=77)
+    self.assertIsNone(cat)
+
+  def test_analyzer_can_get_specific_category_by_id(self):
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+    cat = self.analyzer._getCategory(category_id=3)
+    self.assertEqual("blah category", cat.name)
+
+  def test_analyzer_cannot_get_specific_lic_before_building_categories(self):
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer._getLicense(license_id=6)
+
+  def test_analyzer_returns_none_if_getting_specific_lic_by_unknown_id(self):
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+    lic = self.analyzer._getLicense(license_id=77)
+    self.assertIsNone(lic)
+
+  def test_analyzer_can_get_specific_license_by_id(self):
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+    lic = self.analyzer._getLicense(license_id=6)
+    self.assertEqual("Also no license found", lic.name)
+
+  def test_analyzer_cannot_get_specific_file_before_building_categories(self):
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer._getFile(7)
+
+  def test_analyzer_returns_none_if_getting_specific_file_by_unknown_id(self):
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+    f = self.analyzer._getFile(77)
+    self.assertIsNone(f)
+
+  def test_analyzer_can_get_specific_file_by_id(self):
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+    f = self.analyzer._getFile(file_id=7)
+    self.assertEqual("/tmp/nolic/vendor/image-both.png", f.path)
+
   ##### file extension analysis tests
 
   def test_can_parse_file_extension_string(self):
@@ -312,24 +395,6 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     exts = self.analyzer._parseExtConfig()
     # extensions are sorted in alphabetical order
     self.assertEqual(["gif","jpeg","json","png"], exts)
-
-  def test_analyzer_can_get_specific_file_by_id(self):
-    self.analyzer._buildScanCategories()
-    self.analyzer._addFiles(scan_id=1)
-    self.analyzer._runAnalysis()
-    f = self.analyzer._getFile(7)
-    self.assertEqual("/tmp/nolic/vendor/image-both.png", f.path)
-
-  def test_analyzer_cannot_get_specific_file_before_building_categories(self):
-    with self.assertRaises(ReportAnalysisError):
-      self.analyzer._getFile(7)
-
-  def test_analyzer_returns_none_if_getting_specific_file_by_unknown_id(self):
-    self.analyzer._buildScanCategories()
-    self.analyzer._addFiles(scan_id=1)
-    self.analyzer._runAnalysis()
-    f = self.analyzer._getFile(77)
-    self.assertIsNone(f)
 
   def test_files_with_extension_match_get_extra_flag_and_others_dont(self):
     self.db.setConfigValue(key="analyze-extensions", value="yes")

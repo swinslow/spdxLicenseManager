@@ -58,6 +58,7 @@ class Analyzer:
     cats = self.db.getCategoriesAll()
     for cat in cats:
       self.primaryScanCategories[cat._id] = cat
+      cat.hasFiles = False
       # fill in sorted licenses
       cat.licensesSorted = OrderedDict()
       # licenses is a SQLAlcehmy InstrumentedList, with licenses already in
@@ -66,6 +67,7 @@ class Analyzer:
       for license in cat.licenses:
         cat.licensesSorted[license._id] = license
         license.filesSorted = OrderedDict()
+        license.hasFiles = False
 
   def _addFiles(self, scan_id):
     if self.primaryScanCategories == OrderedDict():
@@ -85,6 +87,10 @@ class Analyzer:
       cat = self.primaryScanCategories[c_id]
       lic = cat.licensesSorted[l_id]
       lic.filesSorted[file._id] = file
+
+      # and note that this category and this license have files
+      cat.hasFiles = True
+      lic.hasFiles = True
 
   def _runAnalysis(self):
     if self.primaryScanCategories == OrderedDict():
@@ -144,6 +150,27 @@ class Analyzer:
     for ext in extList:
       extStripped.append(ext.strip())
     return sorted(extStripped)
+
+  def _getCategory(self, category_id):
+    if self.primaryScanCategories == OrderedDict():
+      raise ReportAnalysisError("Cannot call _getCategory before _buildScanCategories")
+    return self.primaryScanCategories.get(category_id, None)
+
+  def _getLicense(self, license_id):
+    if self.primaryScanCategories == OrderedDict():
+      raise ReportAnalysisError("Cannot call _getLicense before _buildScanCategories")
+    try:
+      lic = self.db.getLicense(_id=license_id)
+    except ProjectDBQueryError:
+      return None
+    if lic is None:
+      return None
+
+    c_id = lic.category_id
+    cat = self.primaryScanCategories[c_id]
+    if cat is None:
+      return None
+    return cat.licensesSorted.get(license_id, None)
 
   def _getFile(self, file_id):
     if self.primaryScanCategories == OrderedDict():
