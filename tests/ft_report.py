@@ -79,10 +79,18 @@ class SPDXReportFuncTestSuite(unittest.TestCase):
     wb = load_workbook(filename=reportPath)
     self.assertEqual(['Attribution', 'No license found'], wb.sheetnames)
 
-    # and that the appropriate headers are present
+    # and that the appropriate headers are present with the right fonts
     for sheet in wb:
-      self.assertEqual("File", sheet['A1'].value)
-      self.assertEqual("License", sheet['B1'].value)
+      headerFile = sheet['A1']
+      self.assertEqual("File", headerFile.value)
+      self.assertEqual(16, headerFile.font.size)
+      self.assertTrue(headerFile.font.bold)
+      self.assertFalse(headerFile.alignment.wrap_text)
+      headerLicense = sheet['B1']
+      self.assertEqual("License", headerLicense.value)
+      self.assertEqual(16, headerLicense.font.size)
+      self.assertTrue(headerLicense.font.bold)
+      self.assertFalse(headerLicense.alignment.wrap_text)
 
     # and that the file and license results are in the expected locations
     ws1 = wb["Attribution"]
@@ -95,6 +103,20 @@ class SPDXReportFuncTestSuite(unittest.TestCase):
     self.assertEqual("No license found", ws2['B3'].value)
     self.assertEqual("simple/file3.txt", ws2['A4'].value)
     self.assertEqual("No license found", ws2['B4'].value)
+
+    # and that the column widths are as expected
+    self.assertEqual(100, ws2.column_dimensions["A"].width)
+    self.assertEqual(60, ws2.column_dimensions["B"].width)
+
+    # and that the file and license cells have the right fonts
+    cellFile = ws2['A4']
+    self.assertEqual(14, cellFile.font.size)
+    self.assertFalse(cellFile.font.bold)
+    self.assertTrue(cellFile.alignment.wrap_text)
+    cellLicense = ws2['B4']
+    self.assertEqual(14, cellLicense.font.size)
+    self.assertFalse(cellLicense.font.bold)
+    self.assertTrue(cellLicense.alignment.wrap_text)
 
   def test_can_create_report_with_summary(self):
     # Edith uses the existing frotz-nuclear scan in the sandbox. She requests

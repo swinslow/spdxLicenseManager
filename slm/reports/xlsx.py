@@ -61,6 +61,11 @@ class ExcelReporter:
   ##### Helper functions for xlsx reporting
 
   def _generateCategorySheets(self, wb, results):
+    # create font styles
+    fontBold = openpyxl.styles.Font(size=16, bold=True)
+    fontNormal = openpyxl.styles.Font(size=14)
+    alignNormal = openpyxl.styles.Alignment(wrap_text=True)
+
     # if first sheet isn't a summary sheet, then the existing first sheet
     # should be renamed when we come to the first category with files
     first_sheet = (wb.sheetnames[0] != 'License summary')
@@ -78,11 +83,22 @@ class ExcelReporter:
       else:
         ws = wb.create_sheet(cat.name)
 
+      # and set column dimensions
+      ws.column_dimensions['A'].width = 100
+      ws.column_dimensions['B'].width = 60
+
       # and fill in sheet headers
       ws['A1'] = "File"
+      ws['A1'].font = fontBold
       ws['B1'] = "License"
+      ws['B1'].font = fontBold
 
   def _generateFileListings(self, wb, results):
+    # create font styles
+    fontBold = openpyxl.styles.Font(size=16, bold=True)
+    fontNormal = openpyxl.styles.Font(size=14)
+    alignNormal = openpyxl.styles.Alignment(wrap_text=True)
+
     for cat in results.values():
       if not cat.hasFiles:
         continue
@@ -96,7 +112,11 @@ class ExcelReporter:
           continue
         for file in lic.filesSorted.values():
           ws[f'A{row}'] = file.path
+          ws[f'A{row}'].font = fontNormal
+          ws[f'A{row}'].alignment = alignNormal
           ws[f'B{row}'] = lic.name
+          ws[f'B{row}'].font = fontNormal
+          ws[f'B{row}'].alignment = alignNormal
           row += 1
 
   def _generateSummarySheet(self, wb, results):

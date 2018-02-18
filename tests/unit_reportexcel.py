@@ -240,9 +240,22 @@ class ReportExcelTestSuite(unittest.TestCase):
     # catID3 does not appear because it has no files
     self.assertEqual(["catID2", "catID1"], wb.sheetnames)
     # proper headers are set for each category page
+    # and header fonts are as expected
     for sheet in wb:
-      self.assertEqual("File", sheet['A1'].value)
+      headerFile = sheet['A1']
+      self.assertEqual("File", headerFile.value)
+      self.assertEqual(16, headerFile.font.size)
+      self.assertTrue(headerFile.font.bold)
+      self.assertFalse(headerFile.alignment.wrap_text)
+      headerLicense = sheet['B1']
       self.assertEqual("License", sheet['B1'].value)
+      self.assertEqual(16, headerLicense.font.size)
+      self.assertTrue(headerLicense.font.bold)
+      self.assertFalse(headerLicense.alignment.wrap_text)
+
+      # column widths are as expected
+      self.assertEqual(100, sheet.column_dimensions["A"].width)
+      self.assertEqual(60, sheet.column_dimensions["B"].width)
 
   def test_cannot_generate_files_before_category_sheets_are_generated(self):
     wb = Workbook()
@@ -270,6 +283,15 @@ class ReportExcelTestSuite(unittest.TestCase):
     ws2 = wb['catID1']
     self.assertEqual("/tmp/f5", ws2['A2'].value)
     self.assertEqual("a license", ws2['B2'].value)
+
+    cellFile = ws2['A2']
+    self.assertEqual(14, cellFile.font.size)
+    self.assertFalse(cellFile.font.bold)
+    self.assertTrue(cellFile.alignment.wrap_text)
+    cellLicense = ws2['B2']
+    self.assertEqual(14, cellLicense.font.size)
+    self.assertFalse(cellLicense.font.bold)
+    self.assertTrue(cellLicense.alignment.wrap_text)
 
   @mock.patch('slm.reports.xlsx.ExcelReporter._generateSummarySheet')
   def test_summary_not_generated_if_config_not_set(self, summary_mock):
