@@ -40,12 +40,17 @@ def cmdCreateReport(ctx, subproject, scan_id=None, report_path=None,
   if scan is None:
     sys.exit(f"Scan ID {scan_id} does not exist.")
 
+  # check for config flags
+  kwConfig = {}
+  if no_summary:
+    kwConfig['include-summary'] = 'no'
+
   # analyze this scan
   analyzer = Analyzer(db=db)
   results = analyzer.runAnalysis(scan_id)
 
   # and generate the results
-  reporter = ExcelReporter()
+  reporter = ExcelReporter(db=db, config=kwConfig)
   reporter.setResults(results)
   reporter.generate()
   reporter.save(path=report_path)

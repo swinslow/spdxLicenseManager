@@ -95,3 +95,70 @@ class SPDXReportFuncTestSuite(unittest.TestCase):
     self.assertEqual("No license found", ws2['B3'].value)
     self.assertEqual("simple/file3.txt", ws2['A4'].value)
     self.assertEqual("No license found", ws2['B4'].value)
+
+  def test_can_create_report_with_summary(self):
+    # Edith uses the existing frotz-nuclear scan in the sandbox. She requests
+    # a license report, this time with a summary sheet (b/c she omits the
+    # --no-summary flag)
+    reportPath = self.reportDir.path + "/report.xlsx"
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-nuclear",
+      "create-report", "--scan_id", "1", "--report_format", "xlsx",
+      "--report_path", reportPath)
+
+    # The output message tells her it succeeded
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual(f"Report successfully created at {reportPath}.\n", result.output)
+
+    # Looking inside the workbook, she sees that the first sheet is a
+    # summary of all licenses and categories
+    wb = load_workbook(filename=reportPath)
+    self.assertEqual('License summary', wb.sheetnames[0])
+    ws = wb['License summary']
+
+    # and that the column widths are as expected
+    self.assertEqual(3, ws.column_dimensions["A"].width)
+    self.assertEqual(60, ws.column_dimensions["B"].width)
+    self.assertEqual(10, ws.column_dimensions["C"].width)
+
+    # and that the appropriate headers and wrapping are present
+    headerA = ws['A1']
+    self.assertEqual("License", headerA.value)
+    self.assertEqual(16, headerA.font.size)
+    self.assertTrue(headerA.font.bold)
+    self.assertFalse(headerA.alignment.wrap_text)
+    headerC = ws['C1']
+    self.assertEqual("# of files", headerC.value)
+    self.assertEqual(16, headerC.font.size)
+    self.assertTrue(headerC.font.bold)
+    self.assertFalse(headerA.alignment.wrap_text)
+
+    # and that the category headers are appropriate
+    catPL = ws['A3']
+    self.assertEqual("Project Licenses:", catPL.value)
+    self.assertEqual(16, catPL.font.size)
+    self.assertTrue(catPL.font.bold)
+    self.assertFalse(catPL.alignment.wrap_text)
+
+    # and that the license and file count cells are as expected
+    licApache = ws['B4']
+    self.assertEqual("Apache-2.0", licApache.value)
+    self.assertEqual(14, licApache.font.size)
+    self.assertFalse(licApache.font.bold)
+    self.assertTrue(licApache.alignment.wrap_text)
+    filesApache = ws['C4']
+    self.assertEqual(49, filesApache.value)
+    self.assertEqual(14, filesApache.font.size)
+    self.assertFalse(filesApache.font.bold)
+    self.assertFalse(filesApache.alignment.wrap_text)
+
+    # and that the Total and file count cells are as expected
+    catTotal = ws['A9']
+    self.assertEqual("TOTAL", catTotal.value)
+    self.assertEqual(16, catTotal.font.size)
+    self.assertTrue(catTotal.font.bold)
+    self.assertFalse(catTotal.alignment.wrap_text)
+    filesTotal = ws['C9']
+    self.assertEqual(54, filesTotal.value)
+    self.assertEqual(16, filesTotal.font.size)
+    self.assertTrue(filesTotal.font.bold)
+    self.assertFalse(filesTotal.alignment.wrap_text)

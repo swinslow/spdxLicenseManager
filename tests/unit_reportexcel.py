@@ -40,7 +40,7 @@ class ReportExcelTestSuite(unittest.TestCase):
     self.db.initializeDBTables()
 
    # create reporter
-    self.reporter = ExcelReporter()
+    self.reporter = ExcelReporter(db=self.db)
 
   def tearDown(self):
     pass
@@ -173,6 +173,27 @@ class ReportExcelTestSuite(unittest.TestCase):
     self.assertIsNone(self.reporter.results)
     self.assertIsNone(self.reporter.wb)
     self.assertFalse(self.reporter.reportGenerated)
+    self.assertEqual({}, self.reporter.kwConfig)
+
+  ##### Reporter config function tests
+
+  def test_reporter_can_take_optional_config_params(self):
+    configDict = {
+      "include-summary": "yes",
+    }
+    newReporter = ExcelReporter(db=self.db, config=configDict)
+    self.assertEqual("yes", newReporter.kwConfig["include-summary"])
+
+  def test_can_get_reporter_final_config(self):
+    self.db.setConfigValue(key="include-summary", value="yes")
+    summary = self.reporter._getFinalConfigValue(key="include-summary")
+    self.assertEqual(summary, "yes")
+
+  def test_can_override_db_config_in_reporter_final_config(self):
+    self.db.setConfigValue(key="include-summary", value="yes")
+    newReporter = ExcelReporter(db=self.db, config={"include-summary": "no"})
+    summary = newReporter._getFinalConfigValue(key="include-summary")
+    self.assertEqual(summary, "no")
 
   ##### Reporter setup function tests
 
@@ -249,6 +270,81 @@ class ReportExcelTestSuite(unittest.TestCase):
     ws2 = wb['catID1']
     self.assertEqual("/tmp/f5", ws2['A2'].value)
     self.assertEqual("a license", ws2['B2'].value)
+
+  @mock.patch('slm.reports.xlsx.ExcelReporter._generateSummarySheet')
+  def test_summary_not_generated_if_config_not_set(self, summary_mock):
+    results = self._getAnalysisResults()
+    self.reporter.setResults(results)
+    self.reporter.generate()
+    summary_mock.assert_not_called()
+
+  @mock.patch('slm.reports.xlsx.ExcelReporter._generateSummarySheet')
+  def test_summary_is_generated_if_config_set(self, summary_mock):
+    self.db.setConfigValue(key="include-summary", value="yes")
+    results = self._getAnalysisResults()
+    self.reporter.setResults(results)
+    self.reporter.generate()
+    summary_mock.assert_called_with(self.reporter.wb, self.reporter.results)
+
+  def test_can_generate_summary_sheet(self):
+    wb = Workbook()
+    results = self._getAnalysisResults()
+    self.reporter._generateSummarySheet(wb, results)
+    # sheet title is as expected
+    self.assertEqual('License summary', wb.sheetnames[0])
+    ws = wb.active
+    # column widths are as expected
+    self.assertEqual(3, ws.column_dimensions["A"].width)
+    self.assertEqual(60, ws.column_dimensions["B"].width)
+    self.assertEqual(10, ws.column_dimensions["C"].width)
+    # headers are as expected
+    self.assertEqual("License", ws['A1'].value)
+    self.assertEqual(16, ws['A1'].font.size)
+    self.assertTrue(ws['A1'].font.bold)
+    self.assertFalse(ws['A1'].alignment.wrap_text)
+    self.assertEqual("# of files", ws['C1'].value)
+    self.assertEqual(16, ws['C1'].font.size)
+    self.assertTrue(ws['C1'].font.bold)
+    self.assertFalse(ws['C1'].alignment.wrap_text)
+    # and rows/values and formatting are all as expected
+    # cats and licenses with no files should not appear
+    self.assertEqual("catID2:", ws['A3'].value)
+    self.assertEqual(16, ws['A3'].font.size)
+    self.assertTrue(ws['A3'].font.bold)
+    self.assertFalse(ws['A3'].alignment.wrap_text)
+    self.assertEqual("another lic2cat2", ws['B4'].value)
+    self.assertEqual(14, ws['B4'].font.size)
+    self.assertFalse(ws['B4'].font.bold)
+    self.assertTrue(ws['B4'].alignment.wrap_text)
+    self.assertEqual(2, ws['C4'].value)
+    self.assertEqual("lic1cat2", ws['B5'].value)
+    self.assertEqual(2, ws['C5'].value)
+    self.assertEqual("catID1:", ws['A6'].value)
+    self.assertEqual("a license", ws['B7'].value)
+    self.assertEqual(1, ws['C7'].value)
+    self.assertEqual("TOTAL", ws['A9'].value)
+    self.assertEqual(16, ws['A9'].font.size)
+    self.assertTrue(ws['A9'].font.bold)
+    self.assertFalse(ws['A9'].alignment.wrap_text)
+    self.assertEqual(5, ws['C9'].value)
+    self.assertEqual(16, ws['C9'].font.size)
+    self.assertTrue(ws['C9'].font.bold)
+    self.assertFalse(ws['C9'].alignment.wrap_text)
+
+  def test_summary_sheet_not_overwritten_by_other_sheets(self):
+    self.db.setConfigValue(key="include-summary", value="yes")
+    results = self._getAnalysisResults()
+    self.reporter.setResults(results)
+    self.reporter.generate()
+    # workbook should have the summary sheet AND the expected category sheets
+    self.assertEqual(["License summary", "catID2", "catID1"],
+      self.reporter.wb.sheetnames)
+    # the summary sheet has the expected summary headers
+    self.assertEqual("License", self.reporter.wb['License summary']['A1'].value)
+    self.assertEqual("# of files", self.reporter.wb['License summary']['C1'].value)
+    # and the file listing sheets have the expected file listing headers
+    self.assertEqual("File", self.reporter.wb['catID2']['A1'].value)
+    self.assertEqual("License", self.reporter.wb['catID2']['B1'].value)
 
   ##### Reporter save function tests
 

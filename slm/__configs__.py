@@ -34,11 +34,14 @@ __valid_configs__ = [
   ('vendor_dirs', False, 'Directories to flag as third-party files'),
   ('ignore_extensions', False, 'File extensions to flag as ignored if no license found'),
 
-  # Analyzer configurations; can be overridden on command line
+  # Analyzer configurations; intended to be overridable on command line
   ('analyze-extensions', False, 'Flag: Analyze file extensions (for "No license found" results)'),
   ('analyze-extensions-list', False, 'Semicolon-separated string: If analyze-extensions is set, list of file extensions to analyze'),
   ('analyze-thirdparty', False, 'Flag: Analyze file paths for "third party" directories'),
   ('analyze-emptyfile', False, 'Flag: Analyze file checksums for empty files'),
+
+  # Reporter configurations; intended to be overridable on command line
+  ('include-summary', False, 'Flag: Include summary page in reports'),
 ]
 
 def isValidConfigKey(key):

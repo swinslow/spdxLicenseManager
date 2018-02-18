@@ -72,6 +72,7 @@ def runSandboxCommands(testCase, cli):
   sandboxcmd(testCase, cli, 'set-config', 'strip_LicenseRef', 'yes')
   sandboxcmd(testCase, cli, 'set-config', 'vendor_dirs',
     'vendor;thirdparty;third-party')
+  sandboxcmd(testCase, cli, 'set-config', 'include-summary', 'yes')
 
   # and some test categories
   sandboxcmd(testCase, cli, 'add-category', 'Project Licenses')

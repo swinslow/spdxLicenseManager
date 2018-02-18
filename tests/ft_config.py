@@ -92,7 +92,7 @@ class ConfigFuncTestSuite(unittest.TestCase):
 
     # they are sorted alphabetically, with asterisks for internal config
     self.assertEqual(0, result.exit_code)
-    self.assertEqual("* initialized: yes\n* magic: spdxLicenseManager\nstrip_LicenseRef: yes\nvendor_dirs: vendor;thirdparty;third-party\n",
+    self.assertEqual("include-summary: yes\n* initialized: yes\n* magic: spdxLicenseManager\nstrip_LicenseRef: yes\nvendor_dirs: vendor;thirdparty;third-party\n",
       result.output)
 
   def test_can_unset_config(self):
