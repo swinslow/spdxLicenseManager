@@ -162,3 +162,33 @@ class SPDXReportFuncTestSuite(unittest.TestCase):
     self.assertEqual(16, filesTotal.font.size)
     self.assertTrue(filesTotal.font.bold)
     self.assertFalse(filesTotal.alignment.wrap_text)
+
+  def test_cannot_overwrite_existing_report_file(self):
+    # Edith creates a report and then accidentally tries to overwrite it
+    # with a second call to save to the same path
+    reportPath = self.reportDir.path + "/report.xlsx"
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-nuclear",
+      "create-report", "--scan_id", "1", "--report_format", "xlsx",
+      "--report_path", reportPath)
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-nuclear",
+      "create-report", "--scan_id", "1", "--report_format", "xlsx",
+      "--report_path", reportPath)
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(f"File already exists at {reportPath} (use -f to force overwrite)\n", result.output)
+
+  def test_can_overwrite_existing_report_file_with_force_flag(self):
+    # Edith creates a report and then intentionally overwrites it
+    # with a second call to save to the same path
+    reportPath = self.reportDir.path + "/report.xlsx"
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-nuclear",
+      "create-report", "--scan_id", "1", "--report_format", "xlsx",
+      "--report_path", reportPath)
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-nuclear",
+      "create-report", "--scan_id", "1", "--report_format", "xlsx",
+      "--report_path", reportPath, "-f")
+
+    # The output message tells her it succeeded
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual(f"Report successfully created at {reportPath}.\n", result.output)

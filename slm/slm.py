@@ -308,9 +308,10 @@ def cliListScans(ctx):
 @click.option('--report_path', default=None, help='Output file path')
 @click.option('--report_format', default=None, help='Report format')
 @click.option('--no_summary', is_flag=True, help='Omit summary report')
+@click.option('-f', '--force', is_flag=True, help='Force overwrite of existing output file')
 @click.pass_context
-def cliCreateReport(ctx, scan_id, report_path, report_format, no_summary):
+def cliCreateReport(ctx, scan_id, report_path, report_format, no_summary, force):
   checkForContext(ctx)
   subproject = ctx.obj['SUBPROJECT']
   return cmdCreateReport(ctx, subproject, scan_id, report_path,
-    report_format, no_summary)
+    report_format, no_summary, force)

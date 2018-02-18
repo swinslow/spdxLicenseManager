@@ -22,10 +22,11 @@ import click
 
 from .helperContext import extractContext
 from ..reports.analysis import Analyzer
+from ..reports.common import ReportFileError
 from ..reports.xlsx import ExcelReporter
 
 def cmdCreateReport(ctx, subproject, scan_id=None, report_path=None,
-  report_format='xlsx', no_summary=False):
+  report_format='xlsx', no_summary=False, force=False):
 
   slmhome, mainconfig, project, db = extractContext(ctx)
 
@@ -53,7 +54,12 @@ def cmdCreateReport(ctx, subproject, scan_id=None, report_path=None,
   reporter = ExcelReporter(db=db, config=kwConfig)
   reporter.setResults(results)
   reporter.generate()
-  reporter.save(path=report_path)
+
+  try:
+    reporter.save(path=report_path, replace=force)
+  except ReportFileError as e:
+    if "File already exists" in str(e):
+      sys.exit(f"File already exists at {report_path} (use -f to force overwrite)")
 
   # and confirm success
   click.echo(f"Report successfully created at {report_path}.")
