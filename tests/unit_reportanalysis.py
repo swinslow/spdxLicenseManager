@@ -100,11 +100,11 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self.f9 = File(_id=9, scan_id=1, license_id=6, path="/tmp/nolic/vendor/emptyfile", sha1=None, md5="d41d8cd98f00b204e9800998ecf8427e", sha256=None)
     self.f10 = File(_id=10, scan_id=1, license_id=6, path="/tmp/nolic/emptyfile.png", sha1=None, md5="d41d8cd98f00b204e9800998ecf8427e", sha256=None)
     self.f11 = File(_id=11, scan_id=1, license_id=6, path="/tmp/nolic/vendor/emptyfile.json", sha1=None, md5="d41d8cd98f00b204e9800998ecf8427e", sha256=None)
-    files = [
+    self.files = [
       self.f1, self.f2, self.f3, self.f4, self.f5,
       self.f6, self.f7, self.f8, self.f9, self.f10, self.f11
     ]
-    self.db.session.bulk_save_objects(files)
+    self.db.session.bulk_save_objects(self.files)
     self.db.session.commit()
 
   ##### Helpers for tests
@@ -320,6 +320,21 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self.analyzer._runAnalysis()
     empty_mock.assert_not_called()
 
+  @mock.patch('slm.reports.analysis.Analyzer._analyzeExcludePathPrefix')
+  def test_analyzer_runs_excludePathPrefix_if_set(self, path_mock):
+    self.db.setConfigValue(key="analyze-exclude-path-prefix", value="yes")
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+    path_mock.assert_called()
+
+  @mock.patch('slm.reports.analysis.Analyzer._analyzeExcludePathPrefix')
+  def test_analyzer_does_not_run_excludePathPrefix_if_not_set(self, path_mock):
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+    path_mock.assert_not_called()
+
   ##### getter helper tests
 
   def test_analyzer_cannot_get_specific_cat_before_building_categories(self):
@@ -416,6 +431,20 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self._checkFileExtFindingIsNone(9)
     self._checkFileExtFindingIsYes(10)
     self._checkFileExtFindingIsYes(11)
+
+  ##### exclude path prefix analysis tests
+
+  def test_can_exclude_common_path_prefix(self):
+    self.db.setConfigValue(key="analyze-exclude-path-prefix", value="yes")
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+
+    # check that file paths have changed
+    for cat in self.analyzer.primaryScanCategories.values():
+      for lic in cat.licensesSorted.values():
+        for file in lic.filesSorted.values():
+          self.assertNotIn("tmp", file.path)
 
   ##### main analysis function tests
 

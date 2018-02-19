@@ -97,6 +97,8 @@ class Analyzer:
       raise ReportAnalysisError("Cannot call _runAnalysis before _buildScanCategories")
 
     # run analyses based on config in DB, overridable by keywords
+    if self._getFinalConfigValue('analyze-exclude-path-prefix') == "yes":
+      self._analyzeExcludePathPrefix()
     if self._getFinalConfigValue('analyze-extensions') == "yes":
       self._analyzeExtensions()
     if self._getFinalConfigValue('analyze-thirdparty') == "yes":
@@ -121,6 +123,24 @@ class Analyzer:
   def _analyzeEmptyFile(self):
     # FIXME implement
     pass
+
+  def _analyzeExcludePathPrefix(self):
+    # first build a lsit of all file paths
+    paths = []
+    for cat in self.primaryScanCategories.values():
+      for lic in cat.licensesSorted.values():
+        for file in lic.filesSorted.values():
+          paths.append(file.path)
+
+    # see if there's a common prefix
+    prefix = os.path.commonpath(paths)
+
+    # if so, then go back through and remove it
+    if paths != '' and paths != '/':
+      for cat in self.primaryScanCategories.values():
+        for lic in cat.licensesSorted.values():
+          for file in lic.filesSorted.values():
+            file.path = file.path[len(prefix):]
 
   ##### Other helper functions
 

@@ -214,3 +214,25 @@ class SPDXReportFuncTestSuite(unittest.TestCase):
     # The output message tells her it succeeded
     self.assertEqual(0, result.exit_code)
     self.assertEqual(f"Report successfully created at {reportPath}.\n", result.output)
+
+  def test_can_configure_to_omit_common_path_prefixes(self):
+    # Edith configures the project so that reports will exclude the
+    # common path prefixes
+    result = runcmd(self, slm.cli, "frotz", "set-config",
+      "analyze-exclude-path-prefix", "yes")
+    self.assertEqual(0, result.exit_code)
+
+    # She then creates a report
+    reportPath = self.reportDir.path + "/report.xlsx"
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-nuclear",
+      "create-report", "--scan_id", "1", "--report_format", "xlsx",
+      "--report_path", reportPath, "--no_summary")
+    self.assertEqual(0, result.exit_code)
+
+    # Looking inside the workbook, she sees that the common license prefix
+    # no longer shows up in the file listings
+    wb = load_workbook(filename=reportPath)
+    ws1 = wb["Project Licenses"]
+    self.assertEqual("/.gitignore", ws1['A2'].value)
+    for row in range(2, ws1.max_row+1):
+      self.assertNotIn("master", ws1[f'A{row}'].value)

@@ -39,6 +39,7 @@ __valid_configs__ = [
   ('analyze-extensions-list', False, 'Semicolon-separated string: If analyze-extensions is set, list of file extensions to analyze'),
   ('analyze-thirdparty', False, 'Flag: Analyze file paths for "third party" directories'),
   ('analyze-emptyfile', False, 'Flag: Analyze file checksums for empty files'),
+  ('analyze-exclude-path-prefix', False, 'Flag: Exclude common path prefixes from reports'),
 
   # Reporter configurations; intended to be overridable on command line
   ('include-summary', False, 'Flag: Include summary page in reports'),
