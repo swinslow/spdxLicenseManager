@@ -117,6 +117,14 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     ext = self.analyzer._getFile(file_id).findings.get("extension", None)
     self.assertEqual("yes", ext)
 
+  def _checkFileEmptyFindingIsNone(self, file_id):
+    ext = self.analyzer._getFile(file_id).findings.get("emptyfile", None)
+    self.assertIsNone(ext)
+
+  def _checkFileEmptyFindingIsYes(self, file_id):
+    ext = self.analyzer._getFile(file_id).findings.get("emptyfile", None)
+    self.assertEqual("yes", ext)
+
   ##### Test cases below
 
   def test_analyzer_is_in_reset_state(self):
@@ -431,6 +439,27 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self._checkFileExtFindingIsNone(9)
     self._checkFileExtFindingIsYes(10)
     self._checkFileExtFindingIsYes(11)
+
+  ##### empty file analysis tests
+
+  def test_empty_files_get_extra_flag_and_others_dont(self):
+    self.db.setConfigValue(key="analyze-emptyfile", value="yes")
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+
+    # check specific files
+    self._checkFileEmptyFindingIsNone(1)
+    self._checkFileEmptyFindingIsNone(2)
+    self._checkFileEmptyFindingIsNone(3)
+    self._checkFileEmptyFindingIsNone(4)
+    self._checkFileEmptyFindingIsNone(5)
+    self._checkFileEmptyFindingIsNone(6)
+    self._checkFileEmptyFindingIsNone(7)
+    self._checkFileEmptyFindingIsYes(8)
+    self._checkFileEmptyFindingIsYes(9)
+    self._checkFileEmptyFindingIsYes(10)
+    self._checkFileEmptyFindingIsYes(11)
 
   ##### exclude path prefix analysis tests
 

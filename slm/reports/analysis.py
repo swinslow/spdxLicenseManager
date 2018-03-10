@@ -26,6 +26,8 @@ from ..projectdb import ProjectDBQueryError
 
 class Analyzer:
 
+  MD5_EMPTY_FILE = "d41d8cd98f00b204e9800998ecf8427e"
+
   def __init__(self, db, config={}):
     super(Analyzer, self).__init__()
     self._reset()
@@ -121,8 +123,11 @@ class Analyzer:
     pass
 
   def _analyzeEmptyFile(self):
-    # FIXME implement
-    pass
+    for cat in self.primaryScanCategories.values():
+      for lic in cat.licensesSorted.values():
+        for file in lic.filesSorted.values():
+          if file.md5 == self.MD5_EMPTY_FILE:
+            file.findings["emptyfile"] = "yes"
 
   def _analyzeExcludePathPrefix(self):
     # first build a lsit of all file paths

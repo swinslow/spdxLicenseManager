@@ -429,10 +429,11 @@ class ReportXlsxTestSuite(unittest.TestCase):
     self.assertEqual("File", self.reporter.wb['catID2']['A1'].value)
     self.assertEqual("License", self.reporter.wb['catID2']['B1'].value)
 
-  ##### Reporter license names for findings
+  ##### Reporter findings license renaming tests
 
   def test_can_modify_licenses_in_no_lic_found_cat_for_findings(self):
     self.db.setConfigValue(key="analyze-extensions", value="yes")
+    self.db.setConfigValue(key="analyze-emptyfile", value="yes")
     results = self._getAnalysisResults()
 
     # hand the "No license found" category to the annotate function
@@ -451,6 +452,12 @@ class ReportXlsxTestSuite(unittest.TestCase):
     self.assertEqual(4, noLicExt.category_id)
     self.assertTrue(noLicExt.hasFiles)
     self.assertEqual(noLicExt.filesSorted[6], self.f6)
+
+    noLicEmpty = self.cat4.licensesSorted[8]
+    self.assertEqual("No license found - empty file", noLicEmpty.name)
+    self.assertEqual(4, noLicEmpty.category_id)
+    self.assertTrue(noLicEmpty.hasFiles)
+    self.assertEqual(noLicEmpty.filesSorted[7], self.f7)
 
   ##### Reporter save function tests
 
@@ -513,3 +520,12 @@ class ReportXlsxTestSuite(unittest.TestCase):
     results = self._getAnalysisResults()
     maxLicID = self.reporter._getResultsMaxLicenseID(results)
     self.assertEqual(6, maxLicID)
+
+  def test_can_create_temp_license(self):
+    lic = self.reporter._createTempLicense(catID=4, nextLicID=7,
+      name="No license found - blah")
+    self.assertEqual(7, lic._id)
+    self.assertEqual(4, lic.category_id)
+    self.assertEqual("No license found - blah", lic.name)
+    self.assertTrue(lic.hasFiles)
+    self.assertEqual(OrderedDict(), lic.filesSorted)

@@ -174,27 +174,50 @@ class XlsxReporter:
     ws[f'C{row}'].font = fontBold
 
   def _annotateNoLicenseFound(self, catNoLicense, nextLicID):
+    # figure out which ones we're checking
     licExt = None
     checkExt = (self._getFinalConfigValue("analyze-extensions") == "yes")
+    licEmpty = None
+    checkEmpty = (self._getFinalConfigValue("analyze-emptyfile") == "yes")
+
     # for now, only looking at the first license in the category
     lic = list(catNoLicense.licensesSorted.values())[0]
     for file in lic.filesSorted.values():
-      if checkExt:
+      labeled = False
+      if checkEmpty and not labeled:
+        if file.findings.get("emptyfile", "N/A") == "yes":
+          # create new "license" if this is the first file we've seen for it
+          if licEmpty is None:
+            licEmpty = self._createTempLicense(
+              catID=catNoLicense._id,
+              nextLicID=nextLicID,
+              name="No license found - empty file"
+            )
+            nextLicID += 1
+            catNoLicense.licensesSorted[licEmpty._id] = licEmpty
+          # add file to this "license"
+          licEmpty.filesSorted[file._id] = file
+          labeled = True
+      if checkExt and not labeled:
         if file.findings.get("extension", "N/A") == "yes":
           # create new "license" if this is the first file we've seen for it
           if licExt is None:
-            licExt = License()
-            licExt._id = nextLicID
+            licExt = self._createTempLicense(
+              catID=catNoLicense._id,
+              nextLicID=nextLicID,
+              name="No license found - excluded file extension"
+            )
             nextLicID += 1
-            licExt.name = "No license found - excluded file extension"
-            licExt.category_id = catNoLicense._id
-            licExt.hasFiles = True
-            licExt.filesSorted = OrderedDict()
             catNoLicense.licensesSorted[licExt._id] = licExt
           # add file to this "license"
           licExt.filesSorted[file._id] = file
+
     # wait until we're done, so we can go back and remove them now
     # (can't mutate the filesSorted OrderedDict while iterating)
+    if licEmpty is not None:
+      for file in licEmpty.filesSorted.values():
+        # remove from the original license file list
+        del lic.filesSorted[file._id]
     if licExt is not None:
       for file in licExt.filesSorted.values():
         # remove from the original license file list
@@ -239,3 +262,12 @@ class XlsxReporter:
         if lic._id > maxLicID:
           maxLicID = lic._id
     return maxLicID
+
+  def _createTempLicense(self, catID, nextLicID, name):
+    lic = License()
+    lic._id = nextLicID
+    lic.name = name
+    lic.category_id = catID
+    lic.hasFiles = True
+    lic.filesSorted = OrderedDict()
+    return lic
