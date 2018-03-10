@@ -24,10 +24,10 @@ import openpyxl
 from .common import ReportFileError, ReportNotReadyError
 from ..projectdb import ProjectDBQueryError, License
 
-class ExcelReporter:
+class XlsxReporter:
 
   def __init__(self, db, config={}):
-    super(ExcelReporter, self).__init__()
+    super(XlsxReporter, self).__init__()
     self._reset()
     self.db = db
     # copy over config entries into new dict

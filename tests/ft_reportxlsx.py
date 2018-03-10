@@ -35,6 +35,7 @@ from helper_check import checkForFileExists
 # paths to various SPDX test files
 PATH_SIMPLE_SPDX = "tests/testfiles/simple.spdx"
 PATH_SIMPLE_EXTENSION_SPDX = "tests/testfiles/simpleExtension.spdx"
+PATH_SIMPLE_EMPTYFILE_SPDX = "tests/testfiles/simpleEmptyFile.spdx"
 
 class SPDXReportFuncTestSuite(unittest.TestCase):
   """spdxLicenseManager tag-value reporting FT suite."""
@@ -60,7 +61,7 @@ class SPDXReportFuncTestSuite(unittest.TestCase):
       "--desc", "frotz-dim initial scan")
     self.assertEqual(0, result.exit_code)
 
-    # Now Edith wants to get an Excel report of the findings, sorted by
+    # Now Edith wants to get an xlsx report of the findings, sorted by
     # license category. She specifies the target output path and doesn't want
     # an initial summary sheet
     reportPath = self.reportDir.path + "/report.xlsx"
@@ -278,3 +279,40 @@ class SPDXReportFuncTestSuite(unittest.TestCase):
     self.assertEqual("No license found", ws2['B2'].value)
     self.assertEqual("simple/a1.json", ws2['A5'].value)
     self.assertEqual("No license found - excluded file extension", ws2['B5'].value)
+
+  def test_can_configure_to_label_empty_files(self):
+    # Edith configures the project so that files with no license found,
+    # which are totally empty, will be labeled separately in the report
+    result = runcmd(self, slm.cli, "frotz", "set-config",
+      "analyze-emptyfile", "yes")
+    self.assertEqual(0, result.exit_code)
+
+    # She then imports the SPDX file
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "import-scan", PATH_SIMPLE_EMPTYFILE_SPDX, "--scan_date", "2017-05-05",
+      "--desc", "frotz-dim scan to label empty files")
+    self.assertEqual(0, result.exit_code)
+
+    # She then creates a report
+    reportPath = self.reportDir.path + "/report.xlsx"
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "create-report", "--scan_id", "3", "--report_format", "xlsx",
+      "--report_path", reportPath)
+    self.assertEqual(0, result.exit_code)
+
+    # Looking inside the workbook, she sees that the summary displays a
+    # separate line for these files
+    wb = load_workbook(filename=reportPath)
+    ws1 = wb["License summary"]
+    flag_found = False
+    for row in range(1, ws1.max_row+1):
+      if ws1[f'B{row}'].value == "No license found - empty file":
+        flag_found = True
+    self.assertTrue(flag_found)
+
+    # And she sees that they are labeled separately in the file listing sheet
+    ws2 = wb["No license found"]
+    self.assertEqual("simple/dir1/subfile.txt", ws2['A2'].value)
+    self.assertEqual("No license found", ws2['B2'].value)
+    self.assertEqual("simple/__init__.py", ws2['A5'].value)
+    self.assertEqual("No license found - empty file", ws2['B5'].value)

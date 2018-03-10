@@ -23,7 +23,7 @@ import click
 from .helperContext import extractContext
 from ..reports.analysis import Analyzer
 from ..reports.common import ReportFileError
-from ..reports.xlsx import ExcelReporter
+from ..reports.xlsx import XlsxReporter
 
 def cmdCreateReport(ctx, subproject, scan_id=None, report_path=None,
   report_format='xlsx', no_summary=False, force=False):
@@ -51,7 +51,7 @@ def cmdCreateReport(ctx, subproject, scan_id=None, report_path=None,
   results = analyzer.runAnalysis(scan_id)
 
   # and generate the results
-  reporter = ExcelReporter(db=db, config=kwConfig)
+  reporter = XlsxReporter(db=db, config=kwConfig)
   reporter.setResults(results)
   reporter.generate()
 

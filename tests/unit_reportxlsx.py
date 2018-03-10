@@ -1,6 +1,6 @@
-# tests/unit_reportexcel.py
+# tests/unit_reportxlsx.py
 #
-# Unit test for spdxLicenseManager: creating Excel reports.
+# Unit test for spdxLicenseManager: creating xlsx reports.
 #
 # Copyright (C) The Linux Foundation
 # SPDX-License-Identifier: Apache-2.0
@@ -28,10 +28,10 @@ from openpyxl import Workbook
 from slm.datatypes import Category, File, License, Scan, Subproject
 from slm.projectdb import ProjectDB, ProjectDBQueryError
 from slm.reports.common import ReportFileError, ReportNotReadyError
-from slm.reports.xlsx import ExcelReporter
+from slm.reports.xlsx import XlsxReporter
 
-class ReportExcelTestSuite(unittest.TestCase):
-  """spdxLicenseManager Excel reporting unit test suite."""
+class ReportXlsxTestSuite(unittest.TestCase):
+  """spdxLicenseManager Xlsx reporting unit test suite."""
 
   def setUp(self):
     # create and initialize an in-memory database
@@ -40,7 +40,7 @@ class ReportExcelTestSuite(unittest.TestCase):
     self.db.initializeDBTables()
 
    # create reporter
-    self.reporter = ExcelReporter(db=self.db)
+    self.reporter = XlsxReporter(db=self.db)
 
   def tearDown(self):
     pass
@@ -237,7 +237,7 @@ class ReportExcelTestSuite(unittest.TestCase):
     configDict = {
       "include-summary": "yes",
     }
-    newReporter = ExcelReporter(db=self.db, config=configDict)
+    newReporter = XlsxReporter(db=self.db, config=configDict)
     self.assertEqual("yes", newReporter.kwConfig["include-summary"])
 
   def test_can_get_reporter_final_config(self):
@@ -247,7 +247,7 @@ class ReportExcelTestSuite(unittest.TestCase):
 
   def test_can_override_db_config_in_reporter_final_config(self):
     self.db.setConfigValue(key="include-summary", value="yes")
-    newReporter = ExcelReporter(db=self.db, config={"include-summary": "no"})
+    newReporter = XlsxReporter(db=self.db, config={"include-summary": "no"})
     summary = newReporter._getFinalConfigValue(key="include-summary")
     self.assertEqual(summary, "no")
 
@@ -272,8 +272,8 @@ class ReportExcelTestSuite(unittest.TestCase):
       self.reporter.generate()
     self.assertFalse(self.reporter.reportGenerated)
 
-  @mock.patch('slm.reports.xlsx.ExcelReporter._generateFileListings')
-  @mock.patch('slm.reports.xlsx.ExcelReporter._generateCategorySheets')
+  @mock.patch('slm.reports.xlsx.XlsxReporter._generateFileListings')
+  @mock.patch('slm.reports.xlsx.XlsxReporter._generateCategorySheets')
   def test_generate_calls_required_helpers(self, cs_mock, file_mock):
     results = self._getAnalysisResults()
     self.reporter.setResults(results)
@@ -349,14 +349,14 @@ class ReportExcelTestSuite(unittest.TestCase):
     self.assertFalse(cellLicense.font.bold)
     self.assertTrue(cellLicense.alignment.wrap_text)
 
-  @mock.patch('slm.reports.xlsx.ExcelReporter._generateSummarySheet')
+  @mock.patch('slm.reports.xlsx.XlsxReporter._generateSummarySheet')
   def test_summary_not_generated_if_config_not_set(self, summary_mock):
     results = self._getAnalysisResults()
     self.reporter.setResults(results)
     self.reporter.generate()
     summary_mock.assert_not_called()
 
-  @mock.patch('slm.reports.xlsx.ExcelReporter._generateSummarySheet')
+  @mock.patch('slm.reports.xlsx.XlsxReporter._generateSummarySheet')
   def test_summary_is_generated_if_config_set(self, summary_mock):
     self.db.setConfigValue(key="include-summary", value="yes")
     results = self._getAnalysisResults()
@@ -495,7 +495,7 @@ class ReportExcelTestSuite(unittest.TestCase):
       self.reporter._saveCheck(path="whatever")
 
   @mock.patch('slm.reports.xlsx.openpyxl.workbook.Workbook.save')
-  @mock.patch('slm.reports.xlsx.ExcelReporter._saveCheck')
+  @mock.patch('slm.reports.xlsx.XlsxReporter._saveCheck')
   def test_save_calls_save_checker(self, check_mock, save_mock):
     results = self._getAnalysisResults()
     self.reporter.setResults(results)
