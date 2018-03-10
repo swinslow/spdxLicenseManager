@@ -187,6 +187,35 @@ class ReportExcelTestSuite(unittest.TestCase):
     }
     self.noLicFound.filesSorted[6] = self.f6
 
+    # add some more files for testing findings
+    self.f7 = File()
+    self.f7._id = 7
+    self.f7.path = "/tmp/__init__.py"
+    self.f7.scan_id = 1
+    self.f7.license_id = 6
+    self.f7.findings = {
+      "emptyfile": "yes",
+    }
+    self.noLicFound.filesSorted[7] = self.f7
+
+    self.f8 = File()
+    self.f8._id = 8
+    self.f8.path = "/tmp/vendor/dep.py"
+    self.f8.scan_id = 1
+    self.f8.license_id = 6
+    self.f8.findings = {
+      "thirdparty": "yes",
+    }
+    self.noLicFound.filesSorted[8] = self.f8
+
+    self.f9 = File()
+    self.f9._id = 9
+    self.f9.path = "/tmp/code.py"
+    self.f9.scan_id = 1
+    self.f9.license_id = 6
+    self.f9.findings = {}
+    self.noLicFound.filesSorted[9] = self.f9
+
   def _getAnalysisResults(self):
     results = OrderedDict()
     self._buildCategories(results)
@@ -373,12 +402,12 @@ class ReportExcelTestSuite(unittest.TestCase):
     self.assertEqual(1, ws['C7'].value)
     self.assertEqual("No license found:", ws['A8'].value)
     self.assertEqual("No license found", ws['B9'].value)
-    self.assertEqual(1, ws['C9'].value)
+    self.assertEqual(4, ws['C9'].value)
     self.assertEqual("TOTAL", ws['A11'].value)
     self.assertEqual(16, ws['A11'].font.size)
     self.assertTrue(ws['A11'].font.bold)
     self.assertFalse(ws['A11'].alignment.wrap_text)
-    self.assertEqual(6, ws['C11'].value)
+    self.assertEqual(9, ws['C11'].value)
     self.assertEqual(16, ws['C11'].font.size)
     self.assertTrue(ws['C11'].font.bold)
     self.assertFalse(ws['C11'].alignment.wrap_text)
@@ -405,35 +434,6 @@ class ReportExcelTestSuite(unittest.TestCase):
   def test_can_modify_licenses_in_no_lic_found_cat_for_findings(self):
     self.db.setConfigValue(key="analyze-extensions", value="yes")
     results = self._getAnalysisResults()
-
-    # add some more files for testing findings
-    f7 = File()
-    f7._id = 7
-    f7.path = "/tmp/__init__.py"
-    f7.scan_id = 1
-    f7.license_id = 6
-    f7.findings = {
-      "emptyfile": "yes",
-    }
-    self.noLicFound.filesSorted[7] = f7
-
-    f8 = File()
-    f8._id = 8
-    f8.path = "/tmp/vendor/dep.py"
-    f8.scan_id = 1
-    f8.license_id = 6
-    f8.findings = {
-      "thirdparty": "yes",
-    }
-    self.noLicFound.filesSorted[8] = f8
-
-    f9 = File()
-    f9._id = 9
-    f9.path = "/tmp/code.py"
-    f9.scan_id = 1
-    f9.license_id = 6
-    f9.findings = {}
-    self.noLicFound.filesSorted[9] = f9
 
     # hand the "No license found" category to the annotate function
     self.reporter._annotateNoLicenseFound(
