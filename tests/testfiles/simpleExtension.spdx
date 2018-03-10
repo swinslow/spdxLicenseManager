@@ -1,0 +1,114 @@
+SPDXVersion: SPDX-2.0
+DataLicense: CC0-1.0
+
+##-------------------------
+## Document Information
+##-------------------------
+
+DocumentNamespace: http://3a25b77ecd93/repo/SPDX2TV_simple.tar.gz_1517059409.spdx
+DocumentName: /srv/fossology/repository/report
+SPDXID: SPDXRef-DOCUMENT
+
+##-------------------------
+## Creation Information
+##-------------------------
+
+Creator: Tool: spdx2
+Creator: Person: steve (y)
+CreatorComment: <text>
+This document was created using license information and a generator from Fossology.
+</text>
+Created: 2018-01-27T13:23:30Z
+LicenseListVersion: 2.6
+
+##-------------------------
+## Package Information
+##-------------------------
+
+
+PackageName: simple.tar.gz
+PackageFileName: simple.tar.gz
+SPDXID: SPDXRef-upload300
+PackageDownloadLocation: NOASSERTION
+PackageVerificationCode: 9052bd261aa08821527ff18c9c35b8a90be3b3eb
+PackageChecksum: SHA1: c1980212b3073194847ef823151465f07d1e8ecc
+PackageChecksum: MD5: 9ff50e6c0ee23086f1f06b650410eae0
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageLicenseComments: <text> licenseInfoInFile determined by Scanners:
+ - nomos ("3.1.0-8-gaef393d".aef393)
+ - monk ("3.1.0-8-gaef393d".aef393) </text>
+PackageLicenseInfoFromFiles: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-upload300
+
+##--------------------------
+## File Information
+##--------------------------
+
+##File
+
+FileName: simple/file3.txt
+SPDXID: SPDXRef-item3363485
+FileChecksum: SHA1: 39de833fa46eee39020a6a9f3aaddfe82b4c3bd2
+FileChecksum: MD5: 2ce7462b9f6a90fe9de273e461e105c0
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: simple/file2.txt
+SPDXID: SPDXRef-item3363486
+FileChecksum: SHA1: 7967e545a8d1f6a7f70dc4324d54dea435299499
+FileChecksum: MD5: b3edfb3047f825648d633660a170f49c
+LicenseConcluded: MIT
+LicenseInfoInFile: MIT
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: simple/a1.json
+SPDXID: SPDXRef-item3363487
+FileChecksum: SHA1: f3ed5d6955f86fbb4593842522bb98c77d2d3a5b
+FileChecksum: MD5: 56f5948252a56f06debcb2ce915e1415
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: simple/file1.txt
+SPDXID: SPDXRef-item3363487
+FileChecksum: SHA1: f3ed5d6955f86fbb4593842522bb98c77d2d3a5b
+FileChecksum: MD5: 56f5948252a56f06debcb2ce915e1415
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: simple/dir1/subfile.txt
+SPDXID: SPDXRef-item3363484
+FileChecksum: SHA1: 29e7b04e481bcb0f5484f30adbc2d20bb9360766
+FileChecksum: MD5: 3bf4715d3e921533b127f88416148a4f
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+
+
+##-------------------------
+## License Information
+##-------------------------
+
+LicenseID: LicenseRef-No_license_found
+LicenseName: LicenseRef-No_license_found
+ExtractedText: <text> Not find any license in the scanned file </text>
+

@@ -34,6 +34,7 @@ from helper_check import checkForFileExists
 
 # paths to various SPDX test files
 PATH_SIMPLE_SPDX = "tests/testfiles/simple.spdx"
+PATH_SIMPLE_EXTENSION_SPDX = "tests/testfiles/simpleExtension.spdx"
 
 class SPDXReportFuncTestSuite(unittest.TestCase):
   """spdxLicenseManager tag-value reporting FT suite."""
@@ -236,3 +237,44 @@ class SPDXReportFuncTestSuite(unittest.TestCase):
     self.assertEqual("/.gitignore", ws1['A2'].value)
     for row in range(2, ws1.max_row+1):
       self.assertNotIn("master", ws1[f'A{row}'].value)
+
+  def test_can_configure_to_label_files_with_certain_extensions(self):
+    # Edith configures the project so that files with no license found,
+    # but with certain file extensions, will be labeled separately in the
+    # report
+    result = runcmd(self, slm.cli, "frotz", "set-config",
+      "analyze-extensions", "yes")
+    self.assertEqual(0, result.exit_code)
+    result = runcmd(self, slm.cli, "frotz", "set-config",
+      "analyze-extensions-list", "json;jpg;png")
+    self.assertEqual(0, result.exit_code)
+
+    # She then imports the SPDX file
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "import-scan", PATH_SIMPLE_EXTENSION_SPDX, "--scan_date", "2017-05-05",
+      "--desc", "frotz-dim scan to exclude extensions")
+    self.assertEqual(0, result.exit_code)
+
+    # She then creates a report
+    reportPath = self.reportDir.path + "/report.xlsx"
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "create-report", "--scan_id", "3", "--report_format", "xlsx",
+      "--report_path", reportPath)
+    self.assertEqual(0, result.exit_code)
+
+    # Looking inside the workbook, she sees that the summary displays a
+    # separate line for these files
+    wb = load_workbook(filename=reportPath)
+    ws1 = wb["License summary"]
+    flag_found = False
+    for row in range(1, ws1.max_row+1):
+      if ws1[f'B{row}'].value == "No license found - excluded file extension":
+        flag_found = True
+    self.assertTrue(flag_found)
+
+    # And she sees that they are labeled separately in the file listing sheet
+    ws2 = wb["No license found"]
+    self.assertEqual("/file1.txt", ws2['A2'])
+    self.assertEqual("No license found", ws2['B2'])
+    self.assertEqual("/a1.json", ws2['A3'])
+    self.assertEqual("No license found - excluded file extension", ws2['B3'])
