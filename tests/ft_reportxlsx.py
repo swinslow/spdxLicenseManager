@@ -274,7 +274,7 @@ class SPDXReportFuncTestSuite(unittest.TestCase):
 
     # And she sees that they are labeled separately in the file listing sheet
     ws2 = wb["No license found"]
-    self.assertEqual("/file1.txt", ws2['A2'])
-    self.assertEqual("No license found", ws2['B2'])
-    self.assertEqual("/a1.json", ws2['A3'])
-    self.assertEqual("No license found - excluded file extension", ws2['B3'])
+    self.assertEqual("simple/dir1/subfile.txt", ws2['A2'].value)
+    self.assertEqual("No license found", ws2['B2'].value)
+    self.assertEqual("simple/a1.json", ws2['A5'].value)
+    self.assertEqual("No license found - excluded file extension", ws2['B5'].value)

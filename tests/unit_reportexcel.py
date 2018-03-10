@@ -73,6 +73,14 @@ class ReportExcelTestSuite(unittest.TestCase):
     self.cat1.hasFiles = True
     results[1] = self.cat1
 
+    self.cat4 = Category()
+    self.cat4._id = 4
+    self.cat4.name = "No license found"
+    self.cat4.order = 4
+    self.cat4.licensesSorted = OrderedDict()
+    self.cat4.hasFiles = True
+    results[4] = self.cat4
+
   def _buildLicenses(self, results):
     # should sort alphabetically before lic1cat2 in reports
     self.lic2cat2 = License()
@@ -117,6 +125,15 @@ class ReportExcelTestSuite(unittest.TestCase):
     self.lic5cat1.hasFiles = True
     self.cat1.licensesSorted[5] = self.lic5cat1
 
+    # no license found option, for analysis outputs
+    self.noLicFound = License()
+    self.noLicFound._id = 6
+    self.noLicFound.name = "No license found"
+    self.noLicFound.category_id = 4
+    self.noLicFound.filesSorted = OrderedDict()
+    self.noLicFound.hasFiles = True
+    self.cat4.licensesSorted[6] = self.noLicFound
+
   def _buildFiles(self, results):
     # should sort alphabetically by path before f1
     self.f2 = File()
@@ -159,6 +176,16 @@ class ReportExcelTestSuite(unittest.TestCase):
     self.f5.license_id = 5
     self.f5.findings = {}
     self.lic5cat1.filesSorted[5] = self.f5
+
+    self.f6 = File()
+    self.f6._id = 6
+    self.f6.path = "/tmp/f6.png"
+    self.f6.scan_id = 1
+    self.f6.license_id = 6
+    self.f6.findings = {
+      "extension": "yes",
+    }
+    self.noLicFound.filesSorted[6] = self.f6
 
   def _getAnalysisResults(self):
     results = OrderedDict()
@@ -238,7 +265,7 @@ class ReportExcelTestSuite(unittest.TestCase):
 
     # workbook now has the expected category sheets
     # catID3 does not appear because it has no files
-    self.assertEqual(["catID2", "catID1"], wb.sheetnames)
+    self.assertEqual(["catID2", "catID1", "No license found"], wb.sheetnames)
     # proper headers are set for each category page
     # and header fonts are as expected
     for sheet in wb:
@@ -344,14 +371,17 @@ class ReportExcelTestSuite(unittest.TestCase):
     self.assertEqual("catID1:", ws['A6'].value)
     self.assertEqual("a license", ws['B7'].value)
     self.assertEqual(1, ws['C7'].value)
-    self.assertEqual("TOTAL", ws['A9'].value)
-    self.assertEqual(16, ws['A9'].font.size)
-    self.assertTrue(ws['A9'].font.bold)
-    self.assertFalse(ws['A9'].alignment.wrap_text)
-    self.assertEqual(5, ws['C9'].value)
-    self.assertEqual(16, ws['C9'].font.size)
-    self.assertTrue(ws['C9'].font.bold)
-    self.assertFalse(ws['C9'].alignment.wrap_text)
+    self.assertEqual("No license found:", ws['A8'].value)
+    self.assertEqual("No license found", ws['B9'].value)
+    self.assertEqual(1, ws['C9'].value)
+    self.assertEqual("TOTAL", ws['A11'].value)
+    self.assertEqual(16, ws['A11'].font.size)
+    self.assertTrue(ws['A11'].font.bold)
+    self.assertFalse(ws['A11'].alignment.wrap_text)
+    self.assertEqual(6, ws['C11'].value)
+    self.assertEqual(16, ws['C11'].font.size)
+    self.assertTrue(ws['C11'].font.bold)
+    self.assertFalse(ws['C11'].alignment.wrap_text)
 
   def test_summary_sheet_not_overwritten_by_other_sheets(self):
     self.db.setConfigValue(key="include-summary", value="yes")
@@ -359,14 +389,68 @@ class ReportExcelTestSuite(unittest.TestCase):
     self.reporter.setResults(results)
     self.reporter.generate()
     # workbook should have the summary sheet AND the expected category sheets
-    self.assertEqual(["License summary", "catID2", "catID1"],
-      self.reporter.wb.sheetnames)
+    self.assertEqual(
+      ["License summary", "catID2", "catID1", "No license found"],
+      self.reporter.wb.sheetnames
+    )
     # the summary sheet has the expected summary headers
     self.assertEqual("License", self.reporter.wb['License summary']['A1'].value)
     self.assertEqual("# of files", self.reporter.wb['License summary']['C1'].value)
     # and the file listing sheets have the expected file listing headers
     self.assertEqual("File", self.reporter.wb['catID2']['A1'].value)
     self.assertEqual("License", self.reporter.wb['catID2']['B1'].value)
+
+  ##### Reporter license names for findings
+
+  def test_can_modify_licenses_in_no_lic_found_cat_for_findings(self):
+    self.db.setConfigValue(key="analyze-extensions", value="yes")
+    results = self._getAnalysisResults()
+
+    # add some more files for testing findings
+    f7 = File()
+    f7._id = 7
+    f7.path = "/tmp/__init__.py"
+    f7.scan_id = 1
+    f7.license_id = 6
+    f7.findings = {
+      "emptyfile": "yes",
+    }
+    self.noLicFound.filesSorted[7] = f7
+
+    f8 = File()
+    f8._id = 8
+    f8.path = "/tmp/vendor/dep.py"
+    f8.scan_id = 1
+    f8.license_id = 6
+    f8.findings = {
+      "thirdparty": "yes",
+    }
+    self.noLicFound.filesSorted[8] = f8
+
+    f9 = File()
+    f9._id = 9
+    f9.path = "/tmp/code.py"
+    f9.scan_id = 1
+    f9.license_id = 6
+    f9.findings = {}
+    self.noLicFound.filesSorted[9] = f9
+
+    # hand the "No license found" category to the annotate function
+    self.reporter._annotateNoLicenseFound(
+      catNoLicense=self.cat4,
+      nextLicID=7,
+    )
+
+    # check that it has been modified as expected, with new licenses,
+    # and with the expected files within those licenses
+
+    # this will temporarily get assigned the next available license ID
+    # (only in memory, not committed to db)
+    noLicExt = self.cat4.licensesSorted[7]
+    self.assertEqual("No license found - excluded file extension", noLicExt.name)
+    self.assertEqual(4, noLicExt.category_id)
+    self.assertTrue(noLicExt.hasFiles)
+    self.assertEqual(noLicExt.filesSorted[6], self.f6)
 
   ##### Reporter save function tests
 
@@ -422,3 +506,10 @@ class ReportExcelTestSuite(unittest.TestCase):
     self.reporter.save(path=path, replace=replace)
     check_mock.assert_called_with(path=path, replace=replace)
     save_mock.assert_called_with(path)
+
+  ##### Reporter misc helper function tests
+
+  def test_can_get_max_lic_id_from_results(self):
+    results = self._getAnalysisResults()
+    maxLicID = self.reporter._getResultsMaxLicenseID(results)
+    self.assertEqual(6, maxLicID)

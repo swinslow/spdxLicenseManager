@@ -22,7 +22,7 @@ from collections import OrderedDict
 import openpyxl
 
 from .common import ReportFileError, ReportNotReadyError
-from ..projectdb import ProjectDBQueryError
+from ..projectdb import ProjectDBQueryError, License
 
 class ExcelReporter:
 
@@ -40,6 +40,11 @@ class ExcelReporter:
   def setResults(self, results):
     self.wb = openpyxl.Workbook()
     self.results = results
+    # look for "No license found" category, and if one exists, annotate it
+    for cat in self.results.values():
+      if cat.name == "No license found":
+        nextLicID = self._getResultsMaxLicenseID(self.results) + 1
+        self._annotateNoLicenseFound(catNoLicense=cat, nextLicID=nextLicID)
 
   def generate(self):
     if type(self.results) != OrderedDict:
@@ -168,6 +173,33 @@ class ExcelReporter:
     ws[f'C{row}'] = total
     ws[f'C{row}'].font = fontBold
 
+  def _annotateNoLicenseFound(self, catNoLicense, nextLicID):
+    licExt = None
+    checkExt = (self._getFinalConfigValue("analyze-extensions") == "yes")
+    # for now, only looking at the first license in the category
+    lic = list(catNoLicense.licensesSorted.values())[0]
+    for file in lic.filesSorted.values():
+      if checkExt:
+        if file.findings.get("extension", "N/A") == "yes":
+          # create new "license" if this is the first file we've seen for it
+          if licExt is None:
+            licExt = License()
+            licExt._id = nextLicID
+            nextLicID += 1
+            licExt.name = "No license found - excluded file extension"
+            licExt.category_id = catNoLicense._id
+            licExt.hasFiles = True
+            licExt.filesSorted = OrderedDict()
+            catNoLicense.licensesSorted[licExt._id] = licExt
+          # add file to this "license"
+          licExt.filesSorted[file._id] = file
+    # wait until we're done, so we can go back and remove them now
+    # (can't mutate the filesSorted OrderedDict while iterating)
+    if licExt is not None:
+      for file in licExt.filesSorted.values():
+        # remove from the original license file list
+        del lic.filesSorted[file._id]
+
   def _saveCheck(self, path, replace=False):
     if type(self.results) != OrderedDict:
       raise ReportNotReadyError("Cannot call save() before analysis results are set")
@@ -199,3 +231,11 @@ class ExcelReporter:
       return str(value).lower()
     except ProjectDBQueryError:
       return ""
+
+  def _getResultsMaxLicenseID(self, results):
+    maxLicID = 0
+    for cat in results.values():
+      for lic in cat.licensesSorted.values():
+        if lic._id > maxLicID:
+          maxLicID = lic._id
+    return maxLicID
