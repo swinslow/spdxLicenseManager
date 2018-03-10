@@ -219,3 +219,7 @@ class DBLicenseUnitTestSuite(unittest.TestCase):
   def test_cannot_change_license_to_category_that_does_not_exist(self):
     with self.assertRaises(ProjectDBUpdateError):
       self.db.changeLicenseCategory(name="293PageEULA", newCat="invalid")
+
+  def test_can_get_max_license_id(self):
+    lic_id = self.db.getLicenseMaxID()
+    self.assertEqual(4, lic_id)

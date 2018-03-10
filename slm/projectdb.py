@@ -403,6 +403,10 @@ class ProjectDB:
       return self.session.query(License).\
                           filter(License.name == name).first()
 
+  def getLicenseMaxID(self):
+    licenses = self.session.query(License._id).order_by(License._id)
+    return max([license._id for license in licenses])
+
   def getMultipleLicenses(self, licenses):
     l_tup = self.session.query(License.name, License._id).\
                          filter(License.name.in_(licenses)).all()
