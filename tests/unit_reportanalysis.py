@@ -118,12 +118,20 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self.assertEqual("yes", ext)
 
   def _checkFileEmptyFindingIsNone(self, file_id):
-    ext = self.analyzer._getFile(file_id).findings.get("emptyfile", None)
-    self.assertIsNone(ext)
+    empty = self.analyzer._getFile(file_id).findings.get("emptyfile", None)
+    self.assertIsNone(empty)
 
   def _checkFileEmptyFindingIsYes(self, file_id):
-    ext = self.analyzer._getFile(file_id).findings.get("emptyfile", None)
-    self.assertEqual("yes", ext)
+    empty = self.analyzer._getFile(file_id).findings.get("emptyfile", None)
+    self.assertEqual("yes", empty)
+
+  def _checkFileDirFindingIsNone(self, file_id):
+    tp = self.analyzer._getFile(file_id).findings.get("thirdparty", None)
+    self.assertIsNone(tp)
+
+  def _checkFileDirFindingIsYes(self, file_id):
+    tp = self.analyzer._getFile(file_id).findings.get("thirdparty", None)
+    self.assertEqual("yes", tp)
 
   ##### Test cases below
 
@@ -460,6 +468,47 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self._checkFileEmptyFindingIsYes(9)
     self._checkFileEmptyFindingIsYes(10)
     self._checkFileEmptyFindingIsYes(11)
+
+  ##### third party directory analysis tests
+
+  def test_can_parse_thirdparty_dirs_string(self):
+    dirString = "vendor;thirdparty;third-party"
+    self.db.setConfigValue(key="analyze-thirdparty-dirs", value=dirString)
+    dirs = self.analyzer._parseDirConfig()
+    # directories are sorted in alphabetical order
+    self.assertEqual(["third-party","thirdparty","vendor"], dirs)
+
+  def test_directories_string_parser_returns_empty_list_if_not_set(self):
+    dirs = self.analyzer._parseDirConfig()
+    self.assertEqual([], dirs)
+
+  def test_ignore_whitespace_in_thirdparty_dirs_string(self):
+    dirString = "   thirdparty ;  vendor  ;third-party     "
+    self.db.setConfigValue(key="analyze-thirdparty-dirs", value=dirString)
+    dirs = self.analyzer._parseDirConfig()
+    # directories are sorted in alphabetical order
+    self.assertEqual(["third-party","thirdparty","vendor"], dirs)
+
+  def test_files_with_directory_match_get_extra_flag_and_others_dont(self):
+    self.db.setConfigValue(key="analyze-thirdparty", value="yes")
+    dirString = "vendor;thirdparty;third-party"
+    self.db.setConfigValue(key="analyze-thirdparty-dirs", value=dirString)
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+
+    # check specific files
+    self._checkFileDirFindingIsNone(1)
+    self._checkFileDirFindingIsNone(2)
+    self._checkFileDirFindingIsNone(3)
+    self._checkFileDirFindingIsNone(4)
+    self._checkFileDirFindingIsNone(5)
+    self._checkFileDirFindingIsYes(6)
+    self._checkFileDirFindingIsYes(7)
+    self._checkFileDirFindingIsNone(8)
+    self._checkFileDirFindingIsYes(9)
+    self._checkFileDirFindingIsNone(10)
+    self._checkFileDirFindingIsYes(11)
 
   ##### exclude path prefix analysis tests
 

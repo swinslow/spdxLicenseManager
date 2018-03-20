@@ -36,6 +36,7 @@ from helper_check import checkForFileExists
 PATH_SIMPLE_SPDX = "tests/testfiles/simple.spdx"
 PATH_SIMPLE_EXTENSION_SPDX = "tests/testfiles/simpleExtension.spdx"
 PATH_SIMPLE_EMPTYFILE_SPDX = "tests/testfiles/simpleEmptyFile.spdx"
+PATH_SIMPLE_THIRDPARTY_SPDX = "tests/testfiles/simpleThirdParty.spdx"
 
 class SPDXReportFuncTestSuite(unittest.TestCase):
   """spdxLicenseManager tag-value reporting FT suite."""
@@ -316,3 +317,48 @@ class SPDXReportFuncTestSuite(unittest.TestCase):
     self.assertEqual("No license found", ws2['B2'].value)
     self.assertEqual("simple/__init__.py", ws2['A5'].value)
     self.assertEqual("No license found - empty file", ws2['B5'].value)
+
+  def test_can_configure_to_label_files_in_third_party_directories(self):
+    # Edith configures the project so that files with no license found,
+    # but in certain third party directories, will be labeled separately in the
+    # report
+    result = runcmd(self, slm.cli, "frotz", "set-config",
+      "analyze-thirdparty", "yes")
+    self.assertEqual(0, result.exit_code)
+    result = runcmd(self, slm.cli, "frotz", "set-config",
+      "analyze-thirdparty-dirs", "vendor;thirdparty")
+    self.assertEqual(0, result.exit_code)
+
+    # She then imports the SPDX file
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "import-scan", PATH_SIMPLE_THIRDPARTY_SPDX, "--scan_date", "2017-05-05",
+      "--desc", "frotz-dim scan to exclude thirdparty dirs")
+    self.assertEqual(0, result.exit_code)
+
+    # She then creates a report
+    reportPath = self.reportDir.path + "/report.xlsx"
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "create-report", "--scan_id", "3", "--report_format", "xlsx",
+      "--report_path", reportPath)
+    self.assertEqual(0, result.exit_code)
+
+    # Looking inside the workbook, she sees that the summary displays a
+    # separate line for these files
+    wb = load_workbook(filename=reportPath)
+    ws1 = wb["License summary"]
+    flag_found = False
+    for row in range(1, ws1.max_row+1):
+      if ws1[f'B{row}'].value == "No license found - third party directory":
+        flag_found = True
+    self.assertTrue(flag_found)
+
+    # And she sees that they are labeled separately in the file listing sheet
+    ws2 = wb["No license found"]
+    self.assertEqual("simple/dir1/subfile.txt", ws2['A2'].value)
+    self.assertEqual("No license found", ws2['B2'].value)
+    self.assertEqual("simple/file1.txt", ws2['A3'].value)
+    self.assertEqual("No license found", ws2['B3'].value)
+    self.assertEqual("simple/thirdparty/src/a1.json", ws2['A4'].value)
+    self.assertEqual("No license found - third party directory", ws2['B4'].value)
+    self.assertEqual("simple/vendor/file3.txt", ws2['A5'].value)
+    self.assertEqual("No license found - third party directory", ws2['B5'].value)

@@ -38,6 +38,7 @@ __valid_configs__ = [
   ('analyze-extensions', False, 'Flag: Analyze file extensions (for "No license found" results)'),
   ('analyze-extensions-list', False, 'Semicolon-separated string: If analyze-extensions is set, list of file extensions to analyze'),
   ('analyze-thirdparty', False, 'Flag: Analyze file paths for "third party" directories'),
+  ('analyze-thirdparty-dirs', False, 'Semicolon-separated string: If analyze-thirdparty is set, list of directories to analyze'),
   ('analyze-emptyfile', False, 'Flag: Analyze file checksums for empty files'),
   ('analyze-exclude-path-prefix', False, 'Flag: Exclude common path prefixes from reports'),
 

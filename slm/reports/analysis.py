@@ -119,8 +119,14 @@ class Analyzer:
             file.findings["extension"] = "yes"
 
   def _analyzeThirdparty(self):
-    # FIXME implement
-    pass
+    dirList = self._parseDirConfig()
+    for cat in self.primaryScanCategories.values():
+      for lic in cat.licensesSorted.values():
+        for file in lic.filesSorted.values():
+          # check each directory in list to see if it's in this file's path
+          for directory in dirList:
+            if directory in file.path:
+              file.findings["thirdparty"] = "yes"
 
   def _analyzeEmptyFile(self):
     for cat in self.primaryScanCategories.values():
@@ -175,6 +181,17 @@ class Analyzer:
     for ext in extList:
       extStripped.append(ext.strip())
     return sorted(extStripped)
+
+  def _parseDirConfig(self):
+    dirString = self._getFinalConfigValue('analyze-thirdparty-dirs')
+    if dirString == '':
+      return []
+
+    dirList = dirString.split(';')
+    dirStripped = []
+    for directory in dirList:
+      dirStripped.append(directory.strip())
+    return sorted(dirStripped)
 
   def _getCategory(self, category_id):
     if self.primaryScanCategories == OrderedDict():
