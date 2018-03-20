@@ -434,6 +434,7 @@ class ReportXlsxTestSuite(unittest.TestCase):
   def test_can_modify_licenses_in_no_lic_found_cat_for_findings(self):
     self.db.setConfigValue(key="analyze-extensions", value="yes")
     self.db.setConfigValue(key="analyze-emptyfile", value="yes")
+    self.db.setConfigValue(key="analyze-thirdparty", value="yes")
     results = self._getAnalysisResults()
 
     # hand the "No license found" category to the annotate function
@@ -458,6 +459,12 @@ class ReportXlsxTestSuite(unittest.TestCase):
     self.assertEqual(4, noLicEmpty.category_id)
     self.assertTrue(noLicEmpty.hasFiles)
     self.assertEqual(noLicEmpty.filesSorted[7], self.f7)
+
+    noLicThird = self.cat4.licensesSorted[9]
+    self.assertEqual("No license found - third party directory", noLicThird.name)
+    self.assertEqual(4, noLicThird.category_id)
+    self.assertTrue(noLicThird.hasFiles)
+    self.assertEqual(noLicThird.filesSorted[8], self.f8)
 
   ##### Reporter save function tests
 

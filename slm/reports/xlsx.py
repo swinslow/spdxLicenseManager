@@ -179,11 +179,27 @@ class XlsxReporter:
     checkExt = (self._getFinalConfigValue("analyze-extensions") == "yes")
     licEmpty = None
     checkEmpty = (self._getFinalConfigValue("analyze-emptyfile") == "yes")
+    licThird = None
+    checkThird = (self._getFinalConfigValue("analyze-thirdparty") == "yes")
 
     # for now, only looking at the first license in the category
     lic = list(catNoLicense.licensesSorted.values())[0]
     for file in lic.filesSorted.values():
       labeled = False
+      if checkThird and not labeled:
+        if file.findings.get("thirdparty", "N/A") == "yes":
+          # create new "license" if this is the first file we've seen for it
+          if licThird is None:
+            licThird = self._createTempLicense(
+              catID=catNoLicense._id,
+              nextLicID=nextLicID,
+              name="No license found - third party directory"
+            )
+            nextLicID += 1
+            catNoLicense.licensesSorted[licThird._id] = licThird
+          # add file to this "license"
+          licThird.filesSorted[file._id] = file
+          labeled = True
       if checkEmpty and not labeled:
         if file.findings.get("emptyfile", "N/A") == "yes":
           # create new "license" if this is the first file we've seen for it
@@ -211,9 +227,14 @@ class XlsxReporter:
             catNoLicense.licensesSorted[licExt._id] = licExt
           # add file to this "license"
           licExt.filesSorted[file._id] = file
+          labeled = True
 
     # wait until we're done, so we can go back and remove them now
     # (can't mutate the filesSorted OrderedDict while iterating)
+    if licThird is not None:
+      for file in licThird.filesSorted.values():
+        # remove from the original license file list
+        del lic.filesSorted[file._id]
     if licEmpty is not None:
       for file in licEmpty.filesSorted.values():
         # remove from the original license file list
