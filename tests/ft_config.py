@@ -41,26 +41,26 @@ class ConfigFuncTestSuite(unittest.TestCase):
   def test_can_set_and_get_a_new_config_value(self):
     # Edith wants to set a configuration variable and confirm it worked
     result = runcmd(self, slm.cli, "frotz", "set-config",
-      "ignore_extensions", ".json;.png;.jpg;.jpeg;.gif")
+      "analyze-extensions-list", ".json;.png;.jpg;.jpeg;.gif")
 
     # It works correctly and lets her know
     self.assertEqual(0, result.exit_code)
-    self.assertEqual("Configuration value set for 'ignore_extensions'.\n",
+    self.assertEqual("Configuration value set for 'analyze-extensions-list'.\n",
       result.output)
 
     # She retrieves the config value to make sure, and there it is
-    result = runcmd(self, slm.cli, "frotz", "get-config", "ignore_extensions")
+    result = runcmd(self, slm.cli, "frotz", "get-config", "analyze-extensions-list")
     self.assertEqual(0, result.exit_code)
-    self.assertEqual("ignore_extensions: .json;.png;.jpg;.jpeg;.gif\n",
+    self.assertEqual("analyze-extensions-list: .json;.png;.jpg;.jpeg;.gif\n",
       result.output)
 
   def test_cannot_get_an_unset_config_value(self):
     # Edith tries to get a config variable that is not yet set
-    result = runcmd(self, slm.cli, "frotz", "get-config", "ignore_extensions")
+    result = runcmd(self, slm.cli, "frotz", "get-config", "analyze-extensions-list")
 
     # It fails and explains why
     self.assertEqual(1, result.exit_code)
-    self.assertEqual("Configuration value not found for 'ignore_extensions'.\n",result.output)
+    self.assertEqual("Configuration value not found for 'analyze-extensions-list'.\n",result.output)
 
   def test_cannot_set_values_for_reserved_config_keys(self):
     # Edith accidentally tries to set a config variable with a reserved,
@@ -92,22 +92,22 @@ class ConfigFuncTestSuite(unittest.TestCase):
 
     # they are sorted alphabetically, with asterisks for internal config
     self.assertEqual(0, result.exit_code)
-    self.assertEqual("include-summary: yes\n* initialized: yes\n* magic: spdxLicenseManager\nstrip_LicenseRef: yes\nvendor_dirs: vendor;thirdparty;third-party\n",
+    self.assertEqual("include-summary: yes\n* initialized: yes\n* magic: spdxLicenseManager\nstrip_LicenseRef: yes\n",
       result.output)
 
   def test_can_unset_config(self):
     # Edith wants to remove an existing config value
-    result = runcmd(self, slm.cli, "frotz", "unset-config", "vendor_dirs")
+    result = runcmd(self, slm.cli, "frotz", "unset-config", "include-summary")
 
     # It works correctly and lets her know
     self.assertEqual(0, result.exit_code)
-    self.assertEqual("Configuration value 'vendor_dirs' removed.\n",
+    self.assertEqual("Configuration value 'include-summary' removed.\n",
       result.output)
 
     # She tries to retrieve the config value to make sure it's gone, and it is
-    result = runcmd(self, slm.cli, "frotz", "get-config", "vendor_dirs")
+    result = runcmd(self, slm.cli, "frotz", "get-config", "include-summary")
     self.assertEqual(1, result.exit_code)
-    self.assertEqual("Configuration value not found for 'vendor_dirs'.\n",
+    self.assertEqual("Configuration value not found for 'include-summary'.\n",
       result.output)
 
   def test_cannot_unset_config_for_reserved_config_key(self):
@@ -129,8 +129,8 @@ class ConfigFuncTestSuite(unittest.TestCase):
   def test_cannot_unset_config_key_that_is_not_yet_set(self):
     # Edith accidentally tries to remove a config key that doesn't exist
     result = runcmd(self, slm.cli, "frotz", "unset-config",
-      "ignore_extensions")
+      "analyze-extensions-list")
 
     # It fails and explains why
     self.assertEqual(1, result.exit_code)
-    self.assertEqual("Cannot remove configuration value for key 'ignore_extensions', because it is not currently set.\n",result.output)
+    self.assertEqual("Cannot remove configuration value for key 'analyze-extensions-list', because it is not currently set.\n",result.output)

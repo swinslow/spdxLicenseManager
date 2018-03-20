@@ -29,10 +29,8 @@ __valid_configs__ = [
   ('initialized', True, 'Is this spdxLicenseManager database initialized?'),
 
   # Other configs
-  ('strip_path_prefixes', False, 'Remove common file path prefixes from a scan before importing?'),
+  ('strip-path-prefixes', False, 'Remove common file path prefixes from a scan before importing?'),
   ('strip_LicenseRef', False, 'Remove "LicenseRef-" tags from licenses in reports?'),
-  ('vendor_dirs', False, 'Directories to flag as third-party files'),
-  ('ignore_extensions', False, 'File extensions to flag as ignored if no license found'),
 
   # Analyzer configurations; intended to be overridable on command line
   ('analyze-extensions', False, 'Flag: Analyze file extensions (for "No license found" results)'),

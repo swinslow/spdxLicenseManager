@@ -45,7 +45,6 @@ class DBConfigUnitTestSuite(unittest.TestCase):
   def insertSampleConfigData(self):
     configs = [
       Config(key="strip_LicenseRef", value="yes"),
-      Config(key="vendor_dirs", value="vendor;thirdparty;third-party"),
     ]
     self.db.session.bulk_save_objects(configs)
     self.db.session.commit()
@@ -61,14 +60,14 @@ class DBConfigUnitTestSuite(unittest.TestCase):
       self.db.getConfigValue(key="unknown_key")
 
   def test_can_set_and_get_config_value_for_new_key_if_known(self):
-    self.db.setConfigValue(key="ignore_extensions", value="json")
-    value = self.db.getConfigValue(key="ignore_extensions")
+    self.db.setConfigValue(key="analyze-extensions-list", value="json")
+    value = self.db.getConfigValue(key="analyze-extensions-list")
     self.assertEqual(value, "json")
 
   def test_can_update_and_get_config_value_for_existing_key(self):
-    self.db.setConfigValue(key="vendor_dirs", value="vendor")
-    value = self.db.getConfigValue(key="vendor_dirs")
-    self.assertEqual(value, "vendor")
+    self.db.setConfigValue(key="strip_LicenseRef", value="no")
+    value = self.db.getConfigValue(key="strip_LicenseRef")
+    self.assertEqual(value, "no")
 
   def test_cannot_update_config_value_for_reserved_keys(self):
     with self.assertRaises(ProjectDBUpdateError):
@@ -83,20 +82,18 @@ class DBConfigUnitTestSuite(unittest.TestCase):
   def test_can_get_all_configs(self):
     configs = self.db.getConfigsAll()
     self.assertIsInstance(configs, list)
-    self.assertEqual(len(configs), 4)
+    self.assertEqual(len(configs), 3)
     self.assertEqual(configs[0].key, "initialized")
     self.assertEqual(configs[0].value, "yes")
     self.assertEqual(configs[1].key, "magic")
     self.assertEqual(configs[1].value, "spdxLicenseManager")
     self.assertEqual(configs[2].key, "strip_LicenseRef")
     self.assertEqual(configs[2].value, "yes")
-    self.assertEqual(configs[3].key, "vendor_dirs")
-    self.assertEqual(configs[3].value, "vendor;thirdparty;third-party")
 
   def test_can_unset_config(self):
-    self.db.unsetConfigValue(key="vendor_dirs")
+    self.db.unsetConfigValue(key="strip_LicenseRef")
     with self.assertRaises(ProjectDBQueryError):
-      self.db.getConfigValue(key="vendor_dirs")
+      self.db.getConfigValue(key="strip_LicenseRef")
 
   def test_cannot_unset_config_for_internal_config(self):
     with self.assertRaises(ProjectDBDeleteError):
@@ -108,4 +105,4 @@ class DBConfigUnitTestSuite(unittest.TestCase):
 
   def test_cannot_unset_config_for_valid_config_that_is_not_set(self):
     with self.assertRaises(ProjectDBDeleteError):
-      self.db.unsetConfigValue(key="ignore_extensions")
+      self.db.unsetConfigValue(key="analyze-extensions-list")

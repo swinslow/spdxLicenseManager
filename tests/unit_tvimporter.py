@@ -312,7 +312,7 @@ class TVImporterTestSuite(unittest.TestCase):
     self.assertEqual("293PageEULA", self.fdConvert.finalLicense)
 
   def test_path_prefixes_are_stripped_if_config_is_yes(self):
-    self.db.setConfigValue("strip_path_prefixes", "Yes")
+    self.db.setConfigValue("strip-path-prefixes", "Yes")
     prefix = self.importer._applyPathPrefixStrip(fdList=self.fdList,
       db=self.db)
     self.assertEqual("/tmp", prefix)
@@ -320,7 +320,7 @@ class TVImporterTestSuite(unittest.TestCase):
     self.assertEqual("/f1", self.fd1.finalPath)
 
   def test_path_prefixes_are_not_stripped_if_config_is_no(self):
-    self.db.setConfigValue("strip_path_prefixes", "no")
+    self.db.setConfigValue("strip-path-prefixes", "no")
     prefix = self.importer._applyPathPrefixStrip(fdList=self.fdList,
       db=self.db)
     self.assertEqual("", prefix)
@@ -335,7 +335,7 @@ class TVImporterTestSuite(unittest.TestCase):
     self.assertEqual("/tmp/f1", self.fd1.finalPath)
 
   def test_path_prefixes_are_not_stripped_if_mixing_abs_and_rel_paths(self):
-    self.db.setConfigValue("strip_path_prefixes", "yes")
+    self.db.setConfigValue("strip-path-prefixes", "yes")
     self.fdDifferentPath = createFD("absolutePath", "293PageEULA")
     self.fdList.append(self.fdDifferentPath)
     prefix = self.importer._applyPathPrefixStrip(fdList=self.fdList,
@@ -345,7 +345,7 @@ class TVImporterTestSuite(unittest.TestCase):
     self.assertEqual("/tmp/f1", self.fd1.finalPath)
 
   def test_path_prefixes_are_not_stripped_if_no_common_prefix(self):
-    self.db.setConfigValue("strip_path_prefixes", "yes")
+    self.db.setConfigValue("strip-path-prefixes", "yes")
     fdDifferentPath1 = createFD("somewhereElse", "293PageEULA")
     fdDifferentPath2 = createFD("something", "293PageEULA")
     tmpFDList = [fdDifferentPath1, fdDifferentPath2]
@@ -356,7 +356,7 @@ class TVImporterTestSuite(unittest.TestCase):
     self.assertEqual("something", fdDifferentPath2.finalPath)
 
   def test_file_path_prefixes_are_stripped_on_import_if_configured(self):
-    self.db.setConfigValue("strip_path_prefixes", "yes")
+    self.db.setConfigValue("strip-path-prefixes", "yes")
     self.importer.checkFileDataList(fdList=self.fdList, db=self.db)
     retval = self.importer.importFileDataList(fdList=self.fdList, db=self.db,
       scan_id=self.scan_id)
