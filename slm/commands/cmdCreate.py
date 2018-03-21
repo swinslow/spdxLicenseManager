@@ -29,9 +29,24 @@ def createNewProjectDirs(slmhome, pname):
   dirPath = os.path.abspath(os.path.join(slmhome, "projects", pname))
   os.makedirs(name=dirPath, mode=0o755)
 
+def createNewProjectReportsDir(slmhome, pname):
+  reportsDirPath = os.path.abspath(os.path.join(
+    slmhome, "projects", pname, "reports"))
+  os.makedirs(name=reportsDirPath, mode=0o755)
+
 def createNewSubprojectDirs(slmhome, pname, spname):
   dirPath = os.path.abspath(os.path.join(slmhome, "projects", pname, spname))
   os.makedirs(name=dirPath, mode=0o755)
+
+def createNewSubprojectReportsDir(slmhome, pname, spname):
+  reportsDirPath = os.path.abspath(os.path.join(
+    slmhome, "projects", pname, spname, "reports"))
+  os.makedirs(name=reportsDirPath, mode=0o755)
+
+def createNewSubprojectSPDXDir(slmhome, pname, spname):
+  spdxDirPath = os.path.abspath(os.path.join(
+    slmhome, "projects", pname, spname, "spdx"))
+  os.makedirs(name=spdxDirPath, mode=0o755)
 
 def cmdCreateProject(ctx, pname, pdesc):
   slmhome = ctx.obj.get('SLMHOME', None)
@@ -50,6 +65,7 @@ def cmdCreateProject(ctx, pname, pdesc):
 
   # create subdirectory for new project
   createNewProjectDirs(slmhome, pname)
+  createNewProjectReportsDir(slmhome, pname)
 
   # update main SLM config object
   mainconfig.addProject(pname, pdesc)
@@ -84,6 +100,8 @@ def cmdCreateSubproject(ctx, spname, spdesc):
 
   # create subdirectory for new subproject
   createNewSubprojectDirs(slmhome, project, spname)
+  createNewSubprojectReportsDir(slmhome, project, spname)
+  createNewSubprojectSPDXDir(slmhome, project, spname)
 
   # update project config object
   db.addSubproject(spname, spdesc)

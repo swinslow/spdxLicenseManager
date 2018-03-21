@@ -94,6 +94,10 @@ class ProjectTestSuite(unittest.TestCase):
     checkForDirectoryExists(self, self.slmhome, "projects/yozozzo")
     checkForFileExists(self, self.slmhome, "projects/yozozzo/yozozzo.db")
 
+    # And she confirms that a "reports/" subdirectory has been created for this
+    # project
+    checkForDirectoryExists(self, self.slmhome, "projects/yozozzo/reports")
+
     # And she confirms that a "list" command now includes yozozzo in the list
     result = runcmd(self, slm.cli, None, "list")
     self.assertEqual(0, result.exit_code)
@@ -109,6 +113,11 @@ class ProjectTestSuite(unittest.TestCase):
     # been created
     checkForDirectoryExists(self, self.slmhome,
       "projects/yozozzo/yozozzo-duck")
+
+    # And she confirms that the appropriate subdirectories have been created
+    # for this subproject
+    checkForDirectoryExists(self, self.slmhome, "projects/yozozzo/yozozzo-duck/spdx")
+    checkForDirectoryExists(self, self.slmhome, "projects/yozozzo/yozozzo-duck/reports")
 
     # And she confirms that a "list" command now includes yozozzo-duck
     result = runcmd(self, slm.cli, "yozozzo", "list")

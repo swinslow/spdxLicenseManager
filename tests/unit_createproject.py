@@ -21,8 +21,10 @@ import unittest
 from unittest import mock
 
 from slm.slmconfig import SLMConfig, BadSLMConfigError
-from slm.commands.cmdCreate import (createNewProjectDirs,
-  createNewSubprojectDirs)
+from slm.commands.cmdCreate import (
+  createNewProjectDirs, createNewProjectReportsDir,
+  createNewSubprojectDirs, createNewSubprojectReportsDir,
+  createNewSubprojectSPDXDir)
 
 class ProjectCreateTestSuite(unittest.TestCase):
   """spdxLicenseManager project creation unit test suite."""
@@ -48,10 +50,40 @@ class ProjectCreateTestSuite(unittest.TestCase):
     )
 
   @mock.patch('slm.commands.cmdCreate.os.makedirs')
+  def test_new_reports_dir_created_for_new_project(self, mock_os_makedirs):
+    slmhome = "/tmp/fake/slm"
+    createNewProjectDirs(slmhome, "newprj")
+    createNewProjectReportsDir(slmhome, "newprj")
+    mock_os_makedirs.assert_called_with(
+      name="/tmp/fake/slm/projects/newprj/reports",
+      mode=0o755
+    )
+
+  @mock.patch('slm.commands.cmdCreate.os.makedirs')
   def test_new_dir_created_for_new_subproject(self, mock_os_makedirs):
     slmhome = "/tmp/fake/slm"
     createNewSubprojectDirs(slmhome, "newprj", "newsubprj")
     mock_os_makedirs.assert_called_with(
       name="/tmp/fake/slm/projects/newprj/newsubprj",
+      mode=0o755
+    )
+
+  @mock.patch('slm.commands.cmdCreate.os.makedirs')
+  def test_new_reports_dir_created_for_new_subproject(self, mock_os_makedirs):
+    slmhome = "/tmp/fake/slm"
+    createNewSubprojectDirs(slmhome, "newprj", "newsubprj")
+    createNewSubprojectReportsDir(slmhome, "newprj", "newsubprj")
+    mock_os_makedirs.assert_called_with(
+      name="/tmp/fake/slm/projects/newprj/newsubprj/reports",
+      mode=0o755
+    )
+
+  @mock.patch('slm.commands.cmdCreate.os.makedirs')
+  def test_new_spdx_dir_created_for_new_subproject(self, mock_os_makedirs):
+    slmhome = "/tmp/fake/slm"
+    createNewSubprojectDirs(slmhome, "newprj", "newsubprj")
+    createNewSubprojectSPDXDir(slmhome, "newprj", "newsubprj")
+    mock_os_makedirs.assert_called_with(
+      name="/tmp/fake/slm/projects/newprj/newsubprj/spdx",
       mode=0o755
     )
