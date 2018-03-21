@@ -22,7 +22,7 @@ import unittest
 from unittest import mock
 from testfixtures import TempDirectory
 
-from slm.projectdb import ProjectDB, ProjectDBQueryError
+from slm.projectdb import ProjectDB, ProjectDBQueryError, ProjectDBUpdateError
 from slm.datatypes import Subproject
 
 class DBSubprojectUnitTestSuite(unittest.TestCase):
@@ -43,9 +43,9 @@ class DBSubprojectUnitTestSuite(unittest.TestCase):
 
   def insertSampleSubprojectData(self):
     subprojects = [
-      Subproject(_id=1, name="sub1", desc="subproject 1"),
-      Subproject(_id=2, name="subX", desc="subproject XYZ"),
-      Subproject(_id=3, name="subC", desc="subproject B"),
+      Subproject(_id=1, name="sub1", spdx_search="sub1", desc="subproject 1"),
+      Subproject(_id=2, name="subX", spdx_search="subX", desc="subproject XYZ"),
+      Subproject(_id=3, name="subC", spdx_search="subC", desc="subproject B"),
     ]
     self.db.session.bulk_save_objects(subprojects)
     self.db.session.commit()
@@ -59,6 +59,7 @@ class DBSubprojectUnitTestSuite(unittest.TestCase):
     self.assertEqual(subprojects[0]._id, 1)
     self.assertEqual(subprojects[0].name, "sub1")
     self.assertEqual(subprojects[0].desc, "subproject 1")
+    self.assertEqual(subprojects[0].spdx_search, "sub1")
 
   def test_all_subprojects_are_sorted_by_name(self):
     subprojects = self.db.getSubprojectsAll()
@@ -70,11 +71,13 @@ class DBSubprojectUnitTestSuite(unittest.TestCase):
     subproject = self.db.getSubproject(_id=2)
     self.assertEqual(subproject.name, "subX")
     self.assertEqual(subproject.desc, "subproject XYZ")
+    self.assertEqual(subproject.spdx_search, "subX")
 
   def test_can_retrieve_one_subproject_by_name(self):
     subproject = self.db.getSubproject(name="subC")
     self.assertEqual(subproject._id, 3)
     self.assertEqual(subproject.desc, "subproject B")
+    self.assertEqual(subproject.spdx_search, "subC")
 
   def test_cannot_retrieve_subproject_by_both_name_and_id(self):
     with self.assertRaises(ProjectDBQueryError):
@@ -97,6 +100,26 @@ class DBSubprojectUnitTestSuite(unittest.TestCase):
     self.assertIsNone(subproject)
 
   def test_can_add_and_retrieve_subproject(self):
+    subproject_id = self.db.addSubproject("newsub", "subproject new",
+      spdx_search="newsub")
+
+    # confirm that we now have four subprojects
+    subprojects = self.db.getSubprojectsAll()
+    self.assertEqual(len(subprojects), 4)
+
+    # and confirm that we can retrieve this one by name
+    subproject = self.db.getSubproject(name="newsub")
+    self.assertEqual(subproject.name, "newsub")
+    self.assertEqual(subproject.desc, "subproject new")
+    self.assertEqual(subproject.spdx_search, "newsub")
+
+    # and confirm that we can retrieve this one by id
+    subproject = self.db.getSubproject(_id=4)
+    self.assertEqual(subproject.name, "newsub")
+    self.assertEqual(subproject.desc, "subproject new")
+    self.assertEqual(subproject.spdx_search, "newsub")
+
+  def test_can_add_subproject_without_providing_spdx_search_name(self):
     subproject_id = self.db.addSubproject("newsub", "subproject new")
 
     # confirm that we now have four subprojects
@@ -107,14 +130,16 @@ class DBSubprojectUnitTestSuite(unittest.TestCase):
     subproject = self.db.getSubproject(name="newsub")
     self.assertEqual(subproject.name, "newsub")
     self.assertEqual(subproject.desc, "subproject new")
+    self.assertEqual(subproject.spdx_search, "newsub")
 
     # and confirm that we can retrieve this one by id
     subproject = self.db.getSubproject(_id=4)
     self.assertEqual(subproject.name, "newsub")
     self.assertEqual(subproject.desc, "subproject new")
+    self.assertEqual(subproject.spdx_search, "newsub")
 
   def test_can_start_adding_but_rollback_subproject(self):
-    subproject_id = self.db.addSubproject(name="newsub",
+    subproject_id = self.db.addSubproject(name="newsub", spdx_search="newsub",
       desc="will rollback", commit=False)
     self.db.rollback()
     # confirm that we still only have three subprojects
@@ -125,9 +150,23 @@ class DBSubprojectUnitTestSuite(unittest.TestCase):
     self.assertIsNone(subproject)
 
   def test_can_start_adding_and_then_commit_subprojects(self):
-    s1_id = self.db.addSubproject(name="news1", desc="new sp 1", commit=False)
-    s2_id = self.db.addSubproject(name="news2", desc="new sp 2", commit=False)
+    s2_id = self.db.addSubproject(name="news2", spdx_search="news2", desc="new sp 2", commit=False)
+    s1_id = self.db.addSubproject(name="news1", spdx_search="news1", desc="new sp 1", commit=False)
     self.db.commit()
     # confirm that we now have five subprojects
     subprojects = self.db.getSubprojectsAll()
     self.assertEqual(len(subprojects), 5)
+
+  def test_can_edit_subproject_spdx_string(self):
+    self.db.changeSubprojectSPDXSearch(name="subX", spdx_search="subXSpecial")
+    subproject = self.db.getSubproject(name="subX")
+    self.assertEqual(subproject.name, "subX")
+    self.assertEqual(subproject.spdx_search, "subXSpecial")
+
+  def test_cannot_edit_subproject_spdx_search_for_nonexistent_name(self):
+    with self.assertRaises(ProjectDBUpdateError):
+      self.db.changeSubprojectSPDXSearch(name="invalid", spdx_search="this will fail")
+
+  def test_cannot_change_subproject_spdx_search_to_existing_search(self):
+    with self.assertRaises(ProjectDBUpdateError):
+      self.db.changeSubprojectSPDXSearch(name="sub1", spdx_search="subX")

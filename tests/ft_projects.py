@@ -66,17 +66,19 @@ class ProjectTestSuite(unittest.TestCase):
     self.assertEqual(0, result.exit_code)
     self.assertIn("The FROTZ Project", result.output)
 
-  def test_can_get_desc_for_subprojects_when_listing_with_verbose_flag(self):
-    # Edith wants to get descriptions too when she lists the subprojects
-    # using the -v flag
+  def test_can_get_subproject_details_when_listing_with_verbose_flag(self):
+    # Edith wants to get descriptions and SPDX search strings too when she
+    # lists the subprojects using the -v flag
     result = runcmd(self, slm.cli, "frotz", "-v", "list")
     self.assertEqual(0, result.exit_code)
     self.assertIn("FROTZ with nuclear settings", result.output)
+    self.assertIn("will search SPDX files for: frotz-nuclear", result.output)
 
     # It also works with the --verbose flag
     result = runcmd(self, slm.cli, "frotz", "--verbose", "list")
     self.assertEqual(0, result.exit_code)
     self.assertIn("FROTZ with nuclear settings", result.output)
+    self.assertIn("will search SPDX files for: frotz-nuclear", result.output)
 
   def test_can_create_new_project_and_subproject(self):
     # Edith is starting to manage licenses for a new project called yozozzo.

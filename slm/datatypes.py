@@ -34,8 +34,9 @@ class Config(Base):
 class Subproject(Base):
   __tablename__ = 'subprojects'
   _id = Column(Integer(), primary_key=True)
-  name = Column(String())
+  name = Column(String(), unique=True)
   desc = Column(String())
+  spdx_search = Column(String(), unique=True)
 
   def __repr__(self):
     return f"Subproject {self._id}: {self.name} ({self.desc})"

@@ -225,14 +225,29 @@ class ProjectDB:
       return self.session.query(Subproject).\
                           filter(Subproject.name == name).first()
 
-  def addSubproject(self, name, desc, commit=True):
-    subproject = Subproject(name=name, desc=desc)
+  def addSubproject(self, name, desc, *, spdx_search=None, commit=True):
+    if not spdx_search:
+      spdx_search = name
+    subproject = Subproject(name=name, desc=desc, spdx_search=spdx_search)
     self.session.add(subproject)
     if commit:
       self.session.commit()
     else:
       self.session.flush()
     return subproject._id
+
+  def changeSubprojectSPDXSearch(self, name, spdx_search):
+    # find out the order value for name
+    subproject = self.session.query(Subproject).\
+                              filter(Subproject.name == name).first()
+    if subproject is None:
+      raise ProjectDBUpdateError(f"Subproject {name} not found in changeSubprojectSPDXSearch")
+
+    try:
+      subproject.spdx_search = spdx_search
+      self.session.commit()
+    except IntegrityError:
+      raise ProjectDBUpdateError(f"Subproject with SPDX search string {spdx_search} already exists in changeSubprojectSPDXSearch({name})")
 
   ########################
   ##### Category functions
