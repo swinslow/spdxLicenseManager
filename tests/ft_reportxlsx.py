@@ -38,7 +38,7 @@ PATH_SIMPLE_EXTENSION_SPDX = "tests/testfiles/simpleExtension.spdx"
 PATH_SIMPLE_EMPTYFILE_SPDX = "tests/testfiles/simpleEmptyFile.spdx"
 PATH_SIMPLE_THIRDPARTY_SPDX = "tests/testfiles/simpleThirdParty.spdx"
 
-class SPDXReportFuncTestSuite(unittest.TestCase):
+class XlsxReportFuncTestSuite(unittest.TestCase):
   """spdxLicenseManager tag-value reporting FT suite."""
 
   def setUp(self):
