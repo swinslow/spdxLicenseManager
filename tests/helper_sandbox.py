@@ -69,8 +69,8 @@ def runSandboxCommands(testCase, cli):
     '--desc="FROTZ with nuclear settings"')
 
   # and some test configuration values
-  sandboxcmd(testCase, cli, 'set-config', 'strip_LicenseRef', 'yes')
-  sandboxcmd(testCase, cli, 'set-config', 'include-summary', 'yes')
+  sandboxcmd(testCase, cli, 'set-config', 'report-strip-licenseref', 'yes')
+  sandboxcmd(testCase, cli, 'set-config', 'report-include-summary', 'yes')
 
   # and some test categories
   sandboxcmd(testCase, cli, 'add-category', 'Project Licenses')

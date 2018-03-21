@@ -44,7 +44,7 @@ class DBConfigUnitTestSuite(unittest.TestCase):
 
   def insertSampleConfigData(self):
     configs = [
-      Config(key="strip_LicenseRef", value="yes"),
+      Config(key="report-strip-licenseref", value="yes"),
     ]
     self.db.session.bulk_save_objects(configs)
     self.db.session.commit()
@@ -52,7 +52,7 @@ class DBConfigUnitTestSuite(unittest.TestCase):
   ##### Test cases below
 
   def test_can_retrieve_config_value_from_key(self):
-    value = self.db.getConfigValue(key="strip_LicenseRef")
+    value = self.db.getConfigValue(key="report-strip-licenseref")
     self.assertEqual(value, "yes")
 
   def test_cannot_retrieve_config_value_for_unknown_key(self):
@@ -65,8 +65,8 @@ class DBConfigUnitTestSuite(unittest.TestCase):
     self.assertEqual(value, "json")
 
   def test_can_update_and_get_config_value_for_existing_key(self):
-    self.db.setConfigValue(key="strip_LicenseRef", value="no")
-    value = self.db.getConfigValue(key="strip_LicenseRef")
+    self.db.setConfigValue(key="report-strip-licenseref", value="no")
+    value = self.db.getConfigValue(key="report-strip-licenseref")
     self.assertEqual(value, "no")
 
   def test_cannot_update_config_value_for_reserved_keys(self):
@@ -87,13 +87,13 @@ class DBConfigUnitTestSuite(unittest.TestCase):
     self.assertEqual(configs[0].value, "yes")
     self.assertEqual(configs[1].key, "magic")
     self.assertEqual(configs[1].value, "spdxLicenseManager")
-    self.assertEqual(configs[2].key, "strip_LicenseRef")
+    self.assertEqual(configs[2].key, "report-strip-licenseref")
     self.assertEqual(configs[2].value, "yes")
 
   def test_can_unset_config(self):
-    self.db.unsetConfigValue(key="strip_LicenseRef")
+    self.db.unsetConfigValue(key="report-strip-licenseref")
     with self.assertRaises(ProjectDBQueryError):
-      self.db.getConfigValue(key="strip_LicenseRef")
+      self.db.getConfigValue(key="report-strip-licenseref")
 
   def test_cannot_unset_config_for_internal_config(self):
     with self.assertRaises(ProjectDBDeleteError):

@@ -44,7 +44,7 @@ def cmdCreateReport(ctx, subproject, scan_id=None, report_path=None,
   # check for config flags
   kwConfig = {}
   if no_summary:
-    kwConfig['include-summary'] = 'no'
+    kwConfig['report-include-summary'] = 'no'
 
   # analyze this scan
   analyzer = Analyzer(db=db)

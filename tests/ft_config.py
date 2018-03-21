@@ -92,22 +92,22 @@ class ConfigFuncTestSuite(unittest.TestCase):
 
     # they are sorted alphabetically, with asterisks for internal config
     self.assertEqual(0, result.exit_code)
-    self.assertEqual("include-summary: yes\n* initialized: yes\n* magic: spdxLicenseManager\nstrip_LicenseRef: yes\n",
+    self.assertEqual("* initialized: yes\n* magic: spdxLicenseManager\nreport-include-summary: yes\nreport-strip-licenseref: yes\n",
       result.output)
 
   def test_can_unset_config(self):
     # Edith wants to remove an existing config value
-    result = runcmd(self, slm.cli, "frotz", "unset-config", "include-summary")
+    result = runcmd(self, slm.cli, "frotz", "unset-config", "report-include-summary")
 
     # It works correctly and lets her know
     self.assertEqual(0, result.exit_code)
-    self.assertEqual("Configuration value 'include-summary' removed.\n",
+    self.assertEqual("Configuration value 'report-include-summary' removed.\n",
       result.output)
 
     # She tries to retrieve the config value to make sure it's gone, and it is
-    result = runcmd(self, slm.cli, "frotz", "get-config", "include-summary")
+    result = runcmd(self, slm.cli, "frotz", "get-config", "report-include-summary")
     self.assertEqual(1, result.exit_code)
-    self.assertEqual("Configuration value not found for 'include-summary'.\n",
+    self.assertEqual("Configuration value not found for 'report-include-summary'.\n",
       result.output)
 
   def test_cannot_unset_config_for_reserved_config_key(self):

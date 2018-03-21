@@ -244,7 +244,7 @@ All duplicates should be removed from the SPDX file before importing.
   def test_will_strip_path_prefixes_if_configured(self):
     # Edith configures the importer to strip out common path prefixes
     result = runcmd(self, slm.cli, "frotz", "set-config",
-      "strip-path-prefixes", "yes")
+      "import-strip-path-prefixes", "yes")
     self.assertEqual(0, result.exit_code)
 
     # She imports a simple scan

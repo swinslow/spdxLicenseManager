@@ -110,7 +110,7 @@ class TVImporter:
 
     # set prefix to "" unless the right config value is set
     try:
-      isStrip = str(db.getConfigValue("strip-path-prefixes"))
+      isStrip = str(db.getConfigValue("import-strip-path-prefixes"))
     except ProjectDBQueryError:
       isStrip = "no"
 

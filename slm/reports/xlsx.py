@@ -49,7 +49,7 @@ class XlsxReporter:
   def generate(self):
     if type(self.results) != OrderedDict:
       raise ReportNotReadyError("Cannot call generate() before analysis results are set")
-    if self._getFinalConfigValue("include-summary") == 'yes':
+    if self._getFinalConfigValue("report-include-summary") == 'yes':
       self._generateSummarySheet(self.wb, self.results)
 
     self._generateCategorySheets(self.wb, self.results)

@@ -28,9 +28,8 @@ __valid_configs__ = [
   ('magic', True, 'Magic number to validate spdxLicenseManager database'),
   ('initialized', True, 'Is this spdxLicenseManager database initialized?'),
 
-  # Other configs
-  ('strip-path-prefixes', False, 'Remove common file path prefixes from a scan before importing?'),
-  ('strip_LicenseRef', False, 'Remove "LicenseRef-" tags from licenses in reports?'),
+  # Importer configurations
+  ('import-strip-path-prefixes', False, 'Remove common file path prefixes from a scan before importing?'),
 
   # Analyzer configurations; intended to be overridable on command line
   ('analyze-extensions', False, 'Flag: Analyze file extensions (for "No license found" results)'),
@@ -41,7 +40,8 @@ __valid_configs__ = [
   ('analyze-exclude-path-prefix', False, 'Flag: Exclude common path prefixes from reports'),
 
   # Reporter configurations; intended to be overridable on command line
-  ('include-summary', False, 'Flag: Include summary page in reports'),
+  ('report-include-summary', False, 'Flag: Include summary page in reports'),
+  ('report-strip-licenseref', False, 'Remove "LicenseRef-" tags from licenses in reports?'),
 ]
 
 def isValidConfigKey(key):

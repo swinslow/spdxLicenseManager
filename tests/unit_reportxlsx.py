@@ -235,20 +235,20 @@ class ReportXlsxTestSuite(unittest.TestCase):
 
   def test_reporter_can_take_optional_config_params(self):
     configDict = {
-      "include-summary": "yes",
+      "report-include-summary": "yes",
     }
     newReporter = XlsxReporter(db=self.db, config=configDict)
-    self.assertEqual("yes", newReporter.kwConfig["include-summary"])
+    self.assertEqual("yes", newReporter.kwConfig["report-include-summary"])
 
   def test_can_get_reporter_final_config(self):
-    self.db.setConfigValue(key="include-summary", value="yes")
-    summary = self.reporter._getFinalConfigValue(key="include-summary")
+    self.db.setConfigValue(key="report-include-summary", value="yes")
+    summary = self.reporter._getFinalConfigValue(key="report-include-summary")
     self.assertEqual(summary, "yes")
 
   def test_can_override_db_config_in_reporter_final_config(self):
-    self.db.setConfigValue(key="include-summary", value="yes")
-    newReporter = XlsxReporter(db=self.db, config={"include-summary": "no"})
-    summary = newReporter._getFinalConfigValue(key="include-summary")
+    self.db.setConfigValue(key="report-include-summary", value="yes")
+    newReporter = XlsxReporter(db=self.db, config={"report-include-summary": "no"})
+    summary = newReporter._getFinalConfigValue(key="report-include-summary")
     self.assertEqual(summary, "no")
 
   ##### Reporter setup function tests
@@ -358,7 +358,7 @@ class ReportXlsxTestSuite(unittest.TestCase):
 
   @mock.patch('slm.reports.xlsx.XlsxReporter._generateSummarySheet')
   def test_summary_is_generated_if_config_set(self, summary_mock):
-    self.db.setConfigValue(key="include-summary", value="yes")
+    self.db.setConfigValue(key="report-include-summary", value="yes")
     results = self._getAnalysisResults()
     self.reporter.setResults(results)
     self.reporter.generate()
@@ -413,7 +413,7 @@ class ReportXlsxTestSuite(unittest.TestCase):
     self.assertFalse(ws['C11'].alignment.wrap_text)
 
   def test_summary_sheet_not_overwritten_by_other_sheets(self):
-    self.db.setConfigValue(key="include-summary", value="yes")
+    self.db.setConfigValue(key="report-include-summary", value="yes")
     results = self._getAnalysisResults()
     self.reporter.setResults(results)
     self.reporter.generate()
