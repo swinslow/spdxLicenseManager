@@ -28,6 +28,9 @@ __valid_configs__ = [
   ('magic', True, 'Magic number to validate spdxLicenseManager database'),
   ('initialized', True, 'Is this spdxLicenseManager database initialized?'),
 
+  # SPDX retriever configurations
+  ('spdx-search-dir', False, 'Directory to search for SPDX files on retrieval'),
+
   # Importer configurations
   ('import-strip-path-prefixes', False, 'Remove common file path prefixes from a scan before importing?'),
 
