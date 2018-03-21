@@ -1,4 +1,4 @@
-# tests/ft_report.py
+# tests/ft_reportxlsx.py
 #
 # Functional tests for spdxLicenseManager: producing reports from previously-
 # imported scans.
