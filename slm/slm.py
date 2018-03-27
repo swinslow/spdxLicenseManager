@@ -47,6 +47,7 @@ from .commands.cmdImportScan import cmdImportScan
 from .commands.cmdListScanResults import cmdListScanResults
 from .commands.cmdListScans import cmdListScans
 from .commands.cmdCreateReport import cmdCreateReport
+from .commands.cmdRetrieveSPDX import cmdRetrieveSPDX
 
 VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
 
@@ -315,3 +316,14 @@ def cliCreateReport(ctx, scan_id, report_path, report_format, no_summary, force)
   subproject = ctx.obj['SUBPROJECT']
   return cmdCreateReport(ctx, subproject, scan_id, report_path,
     report_format, no_summary, force)
+
+#############################
+##### SPDX retrieval commands
+#############################
+
+@cli.command('retrieve-spdx', help="Retrieve SPDX files for a given month")
+@click.option('--month', default=None, help='Month in format YYYY-MM')
+@click.pass_context
+def cliRetrieveSPDX(ctx, month):
+  checkForContext(ctx)
+  return cmdRetrieveSPDX(ctx, month)

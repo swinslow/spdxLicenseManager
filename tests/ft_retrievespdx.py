@@ -89,37 +89,37 @@ class SPDXRetrieveFuncTestSuite(unittest.TestCase):
       "--month", "2018-03")
 
     # It works and lets her know
-    self.assertEqual(1, result.exit_code)
+    self.assertEqual(0, result.exit_code)
     newName = "frotz-dim-2018-03-21.spdx"
     self.assertEqual(f"Moved {SPDX_CORRECT_FILE} to frotz-dim (new name: {newName})\n", result.output)
 
     # She sees that the file is now present in the subproject's SPDX folder
-    filePath = os.path.join(os.path.join(self.slmhome, "frotz", "frotz-dim",
-      "spdx", newName))
-    testCase.assertTrue(os.path.isfile(filePath))
+    filePath = os.path.join(self.slmhome, "projects", "frotz", "frotz-dim",
+      "spdx", newName)
+    self.assertTrue(os.path.isfile(filePath))
 
     # And she sees that the file's old name is not present in the subproject's
     # SPDX folder
-    filePath = os.path.join(os.path.join(self.slmhome, "frotz", "frotz-dim",
-      "spdx", SPDX_CORRECT_FILE))
-    testCase.assertFalse(os.path.isfile(filePath))
+    filePath = os.path.join(self.slmhome, "projects", "frotz",
+      "frotz-dim", "spdx", SPDX_CORRECT_FILE)
+    self.assertFalse(os.path.isfile(filePath))
 
     # And she sees that the other two SPDX files with non-matching names are
     # not present in the subproject's SPDX folder
-    filePath = os.path.join(os.path.join(self.slmhome, "frotz", "frotz-dim",
-      "spdx", SPDX_NO_NAME))
-    testCase.assertFalse(os.path.isfile(filePath))
-    filePath = os.path.join(os.path.join(self.slmhome, "frotz", "frotz-dim",
-      "spdx", SPDX_NO_DATE))
-    testCase.assertFalse(os.path.isfile(filePath))
+    filePath = os.path.join(self.slmhome, "projects", "frotz",
+      "frotz-dim", "spdx", SPDX_NO_NAME)
+    self.assertFalse(os.path.isfile(filePath))
+    filePath = os.path.join(self.slmhome, "projects", "frotz",
+      "frotz-dim", "spdx", SPDX_NO_DATE)
+    self.assertFalse(os.path.isfile(filePath))
 
     # And she sees that it has been removed from the source search folder
-    filePath = os.path.join(os.path.join(self.spdxSearchDir.path, SPDX_CORRECT_FILE))
-    testCase.assertFalse(os.path.isfile(filePath))
+    filePath = os.path.join(self.spdxSearchDir.path, SPDX_CORRECT_FILE)
+    self.assertFalse(os.path.isfile(filePath))
 
     # And she sees that the other two SPDX files with non-matching names are
     # still present in the source search folder
-    filePath = os.path.join(os.path.join(self.spdxSearchDir.path, SPDX_NO_NAME))
-    testCase.assertTrue(os.path.isfile(filePath))
-    filePath = os.path.join(os.path.join(self.spdxSearchDir.path, SPDX_NO_DATE))
-    testCase.assertTrue(os.path.isfile(filePath))
+    filePath = os.path.join(self.spdxSearchDir.path, SPDX_NO_NAME)
+    self.assertTrue(os.path.isfile(filePath))
+    filePath = os.path.join(self.spdxSearchDir.path, SPDX_NO_DATE)
+    self.assertTrue(os.path.isfile(filePath))
