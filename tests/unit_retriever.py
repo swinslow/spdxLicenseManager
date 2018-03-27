@@ -31,7 +31,7 @@ TDIRS  = ['dirone', 'dirtwo', 'dirthree']
 TALL   = TFILES + TDIRS
 
 def side_effect_isfile(path):
-  return path in TFILES
+  return os.path.split(path)[1] in TFILES
 
 ##### helper for testing createResults
 MOVEFILES = [

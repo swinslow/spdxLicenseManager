@@ -134,7 +134,7 @@ class Retriever:
   def _getFiles(self, search_dir):
     files = []
     for pathname in os.listdir(search_dir):
-      if os.path.isfile(pathname):
+      if os.path.isfile(os.path.join(search_dir, pathname)):
         files.append(pathname)
     return files
 
