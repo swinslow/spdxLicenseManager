@@ -30,6 +30,7 @@ def cmdList(ctx):
     for sp in db.getSubprojectsAll():
       if verbose:
         click.echo(f"{project}/{sp.name}\t{sp.desc}")
+        click.echo(f"  will search SPDX files for: {sp.spdx_search}")
       else:
         click.echo(f"{project}/{sp.name}")
   else:

@@ -286,8 +286,8 @@ class RetrieverTestSuite(unittest.TestCase):
 
     # check successes
     success = self.retriever.results.get('success')
-    self.assertEqual((1, 'hello', '/tmp/fake/src/junk.hello.junk.2018-03-12.spdx', '/tmp/fake/dst/hello/spdx/hello-2018-03-12.spdx'), success[0])
-    self.assertEqual((3, 'bonjourProject', '/tmp/fake/src/junk.bonjour.junk.2018-03-01.spdx', '/tmp/fake/dst/bonjourProject/spdx/bonjourProject-2018-03-01.spdx'), success[1])
+    self.assertEqual((1, 'hello', '/tmp/fake/src/junk.hello.junk.2018-03-12.spdx', '/tmp/fake/dst/subprojects/hello/spdx/hello-2018-03-12.spdx'), success[0])
+    self.assertEqual((3, 'bonjourProject', '/tmp/fake/src/junk.bonjour.junk.2018-03-01.spdx', '/tmp/fake/dst/subprojects/bonjourProject/spdx/bonjourProject-2018-03-01.spdx'), success[1])
 
     # check errors
     error = self.retriever.results.get('error')
@@ -316,11 +316,11 @@ class RetrieverTestSuite(unittest.TestCase):
   @mock.patch("slm.retriever.shutil.move")
   def test_can_move_files(self, mock_move):
     self.retriever.results["success"] = [
-      (1, 'hello', '/tmp/fake/src/junk.hello.junk.2018-03-12.spdx', '/tmp/fake/dst/hello/spdx/hello-2018-03-12.spdx')
+      (1, 'hello', '/tmp/fake/src/junk.hello.junk.2018-03-12.spdx', '/tmp/fake/dst/subprojects/hello/spdx/hello-2018-03-12.spdx')
     ]
     self.retriever.results["error"] = []
     self.retriever.moveFiles()
-    mock_move.assert_called_with('/tmp/fake/src/junk.hello.junk.2018-03-12.spdx', '/tmp/fake/dst/hello/spdx/hello-2018-03-12.spdx')
+    mock_move.assert_called_with('/tmp/fake/src/junk.hello.junk.2018-03-12.spdx', '/tmp/fake/dst/subprojects/hello/spdx/hello-2018-03-12.spdx')
 
   @mock.patch("slm.retriever.shutil.move")
   def test_cannot_move_files_before_results_are_set(self, mock_move):
@@ -331,10 +331,10 @@ class RetrieverTestSuite(unittest.TestCase):
   @mock.patch("slm.retriever.shutil.move")
   def test_cannot_move_files_if_already_present_in_dst(self, mock_move, mock_isfile):
     self.retriever.results["success"] = [
-      (1, 'hello', '/tmp/fake/src/junk.hello.junk.2018-03-12.spdx', '/tmp/fake/dst/hello/spdx/hello-2018-03-12.spdx')
+      (1, 'hello', '/tmp/fake/src/junk.hello.junk.2018-03-12.spdx', '/tmp/fake/dst/subprojects/hello/spdx/hello-2018-03-12.spdx')
     ]
     self.retriever.results["error"] = []
     self.retriever.moveFiles()
     # not moved, and now marked as an error
     mock_move.assert_not_called()
-    self.assertIn((1, 'hello', 'Cannot move to project hello (file already present at /tmp/fake/dst/hello/spdx/hello-2018-03-12.spdx)'), self.retriever.results["error"])
+    self.assertIn((1, 'hello', 'Cannot move to project hello (file already present at /tmp/fake/dst/subprojects/hello/spdx/hello-2018-03-12.spdx)'), self.retriever.results["error"])

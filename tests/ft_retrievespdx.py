@@ -94,23 +94,23 @@ class SPDXRetrieveFuncTestSuite(unittest.TestCase):
     self.assertEqual(f"Moved {SPDX_CORRECT_FILE} to frotz-dim (new name: {newName})\n", result.output)
 
     # She sees that the file is now present in the subproject's SPDX folder
-    filePath = os.path.join(self.slmhome, "projects", "frotz", "frotz-dim",
-      "spdx", newName)
+    filePath = os.path.join(self.slmhome, "projects", "frotz", 
+      "subprojects", "frotz-dim", "spdx", newName)
     self.assertTrue(os.path.isfile(filePath))
 
     # And she sees that the file's old name is not present in the subproject's
     # SPDX folder
     filePath = os.path.join(self.slmhome, "projects", "frotz",
-      "frotz-dim", "spdx", SPDX_CORRECT_FILE)
+      "subprojects", "frotz-dim", "spdx", SPDX_CORRECT_FILE)
     self.assertFalse(os.path.isfile(filePath))
 
     # And she sees that the other two SPDX files with non-matching names are
     # not present in the subproject's SPDX folder
     filePath = os.path.join(self.slmhome, "projects", "frotz",
-      "frotz-dim", "spdx", SPDX_NO_NAME)
+      "subprojects", "frotz-dim", "spdx", SPDX_NO_NAME)
     self.assertFalse(os.path.isfile(filePath))
     filePath = os.path.join(self.slmhome, "projects", "frotz",
-      "frotz-dim", "spdx", SPDX_NO_DATE)
+      "subprojects", "frotz-dim", "spdx", SPDX_NO_DATE)
     self.assertFalse(os.path.isfile(filePath))
 
     # And she sees that it has been removed from the source search folder

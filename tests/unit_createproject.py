@@ -23,6 +23,7 @@ from unittest import mock
 from slm.slmconfig import SLMConfig, BadSLMConfigError
 from slm.commands.cmdCreate import (
   createNewProjectDirs, createNewProjectReportsDir,
+  createNewProjectSubprojectsDir,
   createNewSubprojectDirs, createNewSubprojectReportsDir,
   createNewSubprojectSPDXDir)
 
@@ -60,11 +61,21 @@ class ProjectCreateTestSuite(unittest.TestCase):
     )
 
   @mock.patch('slm.commands.cmdCreate.os.makedirs')
+  def test_new_subprojects_dir_created_for_new_project(self, mock_os_makedirs):
+    slmhome = "/tmp/fake/slm"
+    createNewProjectDirs(slmhome, "newprj")
+    createNewProjectSubprojectsDir(slmhome, "newprj")
+    mock_os_makedirs.assert_called_with(
+      name="/tmp/fake/slm/projects/newprj/subprojects",
+      mode=0o755
+    )
+
+  @mock.patch('slm.commands.cmdCreate.os.makedirs')
   def test_new_dir_created_for_new_subproject(self, mock_os_makedirs):
     slmhome = "/tmp/fake/slm"
     createNewSubprojectDirs(slmhome, "newprj", "newsubprj")
     mock_os_makedirs.assert_called_with(
-      name="/tmp/fake/slm/projects/newprj/newsubprj",
+      name="/tmp/fake/slm/projects/newprj/subprojects/newsubprj",
       mode=0o755
     )
 
@@ -74,7 +85,7 @@ class ProjectCreateTestSuite(unittest.TestCase):
     createNewSubprojectDirs(slmhome, "newprj", "newsubprj")
     createNewSubprojectReportsDir(slmhome, "newprj", "newsubprj")
     mock_os_makedirs.assert_called_with(
-      name="/tmp/fake/slm/projects/newprj/newsubprj/reports",
+      name="/tmp/fake/slm/projects/newprj/subprojects/newsubprj/reports",
       mode=0o755
     )
 
@@ -84,6 +95,6 @@ class ProjectCreateTestSuite(unittest.TestCase):
     createNewSubprojectDirs(slmhome, "newprj", "newsubprj")
     createNewSubprojectSPDXDir(slmhome, "newprj", "newsubprj")
     mock_os_makedirs.assert_called_with(
-      name="/tmp/fake/slm/projects/newprj/newsubprj/spdx",
+      name="/tmp/fake/slm/projects/newprj/subprojects/newsubprj/spdx",
       mode=0o755
     )

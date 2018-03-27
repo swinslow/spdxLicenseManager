@@ -83,7 +83,7 @@ class Retriever:
           datestr = self.datestr,
           subproject_name = name
         )
-        dstPath = os.path.join(self.project_dir, name, "spdx", dstFilename)
+        dstPath = os.path.join(self.project_dir, "subprojects", name, "spdx", dstFilename)
         self.results["success"].append((_id, name, matches[0], dstPath))
       elif len(matches) == 0:
         self.results["error"].append((_id, name, f'No matches found for project {name} (with string "{spdx_search}")'))
