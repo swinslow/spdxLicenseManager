@@ -31,4 +31,5 @@ install:
 script: make coverage
 
 after_success:
-  coveralls
+  - coveralls
+  - bash <(curl -s https://copilot.blackducksoftware.com/ci/travis/scripts/upload)
