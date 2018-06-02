@@ -30,3 +30,4 @@ scratch/*
 demo/*
 example/*
 .coverage
+.vscode/*
