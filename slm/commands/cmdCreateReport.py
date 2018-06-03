@@ -50,8 +50,13 @@ def cmdCreateReport(ctx, subproject, scan_id=None, report_path=None,
   analyzer = Analyzer(db=db)
   results = analyzer.runAnalysis(scan_id)
 
+  reporter = None
+  if report_format == 'xlsx':
+    reporter = XlsxReporter(db=db, config=kwConfig)
+  else:
+    sys.exit(f"Unknown report format: {report_format}")
+
   # and generate the results
-  reporter = XlsxReporter(db=db, config=kwConfig)
   reporter.setResults(results)
   reporter.generate()
 
