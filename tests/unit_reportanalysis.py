@@ -141,6 +141,7 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self.assertIsNone(self.analyzer.primaryScan)
     self.assertEqual(OrderedDict(), self.analyzer.primaryScanCategories)
     self.assertEqual({}, self.analyzer.kwConfig)
+    self.assertFalse(self.analyzer.analysisDone)
 
   def test_analyzer_retrieves_all_categories_for_report(self):
     self.analyzer._buildScanCategories()
@@ -568,7 +569,52 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self.assertEqual(4, len(results.items()))
     cat1 = results[1]
     self.assertEqual("a category", cat1.name)
+    self.assertTrue(self.analyzer.analysisDone)
 
   def test_cannot_analyze_invalid_scan_id(self):
     with self.assertRaises(ReportAnalysisError):
       self.analyzer.runAnalysis(scan_id=187)
+
+  ##### create list results from OrderedDict results
+
+  def test_cannot_get_list_results_before_results_are_generated(self):
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer.getResultsAsList()
+
+    self.analyzer._buildScanCategories()
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer.getResultsAsList()
+
+    self.analyzer._addFiles(scan_id=1)
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer.getResultsAsList()
+
+  def test_can_get_list_results_from_OrderedDict_results(self):
+    self.db.setConfigValue(key="analyze-exclude-empty-cats-and-lics", value="yes")
+    self.analyzer.runAnalysis(scan_id=1)
+
+    list_results = self.analyzer.getResultsAsList()
+
+    # check top-level list of categories
+    # should be sorted by order and should exclude empty categories
+    self.assertIsInstance(list_results, list)
+    self.assertEqual(len(list_results), 3)
+    cat2 = list_results[0]
+    self.assertIsInstance(cat2, Category)
+    self.assertEqual(cat2.name, "cat")
+    self.assertEqual(cat2._id, 2)
+
+    # check licenses within a category
+    # should be sorted alphabetically and should exclude empty licenses
+    cat4 = list_results[2]
+    self.assertIsInstance(cat4.licenses, list)
+    self.assertEqual(len(cat4.licenses), 2)
+    lic6 = cat4.licenses[0]
+    self.assertIsInstance(lic6, License)
+    self.assertEqual(lic6.name, "Also no license found")
+    self.assertEqual(lic6._id, 6)
+
+    # check files within a license
+    self.assertIsInstance(lic6.files, list)
+    self.assertEqual(len(lic6.files), 5)
+    self.assertIsInstance(lic6.files[0], File)

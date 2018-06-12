@@ -23,6 +23,7 @@ from collections import OrderedDict
 
 from .common import ReportAnalysisError
 from ..projectdb import ProjectDBQueryError
+from ..datatypes import Category, File, License
 
 class Analyzer:
 
@@ -49,7 +50,32 @@ class Analyzer:
     self._buildScanCategories()
     self._addFiles(scan_id=scan_id)
     self._runAnalysis()
+
+    self.analysisDone = True
     return self.primaryScanCategories
+
+  def getResultsAsList(self):
+    if not self.analysisDone:
+      raise ReportAnalysisError("Cannot call getResultsAsList before analysis has been run")
+
+    listResults = []
+    # create and add new categories
+    for cat_id, cat in self.primaryScanCategories.items():
+      newCat = Category(_id=cat_id, name=cat.name)
+      newCat.licenses = []
+      listResults.append(newCat)
+      # create and add new licenses
+      for lic_id, lic in cat.licensesSorted.items():
+        newLic = License(_id=lic_id, name=lic.name)
+        newLic.files = []
+        newCat.licenses.append(newLic)
+        for f_id, f in lic.filesSorted.items():
+          newFile = File(_id=f_id, scan_id=f.scan_id, path=f.path,
+            sha1=f.sha1, md5=f.md5, sha256=f.sha256
+          )
+          newFile.findings = f.findings
+          newLic.files.append(newFile)
+    return listResults
 
   ##### Reporting analysis main helper functions
 
@@ -184,6 +210,7 @@ class Analyzer:
     self.primaryScan = None
     self.primaryScanCategories = OrderedDict()
     self.kwConfig = {}
+    self.analysisDone = False
 
   def _getFinalConfigValue(self, key):
     kwValue = self.kwConfig.get(key, None)
