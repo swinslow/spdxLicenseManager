@@ -17,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-test: functest unittest
+test: unittest functest
 
 functest: FORCE
 	python -m unittest discover -s tests -p "ft_*.py"

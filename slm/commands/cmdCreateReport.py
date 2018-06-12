@@ -23,6 +23,7 @@ import click
 from .helperContext import extractContext
 from ..reports.analysis import Analyzer
 from ..reports.common import ReportFileError
+from ..reports.json import JSONReporter
 from ..reports.xlsx import XlsxReporter
 
 def cmdCreateReport(ctx, subproject, scan_id=None, report_path=None,
@@ -53,12 +54,15 @@ def cmdCreateReport(ctx, subproject, scan_id=None, report_path=None,
   reporter = None
   if report_format == 'xlsx':
     reporter = XlsxReporter(db=db, config=kwConfig)
+    reporter.setResults(results)
+    reporter.generate()
+  elif report_format == 'json':
+    reporter = JSONReporter(db=db, config=kwConfig)
+    # JSON reports must get results as a reformatted list
+    listResults = analyzer.getResultsAsList()
+    reporter.setResults(listResults)
   else:
     sys.exit(f"Unknown report format: {report_format}")
-
-  # and generate the results
-  reporter.setResults(results)
-  reporter.generate()
 
   try:
     reporter.save(path=report_path, replace=force)
