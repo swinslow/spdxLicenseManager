@@ -41,10 +41,12 @@ __valid_configs__ = [
   ('analyze-thirdparty-dirs', False, 'Semicolon-separated string: If analyze-thirdparty is set, list of directories to analyze'),
   ('analyze-emptyfile', False, 'Flag: Analyze file checksums for empty files'),
   ('analyze-exclude-path-prefix', False, 'Flag: Exclude common path prefixes from reports'),
+  ('analyze-exclude-empty-cats-and-lics', False, 'Flag: Exclude from results any categories and licenses with no files'),
 
   # Reporter configurations; intended to be overridable on command line
   ('report-include-summary', False, 'Flag: Include summary page in reports'),
   ('report-strip-licenseref', False, 'Remove "LicenseRef-" tags from licenses in reports?'),
+  ('report-pretty-print', False, 'Flag: Add pretty-printing whitespace to JSON reports'),
 ]
 
 def isValidConfigKey(key):

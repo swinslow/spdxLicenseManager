@@ -108,6 +108,10 @@ class Analyzer:
     if self._getFinalConfigValue('analyze-emptyfile') == "yes":
       self._analyzeEmptyFile()
 
+    # then run post-analysis modifications to results
+    if self._getFinalConfigValue('analyze-exclude-empty-cats-and-lics') == "yes":
+      self._analyzeExcludeEmptyCatsAndLics()
+
   def _analyzeExtensions(self):
     extList = self._parseExtConfig()
     for cat in self.primaryScanCategories.values():
@@ -152,6 +156,26 @@ class Analyzer:
         for lic in cat.licensesSorted.values():
           for file in lic.filesSorted.values():
             file.path = file.path[len(prefix):]
+
+  def _analyzeExcludeEmptyCatsAndLics(self):
+    # walk through and mark category keys to remove
+    catsToDelete = []
+    for cat_id, cat in self.primaryScanCategories.items():
+      if cat.hasFiles == False:
+        catsToDelete.append(cat_id)
+    # now, delete those categories
+    for cat_id in catsToDelete:
+      del self.primaryScanCategories[cat_id]
+
+    # next, walk back through the categories and check their licenses
+    for cat in self.primaryScanCategories.values():
+      licsToDelete = []
+      for lic_id, lic in cat.licensesSorted.items():
+        if lic.hasFiles == False:
+          licsToDelete.append(lic_id)
+      # and finally, within this category, delete those licenses
+      for lic_id in licsToDelete:
+        del cat.licensesSorted[lic_id]
 
   ##### Other helper functions
 

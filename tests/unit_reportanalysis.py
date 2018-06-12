@@ -351,6 +351,21 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self.analyzer._runAnalysis()
     path_mock.assert_not_called()
 
+  @mock.patch('slm.reports.analysis.Analyzer._analyzeExcludeEmptyCatsAndLics')
+  def test_analyzer_runs_excludeEmptyCatsAndLics_if_set(self, ecl_mock):
+    self.db.setConfigValue(key="analyze-exclude-empty-cats-and-lics", value="yes")
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+    ecl_mock.assert_called()
+
+  @mock.patch('slm.reports.analysis.Analyzer._analyzeExcludeEmptyCatsAndLics')
+  def test_analyzer_does_not_run_excludeEmptyCatsAndLics_if_not_set(self, ecl_mock):
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+    ecl_mock.assert_not_called()
+
   ##### getter helper tests
 
   def test_analyzer_cannot_get_specific_cat_before_building_categories(self):
@@ -512,7 +527,7 @@ class ReportAnalysisTestSuite(unittest.TestCase):
 
   ##### exclude path prefix analysis tests
 
-  def test_can_exclude_common_path_prefix(self):
+  def test_analyzer_can_exclude_common_path_prefix(self):
     self.db.setConfigValue(key="analyze-exclude-path-prefix", value="yes")
     self.analyzer._buildScanCategories()
     self.analyzer._addFiles(scan_id=1)
@@ -523,6 +538,26 @@ class ReportAnalysisTestSuite(unittest.TestCase):
       for lic in cat.licensesSorted.values():
         for file in lic.filesSorted.values():
           self.assertNotIn("tmp", file.path)
+
+  ##### exclude empty categories and licenses analysis tests
+
+  def test_analyzer_can_exclude_empty_cats_and_lics(self):
+    self.db.setConfigValue(key="analyze-exclude-empty-cats-and-lics", value="yes")
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._runAnalysis()
+
+    # check that empty cats are gone
+    with self.assertRaises(KeyError):
+      na = self.analyzer.primaryScanCategories[3]
+    # and check that empty licenses are gone
+    cat4 = self.analyzer.primaryScanCategories[4]
+    with self.assertRaises(KeyError):
+      na = cat4.licensesSorted[7]
+
+    # and check that cats and licenses with files are still present
+    self.assertEqual(cat4.name, "no lic category")
+    self.assertEqual(cat4.licensesSorted[6].name, "Also no license found")
 
   ##### main analysis function tests
 
