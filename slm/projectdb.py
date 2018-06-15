@@ -26,8 +26,8 @@ from sqlalchemy.orm import sessionmaker
 
 from .__configs__ import (isValidConfigKey, isInternalConfigKey,
   getConfigKeyDesc)
-from .datatypes import (Base, Category, Component, ComponentType, Config,
-  Conversion, File, License, Scan, Subproject)
+from .datatypes import (Base, Category, Component, ComponentLicense,
+  ComponentType, Config, Conversion, File, License, Scan, Subproject)
 
 class ProjectDBConfigError(Exception):
   """Exception raised for errors in database configuration.
@@ -709,7 +709,7 @@ class ProjectDB:
 
   #########################
   ##### Component functions
-  ########################
+  #########################
 
   def getComponentsAll(self):
     return self.session.query(Component).order_by(Component._id).all()
@@ -754,9 +754,9 @@ class ProjectDB:
       raise ProjectDBInsertError(f"Scan ID '{scan_id}' does not exist.")
 
     # raise exception if component type does not exist
-    scan = self.session.query(ComponentType).\
+    ct = self.session.query(ComponentType).\
                         filter(ComponentType._id == component_type_id).first()
-    if scan is None:
+    if ct is None:
       raise ProjectDBInsertError(f"Component Type ID '{component_type_id}' does not exist.")
 
     component = Component(name=name, scan_id=scan_id, component_type_id=component_type_id)
@@ -801,3 +801,64 @@ class ProjectDB:
     if new_component_type_id is not None:
       component.component_type_id = new_component_type_id
     self.session.commit()
+
+  ################################
+  ##### ComponentLicense functions
+  ################################
+
+  def getComponentLicenses(self, *, component_id=None, name=None, scan_id=None):
+    if component_id is None and name is None:
+      raise ProjectDBQueryError("Cannot call getComponentLicense without either component_id or (name and scan_id) parameters")
+    if component_id is not None and name is not None:
+      raise ProjectDBQueryError("Cannot call getComponentLicense with both component_id and name parameters")
+    if component_id is not None and scan_id is not None:
+      raise ProjectDBQueryError("Cannot call getComponentLicense with both component_id and scan_id parameters")
+    if name is not None and scan_id is None:
+      raise ProjectDBQueryError("Cannot call getComponentLicense with name parameter but without scan_id parameter")
+
+    if component_id is not None:
+      # search by component ID
+      # raise exception if component does not exist
+      component = self.session.query(Component).\
+                              filter(Component._id == component_id).first()
+      if component is None:
+        raise ProjectDBQueryError(f"Component ID '{component_id}' does not exist.")
+
+      return self.session.query(License).\
+                           join(ComponentLicense).\
+                         filter(ComponentLicense.component_id == component_id).\
+                       order_by(ComponentLicense.license_id).all()
+
+    else:
+      # search by component name for a given scan
+      # raise exception if component does not exist
+      component = self.session.query(Component).\
+                              filter(and_(Component.name == name,
+                                          Component.scan_id == scan_id)).first()
+      if component is None:
+        raise ProjectDBQueryError(f"Component '{name}' does not exist for scan {scan_id}.")
+
+      return self.session.query(License).\
+                           join(ComponentLicense).\
+                         filter(ComponentLicense.component_id == component._id).\
+                       order_by(ComponentLicense.license_id).all()
+
+  def addComponentLicense(self, component_id, license_id, commit=True):
+    # raise exception if component does not exist
+    component = self.session.query(Component).\
+                            filter(Component._id == component_id).first()
+    if component is None:
+      raise ProjectDBInsertError(f"Component ID '{component_id}' does not exist.")
+
+    # raise exception if license does not exist
+    license = self.session.query(License).\
+                          filter(License._id == license_id).first()
+    if license is None:
+      raise ProjectDBInsertError(f"License ID '{license_id}' does not exist.")
+
+    cl = ComponentLicense(component_id=component_id, license_id=license_id)
+    self.session.add(cl)
+    if commit:
+      self.session.commit()
+    else:
+      self.session.flush()

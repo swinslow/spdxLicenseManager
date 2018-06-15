@@ -17,7 +17,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from sqlalchemy import Column, Date, ForeignKey, Integer, String
+from sqlalchemy import (Column, Date, ForeignKey, Integer, String,
+  PrimaryKeyConstraint)
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -130,3 +131,15 @@ class Component(Base):
   # relationships
   scan = relationship('Scan')
   component_type = relationship('ComponentType')
+
+class ComponentLicense(Base):
+  __tablename__ = 'component_licenses'
+  __table_args__ = (
+    PrimaryKeyConstraint('component_id', 'license_id'),
+  )
+  # columns
+  component_id = Column(Integer(), ForeignKey('components._id'))
+  license_id = Column(Integer(), ForeignKey('licenses._id'))
+  # relationships
+  component = relationship("Component", backref=backref('component_licenses'))
+  license = relationship("License", backref=backref('component_licenses'))

@@ -83,17 +83,50 @@ class ComponentFuncTestSuite(unittest.TestCase):
     self.assertEqual(0, result.exit_code)
     self.assertIn("github.com/spf13/pflag", result.output)
 
-  # def test_can_get_verbose_details(self):
-  #   # Edith adds a component
-  #   result = runcmd(self, slm.cli, "frotz", "add-component",
-  #     "github.com/spf13/pflag",
-  #     "--scan_id", 3, "--component_type", "Golang")
-  #   self.assertEqual(0, result.exit_code)
+  def test_can_add_licenses_to_component(self):
+    # Edith adds a component
+    result = runcmd(self, slm.cli, "frotz", "add-component",
+      "github.com/xanzy/ssh-agent",
+      "--scan_id", 3, "--component_type", "Golang")
+    self.assertEqual(0, result.exit_code)
 
-  #   # She checks to make sure she can get verbose details
-  #   result = runcmd(self, slm.cli, "frotz", "-v", "list-components", "--scan_id", 3)
-  #   self.assertEqual(0, result.exit_code)
-  #   self.assertEqual("github.com/spf13/pflag:\n  licenses: \n  type: Golang\n  url: github.com/spf13/pflag\n", result.output)
+    # She tags it as being subject to a license
+    result = runcmd(self, slm.cli, "frotz", "add-component-license",
+      "github.com/xanzy/ssh-agent", "Apache-2.0", "--scan_id", 3)
+
+    # It works correctly and lets her know
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual("Added Apache-2.0 to github.com/xanzy/ssh-agent for scan 3\n",
+      result.output)
+
+    # She tags it as being subject to a second license as well
+    result = runcmd(self, slm.cli, "frotz", "add-component-license",
+      "github.com/xanzy/ssh-agent", "MIT", "--scan_id", 3)
+
+    # It works correctly and lets her know
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual("Added MIT to github.com/xanzy/ssh-agent for scan 3\n",
+      result.output)
+
+  def test_can_get_verbose_details(self):
+    # Edith adds a component
+    result = runcmd(self, slm.cli, "frotz", "add-component",
+      "github.com/xanzy/ssh-agent",
+      "--scan_id", 3, "--component_type", "Golang")
+    self.assertEqual(0, result.exit_code)
+
+    # She adds some licenses to it
+    result = runcmd(self, slm.cli, "frotz", "add-component-license",
+      "github.com/xanzy/ssh-agent", "Apache-2.0", "--scan_id", 3)
+    self.assertEqual(0, result.exit_code)
+    result = runcmd(self, slm.cli, "frotz", "add-component-license",
+      "github.com/xanzy/ssh-agent", "MIT", "--scan_id", 3)
+    self.assertEqual(0, result.exit_code)
+
+    # She checks to make sure she can get verbose details
+    result = runcmd(self, slm.cli, "frotz", "-v", "list-components", "--scan_id", 3)
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual("github.com/xanzy/ssh-agent:\n  licenses: Apache-2.0, MIT\n  type: Golang\n", result.output)
 
   # def test_can_get_urls_where_appropriate(self):
   #   # Edith adds a component

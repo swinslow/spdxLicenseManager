@@ -1,6 +1,6 @@
-# commands/cmdListComponents.py
+# commands/cmdAddComponentLicense.py
 #
-# Implementation of 'list-components' command for spdxLicenseManager.
+# Implementation of 'add-component-license' command for spdxLicenseManager.
 #
 # Copyright (C) The Linux Foundation
 # SPDX-License-Identifier: Apache-2.0
@@ -17,24 +17,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
 import click
 
 from .helperContext import extractContext
+from ..projectdb import ProjectDBInsertError
 
-def cmdListComponents(ctx, scan_id):
+def cmdAddComponentLicense(ctx, component_name, license_name, scan_id):
   slmhome, mainconfig, project, db = extractContext(ctx)
-  verbose = ctx.obj.get('VERBOSE', False)
 
-  for component in db.getComponentsAllForScan(scan_id=scan_id):
-    if verbose:
-      click.echo(f"{component.name}:")
+  # get ID for component
+  component = db.getComponent(name=component_name, scan_id=scan_id)
 
-      # get licenses string
-      lics = db.getComponentLicenses(component_id=component._id)
-      lics_names = [lic.name for lic in lics]
-      lics_string = ', '.join(lics_names)
+  # get ID for license
+  license = db.getLicense(name=license_name)
 
-      click.echo(f"  licenses: {lics_string}")
-      click.echo(f"  type: {component.component_type.name}")
-    else:
-      click.echo(f"{component.name}")
+  # create component-license in database
+  try:
+    db.addComponentLicense(component_id=component._id, license_id=license._id)
+  except ProjectDBInsertError as e:
+    sys.exit(e)
+
+  # let the user know it worked
+  click.echo(f"Added {license_name} to {component_name} for scan {scan_id}")
+
+  # clean up database
+  db.closeDB()

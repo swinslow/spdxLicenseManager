@@ -52,6 +52,7 @@ from .commands.cmdAddComponentType import cmdAddComponentType
 from .commands.cmdListComponentTypes import cmdListComponentTypes
 from .commands.cmdAddComponent import cmdAddComponent
 from .commands.cmdListComponents import cmdListComponents
+from .commands.cmdAddComponentLicense import cmdAddComponentLicense
 
 VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
 
@@ -368,3 +369,12 @@ def cliAddComponent(ctx, name, scan_id, component_type):
 def cliListComponents(ctx, scan_id):
   checkForContext(ctx)
   return cmdListComponents(ctx, scan_id)
+
+@cli.command('add-component-license', help="Add a license to an existing component")
+@click.argument('component')
+@click.argument('license')
+@click.option('--scan_id', required=True, help='Scan ID')
+@click.pass_context
+def cliAddComponentLicense(ctx, component, license, scan_id):
+  checkForContext(ctx)
+  return cmdAddComponentLicense(ctx, component_name=component, license_name=license, scan_id=scan_id)
