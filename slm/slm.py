@@ -48,6 +48,10 @@ from .commands.cmdListScanResults import cmdListScanResults
 from .commands.cmdListScans import cmdListScans
 from .commands.cmdCreateReport import cmdCreateReport
 from .commands.cmdRetrieveSPDX import cmdRetrieveSPDX
+from .commands.cmdAddComponentType import cmdAddComponentType
+from .commands.cmdListComponentTypes import cmdListComponentTypes
+from .commands.cmdAddComponent import cmdAddComponent
+from .commands.cmdListComponents import cmdListComponents
 
 VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
 
@@ -327,3 +331,40 @@ def cliCreateReport(ctx, scan_id, report_path, report_format, no_summary, force)
 def cliRetrieveSPDX(ctx, month):
   checkForContext(ctx)
   return cmdRetrieveSPDX(ctx, month)
+
+#############################
+##### Component type commands
+#############################
+
+@cli.command('add-component-type', help="Add a new component type")
+@click.argument('name')
+@click.pass_context
+def cliAddComponentType(ctx, name):
+  checkForContext(ctx)
+  return cmdAddComponentType(ctx, name)
+
+@cli.command('list-component-types', help="List component types")
+@click.pass_context
+def cliListComponentTypes(ctx):
+  checkForContext(ctx)
+  return cmdListComponentTypes(ctx)
+
+########################
+##### Component commands
+########################
+
+@cli.command('add-component', help="Add a new component")
+@click.argument('name')
+@click.option('--scan_id', required=True, help='Scan ID')
+@click.option('--component_type', required=True, help="Component type")
+@click.pass_context
+def cliAddComponent(ctx, name, scan_id, component_type):
+  checkForContext(ctx)
+  return cmdAddComponent(ctx, name, scan_id, component_type)
+
+@cli.command('list-components', help="List components")
+@click.option('--scan_id', required=True, help='Scan ID')
+@click.pass_context
+def cliListComponents(ctx, scan_id):
+  checkForContext(ctx)
+  return cmdListComponents(ctx, scan_id)

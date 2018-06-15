@@ -24,7 +24,7 @@ from click.testing import CliRunner
 from slm import slm
 
 from helper_sandbox import (setUpSandbox, runSandboxCommands, tearDownSandbox,
-  runcmd)
+  runcmd, printResultDebug)
 
 class ComponentFuncTestSuite(unittest.TestCase):
   """spdxLicenseManager component create, edit and list FT suite."""
@@ -33,22 +33,49 @@ class ComponentFuncTestSuite(unittest.TestCase):
     self.runner = CliRunner()
     setUpSandbox(self, slm.cli)
     runSandboxCommands(self, slm.cli)
+    result = runcmd(self, slm.cli, "frotz", "add-license",
+      "BSD-3-Clause", "Attribution")
     result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
-      "import-scan", "tests/testfiles/golang-examples.spdx",
+      "import-scan", "tests/testfiles/godeps-example.spdx",
       "--scan_date", "2018-06-14", "--desc", "frotz-dim golang scan"
     )
 
   def tearDown(self):
     tearDownSandbox(self)
 
-  def test_can_add_and_retrieve_a_component(self):
-    # Edith is creating a new component for an existing scan
-    result = runcmd(self, slm.cli, "frotz", "--scan_id", 3,
-      "add-component", "github.com/spf13/pflag", "--type", "Golang")
+  def test_can_add_and_retrieve_a_component_type(self):
+    # Edith is creating a new component type
+    result = runcmd(self, slm.cli, "frotz", "add-component-type", "Ruby")
 
     # It works correctly and lets her know
     self.assertEqual(0, result.exit_code)
-    self.assertEqual("Created component: github.com/spf13/pflag\n",
+    self.assertEqual("Created component type: Ruby\n",
+      result.output)
+
+    # She checks the list of component types to make sure, and there it is
+    result = runcmd(self, slm.cli, "frotz", "list-component-types")
+    self.assertEqual(0, result.exit_code)
+    self.assertIn("Ruby", result.output)
+
+  def test_cannot_add_an_existing_component_type(self):
+    # Edith accidentally tries to create a new component type with an
+    # existing name
+    result = runcmd(self, slm.cli, "frotz", "add-component-type", "Golang")
+
+    # It fails and lets her know why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual("Component type 'Golang' already exists for project frotz.\n",
+      result.output)
+
+  def test_can_add_and_retrieve_a_component(self):
+    # Edith is creating a new component for an existing scan
+    result = runcmd(self, slm.cli, "frotz", "add-component",
+      "github.com/spf13/pflag",
+      "--scan_id", 3, "--component_type", "Golang")
+
+    # It works correctly and lets her know
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual("Created component for scan 3: github.com/spf13/pflag (Golang)\n",
       result.output)
 
     # She checks the list of components to make sure, and there it is
@@ -56,11 +83,11 @@ class ComponentFuncTestSuite(unittest.TestCase):
     self.assertEqual(0, result.exit_code)
     self.assertIn("github.com/spf13/pflag", result.output)
 
-
   # def test_can_get_verbose_details(self):
   #   # Edith adds a component
-  #   result = runcmd(self, slm.cli, "frotz", "--scan_id", 3,
-  #     "add-component", "github.com/spf13/pflag", "--type", "Golang")
+  #   result = runcmd(self, slm.cli, "frotz", "add-component",
+  #     "github.com/spf13/pflag",
+  #     "--scan_id", 3, "--component_type", "Golang")
   #   self.assertEqual(0, result.exit_code)
 
   #   # She checks to make sure she can get verbose details

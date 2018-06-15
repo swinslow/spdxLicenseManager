@@ -163,7 +163,7 @@ class DBComponentUnitTestSuite(unittest.TestCase):
     component = self.db.getComponent(_id=2)
     self.assertEqual(component.name, "jQuery")
 
-  def test_can_retrieve_one_component_type_by_name_and_scan_id(self):
+  def test_can_retrieve_one_component_by_name_and_scan_id(self):
     component = self.db.getComponent(name="spdxLicenseManager", scan_id=1)
     self.assertEqual(component._id, 4)
     component = self.db.getComponent(name="spdxLicenseManager", scan_id=2)
@@ -198,3 +198,89 @@ class DBComponentUnitTestSuite(unittest.TestCase):
   def test_returns_none_if_component_not_found_by_name_and_scan(self):
     component = self.db.getComponent(name="noSuchComponent", scan_id=1)
     self.assertIsNone(component)
+
+  def test_can_add_and_retrieve_components(self):
+    component_id = self.db.addComponent(name="github.com/abc/xyz",
+      scan_id=2, component_type_id=3)
+
+    # confirm that we now have five components
+    components = self.db.getComponentsAll()
+    self.assertEqual(len(components), 5)
+
+    # and confirm that we can retrieve this one by id
+    component = self.db.getComponent(_id=component_id)
+    self.assertEqual(component.name, "github.com/abc/xyz")
+
+    # and confirm that we can retrieve this one by name and scan_id
+    component = self.db.getComponent(name="github.com/abc/xyz", scan_id=2)
+    self.assertEqual(component._id, component_id)
+
+  def test_can_start_adding_but_rollback_component(self):
+    component_id = self.db.addComponent(name="will rollback",
+      scan_id=2, component_type_id=1, commit=False)
+    self.db.rollback()
+    # confirm that we still only have four components
+    components = self.db.getComponentsAll()
+    self.assertEqual(len(components), 4)
+    # and confirm that this component ID doesn't exist in database
+    component = self.db.getComponent(_id=component_id)
+    self.assertIsNone(component)
+
+  def test_can_start_adding_and_then_commit_components(self):
+    c1_id = self.db.addComponent(name="newc1", scan_id=1, component_type_id=1, commit=False)
+    c2_id = self.db.addComponent(name="newc2", scan_id=1, component_type_id=1, commit=False)
+    self.db.commit()
+    # confirm that we now have six component types
+    components = self.db.getComponentsAll()
+    self.assertEqual(len(components), 6)
+
+  def test_cannot_add_component_with_nonexistent_scan_id(self):
+    with self.assertRaises(ProjectDBInsertError):
+      c1_id = self.db.addComponent(name="newc1", scan_id=17, component_type_id=1, commit=False)
+
+  def test_cannot_add_component_with_nonexistent_component_type_id(self):
+    with self.assertRaises(ProjectDBInsertError):
+      self.db.addComponent(name="newc1", scan_id=1, component_type_id=17, commit=False)
+
+  def test_can_edit_component(self):
+    self.db.changeComponent(name="github.com/swinslow/peridot", scan_id=1,
+      newName="github.com/swinslow/parascope")
+    component = self.db.getComponent(name="github.com/swinslow/parascope", scan_id=1)
+    self.assertEqual(component._id, 1)
+
+  def test_cannot_edit_component_that_does_not_exist(self):
+    with self.assertRaises(ProjectDBUpdateError):
+      self.db.changeComponent(name="invalid", scan_id=1, newName="invalid name")
+    with self.assertRaises(ProjectDBUpdateError):
+      self.db.changeComponent(name="jQuery", scan_id=17, newName="invalid scan ID")
+
+  def test_cannot_change_component_to_existing_name_in_this_scan(self):
+    with self.assertRaises(ProjectDBUpdateError):
+      self.db.changeComponent(name="jQuery", scan_id=1, newName="spdxLicenseManager")
+
+  def test_can_change_component_to_existing_name_in_different_scan(self):
+    self.db.addComponent(name="newComponent", scan_id=2, component_type_id=3)
+    self.db.changeComponent(name="newComponent", scan_id=2, newName="jQuery")
+    component = self.db.getComponent(name="jQuery", scan_id=2)
+    self.assertEqual(component._id, 5)
+
+  def test_can_change_component_type_id_for_component(self):
+    self.db.changeComponent(name="spdxLicenseManager", scan_id=1,
+      new_component_type_id=3)
+    component = self.db.getComponent(name="spdxLicenseManager", scan_id=1)
+    self.assertEqual(component.component_type_id, 3)
+
+  def test_cannot_change_component_to_nonexistent_component_type_id(self):
+    with self.assertRaises(ProjectDBUpdateError):
+      self.db.changeComponent(name="jQuery", scan_id=1,
+        new_component_type_id=17)
+
+  def test_can_change_both_name_and_component_id_at_the_same_time(self):
+    self.db.changeComponent(name="spdxLicenseManager", scan_id=1,
+      new_component_type_id=3, newName="slm")
+    component = self.db.getComponent(name="slm", scan_id=1)
+    self.assertEqual(component.component_type_id, 3)
+
+  def test_cannot_change_component_without_something_new(self):
+    with self.assertRaises(ProjectDBUpdateError):
+      self.db.changeComponent(name="jQuery", scan_id=1)

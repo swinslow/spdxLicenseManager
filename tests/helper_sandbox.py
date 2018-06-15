@@ -103,6 +103,12 @@ def runSandboxCommands(testCase, cli):
       "import-scan", "tests/testfiles/slm-2018-02-06.spdx",
       "--scan_date", "2018-02-06", "--desc", "frotz-dim initial scan")
 
+  # and add some component types
+  sandboxcmd(testCase, cli, 'add-component-type', 'C++')
+  sandboxcmd(testCase, cli, 'add-component-type', 'Java')
+  sandboxcmd(testCase, cli, 'add-component-type', 'JavaScript')
+  sandboxcmd(testCase, cli, 'add-component-type', 'Golang')
+
 def printResultDebug(result):
   tb = result.exc_info[2]
   print(f"exc_info = {result.exc_info}")

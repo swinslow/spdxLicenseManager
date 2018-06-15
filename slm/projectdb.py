@@ -743,5 +743,61 @@ class ProjectDB:
                           filter(Component._id == _id).first()
     if name is not None:
       return self.session.query(Component).\
-                          filter(and_(Component.name == name),
-                                      Component.scan_id == scan_id).first()
+                          filter(and_(Component.name == name,
+                                      Component.scan_id == scan_id)).first()
+
+  def addComponent(self, name, scan_id, component_type_id, commit=True):
+    # raise exception if scan does not exist
+    scan = self.session.query(Scan).\
+                        filter(Scan._id == scan_id).first()
+    if scan is None:
+      raise ProjectDBInsertError(f"Scan ID '{scan_id}' does not exist.")
+
+    # raise exception if component type does not exist
+    scan = self.session.query(ComponentType).\
+                        filter(ComponentType._id == component_type_id).first()
+    if scan is None:
+      raise ProjectDBInsertError(f"Component Type ID '{component_type_id}' does not exist.")
+
+    component = Component(name=name, scan_id=scan_id, component_type_id=component_type_id)
+    self.session.add(component)
+    if commit:
+      self.session.commit()
+    else:
+      self.session.flush()
+    return component._id
+
+  def changeComponent(self, name, scan_id, *, newName=None, new_component_type_id=None):
+    if name is None or scan_id is None:
+      raise ProjectDBUpdateError("Missing parameter for changeComponent")
+    if newName is None and new_component_type_id is None:
+      raise ProjectDBUpdateError("Missing new parameter for changeComponent")
+
+    # check whether component exists for this scan
+    component = self.session.query(Component).\
+                            filter(and_(Component.name == name,
+                                        Component.scan_id == scan_id)).first()
+    if component is None:
+      raise ProjectDBUpdateError(f"Component {name} for scan ID {scan_id} not found in changeComponent")
+
+    # check whether new component name is already in use for this scan
+    if newName is not None:
+      newCom = self.session.query(Component).\
+                           filter(and_(Component.name == newName,
+                                       Component.scan_id == scan_id)).first()
+      if newCom is not None:
+        raise ProjectDBUpdateError(f"New component name {newName} already exists for scan ID {scan_id} in changeComponent")
+
+    # check whether new component type ID exists
+    if new_component_type_id is not None:
+      ct = self.session.query(ComponentType).\
+                       filter(ComponentType._id == new_component_type_id).first()
+      if ct is None:
+        raise ProjectDBUpdateError(f"New component type ID {new_component_type_id} does not exist in changeComponent")
+
+    # finally, make the changes
+    if newName is not None:
+      component.name = newName
+    if new_component_type_id is not None:
+      component.component_type_id = new_component_type_id
+    self.session.commit()
