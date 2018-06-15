@@ -26,8 +26,8 @@ from sqlalchemy.orm import sessionmaker
 
 from .__configs__ import (isValidConfigKey, isInternalConfigKey,
   getConfigKeyDesc)
-from .datatypes import (Base, Category, Config, Conversion, File, License,
-  Scan, Subproject)
+from .datatypes import (Base, Category, Component, ComponentType, Config,
+  Conversion, File, License, Scan, Subproject)
 
 class ProjectDBConfigError(Exception):
   """Exception raised for errors in database configuration.
@@ -664,3 +664,84 @@ class ProjectDB:
       self.session.commit()
     else:
       self.session.flush()
+
+  #############################
+  ##### ComponentType functions
+  ############################
+
+  def getComponentTypesAll(self):
+    return self.session.query(ComponentType).order_by(ComponentType._id).all()
+
+  def getComponentType(self, *, _id=None, name=None):
+    if _id is None and name is None:
+      raise ProjectDBQueryError("Cannot call getComponentType without either _id or name parameters")
+    if _id is not None and name is not None:
+      raise ProjectDBQueryError("Cannot call getComponentType with both _id and name parameters")
+    if _id is not None:
+      return self.session.query(ComponentType).\
+                          filter(ComponentType._id == _id).first()
+    if name is not None:
+      return self.session.query(ComponentType).\
+                          filter(ComponentType.name == name).first()
+
+  def addComponentType(self, name, commit=True):
+    componentType = ComponentType(name=name)
+    self.session.add(componentType)
+    if commit:
+      self.session.commit()
+    else:
+      self.session.flush()
+    return componentType._id
+
+  def changeComponentTypeName(self, name, newName):
+    if name is None or newName is None:
+      raise ProjectDBUpdateError("Missing parameter for changeComponentTypeName")
+    ct = self.session.query(ComponentType).\
+                       filter(ComponentType.name == name).first()
+    if ct is None:
+      raise ProjectDBUpdateError(f"ComponentType {name} not found in changeComponentTypeName")
+
+    try:
+      ct.name = newName
+      self.session.commit()
+    except IntegrityError:
+      raise ProjectDBUpdateError(f"ComponentType {newName} already exists in changeComponentTypeName({name})")
+
+  #########################
+  ##### Component functions
+  ########################
+
+  def getComponentsAll(self):
+    return self.session.query(Component).order_by(Component._id).all()
+
+  def getComponentsAllForScan(self, scan_id=None):
+    if scan_id is None:
+      raise ProjectDBQueryError("Cannot call getComponentsAllForScan without a scan ID")
+
+    # raise exception if scan does not exist
+    scan = self.session.query(Scan).\
+                        filter(Scan._id == scan_id).first()
+    if scan is None:
+      raise ProjectDBQueryError(f"Scan ID '{scan_id}' does not exist.")
+
+    return self.session.query(Component).\
+                        filter(Component.scan_id == scan_id).\
+                        order_by(Component._id).all()
+
+  def getComponent(self, *, _id=None, name=None, scan_id=None):
+    if _id is None and name is None:
+      raise ProjectDBQueryError("Cannot call getComponent without either _id or (name and scan_id) parameters")
+    if _id is not None and name is not None:
+      raise ProjectDBQueryError("Cannot call getComponent with both _id and name parameters")
+    if _id is not None and scan_id is not None:
+      raise ProjectDBQueryError("Cannot call getComponent with both _id and scan_id parameters")
+    if name is not None and scan_id is None:
+      raise ProjectDBQueryError("Cannot call getComponent with name parameter but without scan_id parameter")
+
+    if _id is not None:
+      return self.session.query(Component).\
+                          filter(Component._id == _id).first()
+    if name is not None:
+      return self.session.query(Component).\
+                          filter(and_(Component.name == name),
+                                      Component.scan_id == scan_id).first()

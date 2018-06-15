@@ -1,0 +1,2116 @@
+SPDXVersion: SPDX-2.0
+DataLicense: CC0-1.0
+
+##-------------------------
+## Document Information
+##-------------------------
+
+DocumentNamespace: http://3a25b77ecd93/repo/SPDX2TV_godeps.zip_1529012716.spdx
+DocumentName: /srv/fossology/repository/report
+SPDXID: SPDXRef-DOCUMENT
+
+##-------------------------
+## Creation Information
+##-------------------------
+
+Creator: Tool: spdx2
+Creator: Person: steve (y)
+CreatorComment: <text>
+This document was created using license information and a generator from Fossology.
+</text>
+Created: 2018-06-14T21:45:17Z
+LicenseListVersion: 2.6
+
+##-------------------------
+## Package Information
+##-------------------------
+
+
+PackageName: godeps.zip
+PackageFileName: godeps.zip
+SPDXID: SPDXRef-upload544
+PackageDownloadLocation: NOASSERTION
+PackageVerificationCode: cf2baa9bed0906e781df7c12d4fb72534dc26350
+PackageChecksum: SHA1: 769904e3b3bd4a7e92c2ecfbc17c06fb7184c38c
+PackageChecksum: MD5: 4d8cbf1cc351b5307a3ca215579fce9f
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageLicenseComments: <text> licenseInfoInFile determined by Scanners:
+ - nomos ("3.1.0-8-gaef393d".aef393)
+ - monk ("3.1.0-8-gaef393d".aef393) </text>
+PackageLicenseInfoFromFiles: NOASSERTION
+PackageCopyrightText: NOASSERTION
+
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-upload544
+
+##--------------------------
+## File Information
+##--------------------------
+
+##File
+
+FileName: godeps/test.txt
+SPDXID: SPDXRef-item3363486
+FileChecksum: SHA1: 7967e545a8d1f6a7f70dc4324d54dea435299499
+FileChecksum: MD5: b3edfb3047f825648d633660a170f49c
+LicenseConcluded: MIT
+LicenseInfoInFile: MIT
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/sshagent_windows.go
+SPDXID: SPDXRef-item4765075
+FileChecksum: SHA1: 1c59a9a5b6ed859346f5ed744ab87a77361bbc82
+FileChecksum: MD5: 932e8271c9b92b822bfc9ba1f0b88893
+LicenseConcluded: MIT
+LicenseInfoInFile: MIT
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/sshagent.go
+SPDXID: SPDXRef-item4765013
+FileChecksum: SHA1: b9144d1e50f3134ff0104361151b233bcd1a3ac8
+FileChecksum: MD5: a58ba0f959e5d409449877e9aa8ee17e
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/README.md
+SPDXID: SPDXRef-item4765074
+FileChecksum: SHA1: f74d69b48747a42d3cd6009c1355730de77ce6f4
+FileChecksum: MD5: 1e489095d61ca3c58dba8fc668b6fba4
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/pageant_windows.go
+SPDXID: SPDXRef-item4765012
+FileChecksum: SHA1: d4283ea51f89fc046f7a173f5d3cca562c29f196
+FileChecksum: MD5: cf3e9c4b26068ec960fdf239000d9ee7
+LicenseConcluded: MIT
+LicenseInfoInFile: MIT
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/LICENSE
+SPDXID: SPDXRef-item4765076
+FileChecksum: SHA1: 669a1e53b9dd9df3474300d3d959bb85bad75945
+FileChecksum: MD5: fa818a259cbed7ce8bc2a22d35a464fc
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: Apache-2.0
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.gitignore
+SPDXID: SPDXRef-item4765011
+FileChecksum: SHA1: d9a6d2ae7e2add88179e429f787e6a5b2c7b1133
+FileChecksum: MD5: a7fb3e6ac6b725d9577e4d3dbd9b0ab7
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/packed-refs
+SPDXID: SPDXRef-item4765027
+FileChecksum: SHA1: f0d6c30595975a027b7a4217fb1dc200408032a4
+FileChecksum: MD5: b9beb0e5e966250a9d99fe63df9a58ef
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/index
+SPDXID: SPDXRef-item4765016
+FileChecksum: SHA1: b78d0691e3aa2945df755d0efee15e69b3af884b
+FileChecksum: MD5: 4c96c973fe7fe2fe8b6b1313c90b2606
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/HEAD
+SPDXID: SPDXRef-item4765015
+FileChecksum: SHA1: acbaef275e46a7f14c1ef456fff2c8bbe8c84724
+FileChecksum: MD5: 4cf2d64e44205fe628ddd534e1151b58
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/description
+SPDXID: SPDXRef-item4765055
+FileChecksum: SHA1: 9635f1b7e12c045212819dd934d809ef07efa2f4
+FileChecksum: MD5: a0a7c3fff21f2aea3cfa1d0316dd816c
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/config
+SPDXID: SPDXRef-item4765028
+FileChecksum: SHA1: bdc348340ff63671595e2e68beeb7c6a112f5e3e
+FileChecksum: MD5: 19afe0b4213bfd119712202695d9283e
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/refs/remotes/origin/HEAD
+SPDXID: SPDXRef-item4765073
+FileChecksum: SHA1: d9427cda09aba1cdde5c69c2b13c905bddb0bc51
+FileChecksum: MD5: 73a00957034783b7b5c8294c54cd3e12
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/refs/heads/master
+SPDXID: SPDXRef-item4765070
+FileChecksum: SHA1: be9163b2b3d0cc8a619adc27d6b4c859632d09f1
+FileChecksum: MD5: 69b66f0cfe8d50b82b985d0ac16a2786
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/objects/f0/5b50de7fee2eedf59ba686075983359c8ea133
+SPDXID: SPDXRef-item4765050
+FileChecksum: SHA1: 37ea65954aa17eddb6ec25ef768b34b1c4926730
+FileChecksum: MD5: 8941aba013f2bb455fbb067e0010188f
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/objects/da/f913b1b347aae6de6f48d599bc89ef8c8693d6
+SPDXID: SPDXRef-item4765034
+FileChecksum: SHA1: 252c311366587ae2ca3fbf1783fdc35eb4243a5e
+FileChecksum: MD5: 28997b0f8e651b14b5dcffe7e0b327cb
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/objects/da/8be0ad2a3f804c8fdcced4ba5ff2ed76e340aa
+SPDXID: SPDXRef-item4765033
+FileChecksum: SHA1: c5ae75bce783b13ada3e75275ed3733115c26b7d
+FileChecksum: MD5: f6ff46d9d154f91cb53143856898f13e
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/objects/d9/3af40a0c275a826917efbdca954f2392168ea2
+SPDXID: SPDXRef-item4765041
+FileChecksum: SHA1: 78fd200af700bf3d3538eb959e08d675074eae8a
+FileChecksum: MD5: be560ffbf890830da0eaaf34a1f9bcf0
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/objects/c4/6710e88e448420272f6556d9fe52fb77aa7df5
+SPDXID: SPDXRef-item4765052
+FileChecksum: SHA1: ff709e2b12cbe78c117dd02c24309e5c853a95de
+FileChecksum: MD5: 97745f81d34a83a6874d78d766daa475
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/objects/ba/9c9e33906f58169366275e3450db66139a31a9
+SPDXID: SPDXRef-item4765054
+FileChecksum: SHA1: 224859ec66b37f8c0d61dc69be0138220aabe78f
+FileChecksum: MD5: 15b02a15634c3c3b3de686a70577b491
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/objects/b1/9b49c0f1a51fc101c85285736c55f752ff8ba7
+SPDXID: SPDXRef-item4765039
+FileChecksum: SHA1: 4a892bbcace1ea7143253995187e8ca782890adc
+FileChecksum: MD5: 028f43f3e9c15b53d587c38cee5a7b5f
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/objects/99/8ad5a08d95b0239efccec3aa7c3f52587e4a9d
+SPDXID: SPDXRef-item4765048
+FileChecksum: SHA1: 7a9518593238d236f2d375b2f67de4268428a724
+FileChecksum: MD5: ffebf0e77df9b5866c2729c343daa494
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/objects/8f/71f43fee3f78649d238238cbde51e6d7055c82
+SPDXID: SPDXRef-item4765043
+FileChecksum: SHA1: cda8b39d4bcbcdab8c0ee0535ba28a8a270ff433
+FileChecksum: MD5: 4fd749de3fd7c24ed638f012e9e05b35
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/objects/35/07b02288cf494eb6c43e03fe1e3f7ab6884fef
+SPDXID: SPDXRef-item4765036
+FileChecksum: SHA1: c554b77d4be217fc8fc6ed2a18575e9eedb9cf5a
+FileChecksum: MD5: 65ccf60592c74d007bbf78bc222bec0a
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/objects/25/9fea2b63d7cc0869ad3acabce62b7732938174
+SPDXID: SPDXRef-item4765031
+FileChecksum: SHA1: 6793ee9bb462d8d57c4b996715eaadbc08321a89
+FileChecksum: MD5: 9573614534ff8b566484047e1949c713
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/objects/01/3ba9a28915d255832767bdf285ca225eea4685
+SPDXID: SPDXRef-item4765046
+FileChecksum: SHA1: 5807f69624fd33f0129544f63a9213a3018ac3a6
+FileChecksum: MD5: fc4c4c540b8222a3b16a5341c7ee1b0b
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/logs/HEAD
+SPDXID: SPDXRef-item4765018
+FileChecksum: SHA1: bd5f62e2722fdbd4ae2778999f4fbc8141e38e71
+FileChecksum: MD5: 549b0589bb6e2fd5f83eb04ade7777f7
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/logs/refs/remotes/origin/HEAD
+SPDXID: SPDXRef-item4765024
+FileChecksum: SHA1: bd5f62e2722fdbd4ae2778999f4fbc8141e38e71
+FileChecksum: MD5: 549b0589bb6e2fd5f83eb04ade7777f7
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/logs/refs/heads/master
+SPDXID: SPDXRef-item4765021
+FileChecksum: SHA1: bd5f62e2722fdbd4ae2778999f4fbc8141e38e71
+FileChecksum: MD5: 549b0589bb6e2fd5f83eb04ade7777f7
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/hooks/pre-rebase.sample
+SPDXID: SPDXRef-item4765062
+FileChecksum: SHA1: 288efdc0027db4cfd8b7c47c4aeddba09b6ded12
+FileChecksum: MD5: 56e45f2bcbc8226d2b4200f7c46371bf
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/hooks/pre-push.sample
+SPDXID: SPDXRef-item4765064
+FileChecksum: SHA1: 5c8518bfd1d1d3d2c1a7194994c0a16d8a313a41
+FileChecksum: MD5: 3c5989301dd4b949dfa1f43738a22819
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/hooks/prepare-commit-msg.sample
+SPDXID: SPDXRef-item4765066
+FileChecksum: SHA1: 2584806ba147152ae005cb675aa4f01d5d068456
+FileChecksum: MD5: 2b5c047bdb474555e1787db32b2d2fc5
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/hooks/pre-commit.sample
+SPDXID: SPDXRef-item4765058
+FileChecksum: SHA1: 36aed8976dcc08b5076844f0ec645b18bc37758f
+FileChecksum: MD5: 01b1688f97f94776baae85d77b06048b
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/hooks/pre-applypatch.sample
+SPDXID: SPDXRef-item4765063
+FileChecksum: SHA1: f208287c1a92525de9f5462e905a9d31de1e2d75
+FileChecksum: MD5: 054f9ffb8bfe04a599751cc757226dda
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/hooks/post-update.sample
+SPDXID: SPDXRef-item4765065
+FileChecksum: SHA1: b614c2f63da7dca9f1db2e7ade61ef30448fc96c
+FileChecksum: MD5: 2b7ea5cee3c49ff53d41e00785eb974c
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/hooks/commit-msg.sample
+SPDXID: SPDXRef-item4765057
+FileChecksum: SHA1: ee1ed5aad98a435f2020b6de35c173b75d9affac
+FileChecksum: MD5: 579a3c1e12a1e74a98169175fb913012
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/hooks/applypatch-msg.sample
+SPDXID: SPDXRef-item4765061
+FileChecksum: SHA1: 4de88eb95a5e93fd27e78b5fb3b5231a8d8917dd
+FileChecksum: MD5: ce562e08d8098926a3862fc6e7905199
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.travis.yml
+SPDXID: SPDXRef-item4765227
+FileChecksum: SHA1: ab49cecfc52b02f8c606031886edb7bd8137c89a
+FileChecksum: MD5: 98f6e616dadc5fa9dc1027f74739534d
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/README.md
+SPDXID: SPDXRef-item4765277
+FileChecksum: SHA1: 35820f25fddf93fc970b15494c69a684b82d8529
+FileChecksum: MD5: daefb4912e1c4c0bbe2fb871223fba46
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/Makefile
+SPDXID: SPDXRef-item4765280
+FileChecksum: SHA1: 645ce557125c3f228b7da6e45814dd7ad2d89492
+FileChecksum: MD5: 0f9854bbd827bfa77c69b13ff6c91058
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/LICENSE
+SPDXID: SPDXRef-item4765279
+FileChecksum: SHA1: b6420d55f3130d6411f26015de57ac1a89c0a179
+FileChecksum: MD5: e166af865c5e43a7ad520ce284319f03
+LicenseConcluded: MIT
+LicenseInfoInFile: MIT
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/Gopkg.toml
+SPDXID: SPDXRef-item4765278
+FileChecksum: SHA1: 8c14ee84217c6298100da5cdaceb80aa6dc15b3e
+FileChecksum: MD5: e383647a96759d068643b335e69fec23
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/gopkgs_test.go
+SPDXID: SPDXRef-item4765276
+FileChecksum: SHA1: ae3fe021b0fbe3346468d52a3e99e486bd2ecd80
+FileChecksum: MD5: 1907d54942b4d85f2b8185d7e3e454ea
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/gopkgs.go
+SPDXID: SPDXRef-item4765234
+FileChecksum: SHA1: 28855233b20dbbe0181f35b649c6c93d69b1b5d1
+FileChecksum: MD5: 52c6f05dcb2572f4dc87de811e992611
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/Gopkg.lock
+SPDXID: SPDXRef-item4765233
+FileChecksum: SHA1: 0e3908527118ae6be275812bb0ee304629e59cf7
+FileChecksum: MD5: 6c3dfd7005e8ecda2f4710393e03bb31
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.gitignore
+SPDXID: SPDXRef-item4765232
+FileChecksum: SHA1: 8c196ea633c934065ddf9f05370e83fdf52ed7c4
+FileChecksum: MD5: e8a346051f935e6cb104e1dc40998a91
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/doc.go
+SPDXID: SPDXRef-item4765231
+FileChecksum: SHA1: 3280b9272867eab98e83182866d767bc26fa6b69
+FileChecksum: MD5: 899baa9db01475b0456e77b1683a2993
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/packed-refs
+SPDXID: SPDXRef-item4765249
+FileChecksum: SHA1: 18935c5575df4bc6492dbd214c1618da3614067b
+FileChecksum: MD5: 76ea1ef8e9da2071df927846fc00934a
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/ORIG_HEAD
+SPDXID: SPDXRef-item4765237
+FileChecksum: SHA1: b2017f2dfaab745507af24a34d65de05f1c04d1a
+FileChecksum: MD5: 246f0456bd9ff6bfe4ba7d97c8e85391
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/index
+SPDXID: SPDXRef-item4765238
+FileChecksum: SHA1: 9fdb9db9ef9897b49571885c597e6fb5c9dec94c
+FileChecksum: MD5: 17ccb1e0fb1fcecbff49bc2013f41588
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/HEAD
+SPDXID: SPDXRef-item4765236
+FileChecksum: SHA1: acbaef275e46a7f14c1ef456fff2c8bbe8c84724
+FileChecksum: MD5: 4cf2d64e44205fe628ddd534e1151b58
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/FETCH_HEAD
+SPDXID: SPDXRef-item4765268
+FileChecksum: SHA1: 69ae7845113115819810ea2dafbfda8b53e1364e
+FileChecksum: MD5: e5f8004138f4bb7014adca6e2b2640d3
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/description
+SPDXID: SPDXRef-item4765256
+FileChecksum: SHA1: 9635f1b7e12c045212819dd934d809ef07efa2f4
+FileChecksum: MD5: a0a7c3fff21f2aea3cfa1d0316dd816c
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/config
+SPDXID: SPDXRef-item4765250
+FileChecksum: SHA1: ff2d5ca26416d01715acb4903160080d7fa63c02
+FileChecksum: MD5: f477fd8dec5954f88bca867a6850aca2
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/refs/remotes/origin/HEAD
+SPDXID: SPDXRef-item4765275
+FileChecksum: SHA1: d9427cda09aba1cdde5c69c2b13c905bddb0bc51
+FileChecksum: MD5: 73a00957034783b7b5c8294c54cd3e12
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/refs/heads/master
+SPDXID: SPDXRef-item4765272
+FileChecksum: SHA1: b2017f2dfaab745507af24a34d65de05f1c04d1a
+FileChecksum: MD5: 246f0456bd9ff6bfe4ba7d97c8e85391
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/objects/pack/pack-c168b5990361b44bdf51014a3593ca06c9859b87.pack
+SPDXID: SPDXRef-item4765254
+FileChecksum: SHA1: a4cb48baea88808f5963851161a87b407f6be3e1
+FileChecksum: MD5: dea28e147d167455c811b0ae424a5af0
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/objects/pack/pack-c168b5990361b44bdf51014a3593ca06c9859b87.idx
+SPDXID: SPDXRef-item4765255
+FileChecksum: SHA1: b0711bc692d4195c0bdc9ff1d978f0e749c73d58
+FileChecksum: MD5: 4c32f93fe1d2f0ab80695296c066531b
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/logs/HEAD
+SPDXID: SPDXRef-item4765240
+FileChecksum: SHA1: 677a091e1690f157d9a7b543301e93f1b5d83783
+FileChecksum: MD5: 80173bbb5f03bc3140c9ac92a2a152d4
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/logs/refs/remotes/origin/HEAD
+SPDXID: SPDXRef-item4765246
+FileChecksum: SHA1: 677a091e1690f157d9a7b543301e93f1b5d83783
+FileChecksum: MD5: 80173bbb5f03bc3140c9ac92a2a152d4
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/logs/refs/heads/master
+SPDXID: SPDXRef-item4765243
+FileChecksum: SHA1: 677a091e1690f157d9a7b543301e93f1b5d83783
+FileChecksum: MD5: 80173bbb5f03bc3140c9ac92a2a152d4
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/info/exclude
+SPDXID: SPDXRef-item4765248
+FileChecksum: SHA1: c879df015d97615050afa7b9641e3352a1e701ac
+FileChecksum: MD5: 036208b4a1ab4a235d75c181e685e5a3
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/hooks/update.sample
+SPDXID: SPDXRef-item4765260
+FileChecksum: SHA1: e729cd61b27c128951d139de8e7c63d1a3758dde
+FileChecksum: MD5: 517f14b9239689dff8bda3022ebd9004
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/hooks/pre-receive.sample
+SPDXID: SPDXRef-item4765261
+FileChecksum: SHA1: 705a17d259e7896f0082fe2e9f2c0c3b127be5ac
+FileChecksum: MD5: 2ad18ec82c20af7b5926ed9cea6aeedd
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/hooks/pre-rebase.sample
+SPDXID: SPDXRef-item4765263
+FileChecksum: SHA1: 288efdc0027db4cfd8b7c47c4aeddba09b6ded12
+FileChecksum: MD5: 56e45f2bcbc8226d2b4200f7c46371bf
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/hooks/pre-push.sample
+SPDXID: SPDXRef-item4765265
+FileChecksum: SHA1: 5c8518bfd1d1d3d2c1a7194994c0a16d8a313a41
+FileChecksum: MD5: 3c5989301dd4b949dfa1f43738a22819
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/hooks/prepare-commit-msg.sample
+SPDXID: SPDXRef-item4765267
+FileChecksum: SHA1: 2584806ba147152ae005cb675aa4f01d5d068456
+FileChecksum: MD5: 2b5c047bdb474555e1787db32b2d2fc5
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/hooks/pre-commit.sample
+SPDXID: SPDXRef-item4765259
+FileChecksum: SHA1: 36aed8976dcc08b5076844f0ec645b18bc37758f
+FileChecksum: MD5: 01b1688f97f94776baae85d77b06048b
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/hooks/pre-applypatch.sample
+SPDXID: SPDXRef-item4765264
+FileChecksum: SHA1: f208287c1a92525de9f5462e905a9d31de1e2d75
+FileChecksum: MD5: 054f9ffb8bfe04a599751cc757226dda
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/hooks/post-update.sample
+SPDXID: SPDXRef-item4765266
+FileChecksum: SHA1: b614c2f63da7dca9f1db2e7ade61ef30448fc96c
+FileChecksum: MD5: 2b7ea5cee3c49ff53d41e00785eb974c
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/hooks/commit-msg.sample
+SPDXID: SPDXRef-item4765258
+FileChecksum: SHA1: ee1ed5aad98a435f2020b6de35c173b75d9affac
+FileChecksum: MD5: 579a3c1e12a1e74a98169175fb913012
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/.git/hooks/applypatch-msg.sample
+SPDXID: SPDXRef-item4765262
+FileChecksum: SHA1: 4de88eb95a5e93fd27e78b5fb3b5231a8d8917dd
+FileChecksum: MD5: ce562e08d8098926a3862fc6e7905199
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/uudashr/gopkgs/cmd/gopkgs/main.go
+SPDXID: SPDXRef-item4765230
+FileChecksum: SHA1: 0825f223bad3d31cbbf639d5c15bbe931adcc3ef
+FileChecksum: MD5: e9c026315c4b12a30fbbb79e1401f3b7
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.travis.yml
+SPDXID: SPDXRef-item4765079
+FileChecksum: SHA1: 166428dc1d5f5920c41b9862b1ae2a669501b16c
+FileChecksum: MD5: c828a28e510486f2e138ca04184b156a
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/screencast.gif
+SPDXID: SPDXRef-item4765131
+FileChecksum: SHA1: 6c58f43b22eb48809311fc4371330f946a54c4eb
+FileChecksum: MD5: e27ed4830cb2527cf3bf21906bff8e6f
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/README.md
+SPDXID: SPDXRef-item4765130
+FileChecksum: SHA1: 9bc132529f77279b67a4bc93ec22e3023e7ece48
+FileChecksum: MD5: 61ed890c693d4eff69023ed477290865
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/LICENSE
+SPDXID: SPDXRef-item4765132
+FileChecksum: SHA1: 510ffb46966371d65ad16ed80b2894a72421f33f
+FileChecksum: MD5: 1716b5ebe8495596e9cf15417943562a
+LicenseConcluded: BSD-3-Clause
+LicenseInfoInFile: BSD-3-Clause
+LicenseInfoInFile: LicenseRef-WebM
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/goreturns.go
+SPDXID: SPDXRef-item4765129
+FileChecksum: SHA1: a24c0d3640f14d038a7fb425c7ca68e38356d438
+FileChecksum: MD5: 583d294c1303b9833c87432053439d3b
+LicenseConcluded: BSD-3-Clause
+LicenseInfoInFile: LicenseRef-BSD
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/_samples/b.go
+SPDXID: SPDXRef-item4765082
+FileChecksum: SHA1: f1672e47f66eff81d12f5a36fcdac4620537cdf2
+FileChecksum: MD5: 6fd96f081a4cf1dc50f00955923d377b
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/_samples/a.go
+SPDXID: SPDXRef-item4765081
+FileChecksum: SHA1: b8f47f0b7dc6ccf21e59ec90074fcf0bd4fe4d13
+FileChecksum: MD5: 3da3bdd55d9c606601b018aec65ed426
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/returns/returns.go
+SPDXID: SPDXRef-item4765087
+FileChecksum: SHA1: 2ad4022dd60a93dee3a9a0b1a12607791103ad1d
+FileChecksum: MD5: f518ed7065d4d6252c42506d63b98e78
+LicenseConcluded: BSD-3-Clause
+LicenseInfoInFile: LicenseRef-BSD
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/returns/index.go
+SPDXID: SPDXRef-item4765086
+FileChecksum: SHA1: 5bea9202fa527e5b8f7dd5814852c41f6c9e734f
+FileChecksum: MD5: 767d8e9c5a4413d6ba324535f101f6cd
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/returns/fix_test.go
+SPDXID: SPDXRef-item4765085
+FileChecksum: SHA1: 151b4762d7d565c2d7350d38e7f68fa420e6e873
+FileChecksum: MD5: d56e6c012424af43613646a329921541
+LicenseConcluded: BSD-3-Clause
+LicenseInfoInFile: LicenseRef-BSD
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/returns/fix.go
+SPDXID: SPDXRef-item4765084
+FileChecksum: SHA1: 9a192d05c6b9b7acce89633fdee2969dc563ad3b
+FileChecksum: MD5: d6d9721d8733734f17e7e6bbedc253ba
+LicenseConcluded: BSD-3-Clause
+LicenseInfoInFile: LicenseRef-BSD
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/packed-refs
+SPDXID: SPDXRef-item4765102
+FileChecksum: SHA1: b7aca902c943805199fe70f4def9bf5f34742013
+FileChecksum: MD5: 10ea6bc30497a5fd5fc7e8c34fa3d0b0
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/ORIG_HEAD
+SPDXID: SPDXRef-item4765090
+FileChecksum: SHA1: 6b3129bef8e97cf1854066c8277e53770a1641bb
+FileChecksum: MD5: bde4434c9db9eb1d32eeac8afddc165a
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/index
+SPDXID: SPDXRef-item4765091
+FileChecksum: SHA1: 3ee9895208ceab9136a585fb02f9e94266a8b79d
+FileChecksum: MD5: 54221fe5373d30a9b64c32199dc99684
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/HEAD
+SPDXID: SPDXRef-item4765089
+FileChecksum: SHA1: acbaef275e46a7f14c1ef456fff2c8bbe8c84724
+FileChecksum: MD5: 4cf2d64e44205fe628ddd534e1151b58
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/FETCH_HEAD
+SPDXID: SPDXRef-item4765121
+FileChecksum: SHA1: e9dd00ee2114ab2f9959178e97ebc98678597ef3
+FileChecksum: MD5: d2a9ddd49da1fa7fb04450decc8035a8
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/description
+SPDXID: SPDXRef-item4765109
+FileChecksum: SHA1: 9635f1b7e12c045212819dd934d809ef07efa2f4
+FileChecksum: MD5: a0a7c3fff21f2aea3cfa1d0316dd816c
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/config
+SPDXID: SPDXRef-item4765103
+FileChecksum: SHA1: 445e0319ef116c9187d9d5293780fc7f1c9d482c
+FileChecksum: MD5: 8558fbfdc6b730abc65d673734d2c9c7
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/refs/remotes/origin/HEAD
+SPDXID: SPDXRef-item4765128
+FileChecksum: SHA1: d9427cda09aba1cdde5c69c2b13c905bddb0bc51
+FileChecksum: MD5: 73a00957034783b7b5c8294c54cd3e12
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/refs/heads/master
+SPDXID: SPDXRef-item4765125
+FileChecksum: SHA1: 6b3129bef8e97cf1854066c8277e53770a1641bb
+FileChecksum: MD5: bde4434c9db9eb1d32eeac8afddc165a
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/objects/pack/pack-4a61571c36025175e4e97d22060ef99ef86beaf7.pack
+SPDXID: SPDXRef-item4765107
+FileChecksum: SHA1: 1df396f1bf6e412799e81f5d84aa7de7e5b32a5a
+FileChecksum: MD5: c235ff198081db8b83afed376803e3b1
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/objects/pack/pack-4a61571c36025175e4e97d22060ef99ef86beaf7.idx
+SPDXID: SPDXRef-item4765108
+FileChecksum: SHA1: 7f99f449c7d91402faf4be6e874ae9c6979d9e73
+FileChecksum: MD5: 19a818531349d0c14ea475526198bef9
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/logs/HEAD
+SPDXID: SPDXRef-item4765093
+FileChecksum: SHA1: 9c4d1fbf6667f773b83d6876303ad7f1551bf647
+FileChecksum: MD5: 9ba8fb90de30e3bba5044dc2a3382857
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/logs/refs/remotes/origin/HEAD
+SPDXID: SPDXRef-item4765099
+FileChecksum: SHA1: 9c4d1fbf6667f773b83d6876303ad7f1551bf647
+FileChecksum: MD5: 9ba8fb90de30e3bba5044dc2a3382857
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/logs/refs/heads/master
+SPDXID: SPDXRef-item4765096
+FileChecksum: SHA1: 9c4d1fbf6667f773b83d6876303ad7f1551bf647
+FileChecksum: MD5: 9ba8fb90de30e3bba5044dc2a3382857
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/info/exclude
+SPDXID: SPDXRef-item4765101
+FileChecksum: SHA1: c879df015d97615050afa7b9641e3352a1e701ac
+FileChecksum: MD5: 036208b4a1ab4a235d75c181e685e5a3
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/hooks/update.sample
+SPDXID: SPDXRef-item4765113
+FileChecksum: SHA1: e729cd61b27c128951d139de8e7c63d1a3758dde
+FileChecksum: MD5: 517f14b9239689dff8bda3022ebd9004
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/hooks/pre-receive.sample
+SPDXID: SPDXRef-item4765114
+FileChecksum: SHA1: 705a17d259e7896f0082fe2e9f2c0c3b127be5ac
+FileChecksum: MD5: 2ad18ec82c20af7b5926ed9cea6aeedd
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/hooks/pre-rebase.sample
+SPDXID: SPDXRef-item4765116
+FileChecksum: SHA1: 288efdc0027db4cfd8b7c47c4aeddba09b6ded12
+FileChecksum: MD5: 56e45f2bcbc8226d2b4200f7c46371bf
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/hooks/pre-push.sample
+SPDXID: SPDXRef-item4765118
+FileChecksum: SHA1: 5c8518bfd1d1d3d2c1a7194994c0a16d8a313a41
+FileChecksum: MD5: 3c5989301dd4b949dfa1f43738a22819
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/hooks/prepare-commit-msg.sample
+SPDXID: SPDXRef-item4765120
+FileChecksum: SHA1: 2584806ba147152ae005cb675aa4f01d5d068456
+FileChecksum: MD5: 2b5c047bdb474555e1787db32b2d2fc5
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/hooks/pre-commit.sample
+SPDXID: SPDXRef-item4765112
+FileChecksum: SHA1: 36aed8976dcc08b5076844f0ec645b18bc37758f
+FileChecksum: MD5: 01b1688f97f94776baae85d77b06048b
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/hooks/pre-applypatch.sample
+SPDXID: SPDXRef-item4765117
+FileChecksum: SHA1: f208287c1a92525de9f5462e905a9d31de1e2d75
+FileChecksum: MD5: 054f9ffb8bfe04a599751cc757226dda
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/hooks/post-update.sample
+SPDXID: SPDXRef-item4765119
+FileChecksum: SHA1: b614c2f63da7dca9f1db2e7ade61ef30448fc96c
+FileChecksum: MD5: 2b7ea5cee3c49ff53d41e00785eb974c
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/hooks/commit-msg.sample
+SPDXID: SPDXRef-item4765111
+FileChecksum: SHA1: ee1ed5aad98a435f2020b6de35c173b75d9affac
+FileChecksum: MD5: 579a3c1e12a1e74a98169175fb913012
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/sqs/goreturns/.git/hooks/applypatch-msg.sample
+SPDXID: SPDXRef-item4765115
+FileChecksum: SHA1: 4de88eb95a5e93fd27e78b5fb3b5231a8d8917dd
+FileChecksum: MD5: ce562e08d8098926a3862fc6e7905199
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/uint_slice_test.go
+SPDXID: SPDXRef-item4765198
+FileChecksum: SHA1: 3c54d03e914cda9b042be5442224c8ddd881af91
+FileChecksum: MD5: c48e69d6721c20878665242140f2e3ff
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/uint_slice.go
+SPDXID: SPDXRef-item4765197
+FileChecksum: SHA1: 4ee1ce231b1290c61256de4952e8c18d2feafe27
+FileChecksum: MD5: 24d64446018a953a03af7f1e1c75fbc7
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/uint.go
+SPDXID: SPDXRef-item4765156
+FileChecksum: SHA1: ea1cb507c695551dc3044950b325536cc70955aa
+FileChecksum: MD5: 543f7a8a4e9db60356c38f83b969c183
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/uint8.go
+SPDXID: SPDXRef-item4765149
+FileChecksum: SHA1: 45e67b9610b5a55378f0cdf439c16f77b9feffb6
+FileChecksum: MD5: f0084f90c04d2d3102ca8a6f84c6d63d
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/uint64.go
+SPDXID: SPDXRef-item4765216
+FileChecksum: SHA1: 8f99fbbd698adc61b508c131e03b867411641478
+FileChecksum: MD5: 24ceda5504982ba6db26adf26997064c
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/uint32.go
+SPDXID: SPDXRef-item4765224
+FileChecksum: SHA1: eca9b154d1a9dbb028e1f45348bba09467eaf70d
+FileChecksum: MD5: 89a2689eab4a7c752aca1b352dccd9c6
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/uint16.go
+SPDXID: SPDXRef-item4765209
+FileChecksum: SHA1: 52f99cdf44839e319d85e38c63a39191c93e27a5
+FileChecksum: MD5: d0e73eaaffacee8d64ca709611bd46bd
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.travis.yml
+SPDXID: SPDXRef-item4765135
+FileChecksum: SHA1: 646a893a4464f33ae8ba0a546496a9a25f69d99e
+FileChecksum: MD5: 2eb4f382a2b3e4cde676595964a980b7
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/string_slice_test.go
+SPDXID: SPDXRef-item4765221
+FileChecksum: SHA1: 82951ec1a88cffda523da1f019609bd87a241682
+FileChecksum: MD5: 236cee2ca2828f946e697c46b3b7a0be
+LicenseConcluded: BSD-3-Clause
+LicenseInfoInFile: LicenseRef-BSD
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/string_slice.go
+SPDXID: SPDXRef-item4765142
+FileChecksum: SHA1: 25ba62706f4f9a4fd37982fec40f4a524adcf909
+FileChecksum: MD5: 7abd4ad580c2fa2a72b74a36dc681dbc
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/string.go
+SPDXID: SPDXRef-item4765217
+FileChecksum: SHA1: fec3067329f1198553b43cee8056a96b8c113049
+FileChecksum: MD5: a5e32e5fa9459bfe2de43bb6ce05030f
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/string_array_test.go
+SPDXID: SPDXRef-item4765203
+FileChecksum: SHA1: bc45e14ac70793ddb786b1de12641f5cb8f523c5
+FileChecksum: MD5: b4d783eb8164b62e60a559a30d67f05e
+LicenseConcluded: BSD-3-Clause
+LicenseInfoInFile: LicenseRef-BSD
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/string_array.go
+SPDXID: SPDXRef-item4765201
+FileChecksum: SHA1: c94bb050257aab30baebcee13fa223963ceeaafa
+FileChecksum: MD5: 01ed3e63d55aded2ac5ff600c4f20f67
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/README.md
+SPDXID: SPDXRef-item4765207
+FileChecksum: SHA1: 605e4e6a53dfe850d74c02a9baf825b572d1ff2d
+FileChecksum: MD5: 91ab354a124598d7b17ce7465af9ad22
+LicenseConcluded: BSD-3-Clause
+LicenseInfoInFile: LicenseRef-BSD
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/LICENSE
+SPDXID: SPDXRef-item4765218
+FileChecksum: SHA1: b3c86ae465b21f7323059db335158b48187731c7
+FileChecksum: MD5: 1e8b7dc8b906737639131047a590f21d
+LicenseConcluded: BSD-3-Clause
+LicenseInfoInFile: BSD-3-Clause
+LicenseInfoInFile: LicenseRef-WebM
+FileCopyrightText: <text> Copyright (c) 2012 Alex Ogier. All rights reserved.
+Copyright (c) 2012 The Go Authors. All rights reserved. </text>
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/ip_test.go
+SPDXID: SPDXRef-item4765223
+FileChecksum: SHA1: 6104c8bfff9b8c3c037e1a7ef741caf6d0726449
+FileChecksum: MD5: 40de0d8b18820878039f3b33647396ea
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/ip_slice_test.go
+SPDXID: SPDXRef-item4765140
+FileChecksum: SHA1: a8b0957da4a9ec554d70275d20cc703af7b6419e
+FileChecksum: MD5: 4a37bb619a48011472912ae3bdaff9dd
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/ip_slice.go
+SPDXID: SPDXRef-item4765141
+FileChecksum: SHA1: 53d534a01497ace3ee8441a1cef92780a7dfcd10
+FileChecksum: MD5: 3ea795e695d7438371a1644822c0ef94
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/ipnet_test.go
+SPDXID: SPDXRef-item4765150
+FileChecksum: SHA1: f7c0552065b21f7f48f50c85a3d461d5f2ef00d7
+FileChecksum: MD5: 53c74e8deea5cbbad339b926de755468
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/ipnet.go
+SPDXID: SPDXRef-item4765154
+FileChecksum: SHA1: 5fdc06bda25a396c05eaaa310baded9ec588dbe6
+FileChecksum: MD5: edfa9e85cf70bd370ce5ab82321142bf
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/ipmask.go
+SPDXID: SPDXRef-item4765208
+FileChecksum: SHA1: 0e0c2c832cee80860b94fb264b166d4f3a4f54e5
+FileChecksum: MD5: fe14f67dd33be1c2d09ff130bc56fda9
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/ip.go
+SPDXID: SPDXRef-item4765145
+FileChecksum: SHA1: 4f9a431aaf690b4c8c67cc714b59485992a42fd2
+FileChecksum: MD5: 252a0dfa3b4c47866c467fee561823d8
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/int_slice_test.go
+SPDXID: SPDXRef-item4765138
+FileChecksum: SHA1: 7c47eda9d8acc3cac8928b16414ecf9bca7d8ba4
+FileChecksum: MD5: 059e98e04f33dd467a55216de5ec9f3c
+LicenseConcluded: BSD-3-Clause
+LicenseInfoInFile: LicenseRef-BSD
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/int_slice.go
+SPDXID: SPDXRef-item4765219
+FileChecksum: SHA1: 5d2fa8415d9f776f7f675f8bd3a0bcee9f9273d6
+FileChecksum: MD5: 03a7b495f0156bb2d8dcd00cc74d2c08
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/int.go
+SPDXID: SPDXRef-item4765147
+FileChecksum: SHA1: 026b52f2ca06b1d5f794bac831afc56195f44ebf
+FileChecksum: MD5: 4ea7396f64513bd6d340142976f1b405
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/int8.go
+SPDXID: SPDXRef-item4765210
+FileChecksum: SHA1: 364e524f2b3a5849666339a727eb4b2b412db9cb
+FileChecksum: MD5: 7e2d444574fe186990ce3e4e3cb959dd
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/int64.go
+SPDXID: SPDXRef-item4765139
+FileChecksum: SHA1: b40dce2046687328f5fb756aae381be00d51ffbe
+FileChecksum: MD5: fde36b129030c57bddee34fc0cd9fd7e
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/int32.go
+SPDXID: SPDXRef-item4765206
+FileChecksum: SHA1: e3282928661b63127aaeb31a6496501ea11e71b9
+FileChecksum: MD5: c24d00161e234c26700aeeb758144365
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/int16.go
+SPDXID: SPDXRef-item4765144
+FileChecksum: SHA1: 76b380925d3d6929b06d57f7fbb09729fdefc2bb
+FileChecksum: MD5: b84be3421dd999a332d1bfdd7372a9b4
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/golangflag_test.go
+SPDXID: SPDXRef-item4765152
+FileChecksum: SHA1: 515192ca0550998d65c86cea79823a774a456cda
+FileChecksum: MD5: b7c51c7dc208534b5b8b231876d97542
+LicenseConcluded: BSD-3-Clause
+LicenseInfoInFile: LicenseRef-BSD
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/golangflag.go
+SPDXID: SPDXRef-item4765200
+FileChecksum: SHA1: db037c934eeb7873406ccd329673b3ffbc2dcffc
+FileChecksum: MD5: 359f7c44c2a542aff702386d68dd2e97
+LicenseConcluded: BSD-3-Clause
+LicenseInfoInFile: LicenseRef-BSD
+FileCopyrightText: <text> Copyright 2009 The Go Authors. All rights reserved. </text>
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.gitignore
+SPDXID: SPDXRef-item4765146
+FileChecksum: SHA1: 7093f9091b08ca5594567a3d0a234db0017cde65
+FileChecksum: MD5: ef08bd699e79d129d65c3cf910dc05f6
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/float64.go
+SPDXID: SPDXRef-item4765153
+FileChecksum: SHA1: 223858207c50506e1dbe3f1f7180da2a9392f78f
+FileChecksum: MD5: f68e75715de5568c99dbbaecc55fcb12
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/float32.go
+SPDXID: SPDXRef-item4765205
+FileChecksum: SHA1: 402a3c26933f5ebcde7b9d30698dc7b2ed4a3341
+FileChecksum: MD5: 0a125fd8b15371d46e409f93340de253
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/flag_test.go
+SPDXID: SPDXRef-item4765204
+FileChecksum: SHA1: 0741413446243d24bca2d8516664f1cffb556102
+FileChecksum: MD5: 05fda5ec90c6500a2049117cb73cd86e
+LicenseConcluded: BSD-3-Clause
+LicenseInfoInFile: LicenseRef-BSD
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/flag.go
+SPDXID: SPDXRef-item4765202
+FileChecksum: SHA1: 6ca80f95107c67bd37dfa26eb21129c8324fdc7d
+FileChecksum: MD5: b35373665307f0c4ab5e5aa3e420bf15
+LicenseConcluded: BSD-3-Clause
+LicenseInfoInFile: LicenseRef-BSD
+FileCopyrightText: <text> Copyright 2009 The Go Authors. All rights reserved. </text>
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/export_test.go
+SPDXID: SPDXRef-item4765155
+FileChecksum: SHA1: fd5f05eb0d6be44a6c7e87ac398781f980e8a5b2
+FileChecksum: MD5: 5e777c068716a434be66a45de50fd708
+LicenseConcluded: BSD-3-Clause
+LicenseInfoInFile: LicenseRef-BSD
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/example_test.go
+SPDXID: SPDXRef-item4765220
+FileChecksum: SHA1: e8be0cc659f28d54da994124db30595612e13dee
+FileChecksum: MD5: ca2d6767df4ce5ced684c85820cbfaf5
+LicenseConcluded: BSD-3-Clause
+LicenseInfoInFile: LicenseRef-BSD
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/duration_slice_test.go
+SPDXID: SPDXRef-item4765211
+FileChecksum: SHA1: 3d9f68a8a66f487c05f1335a8e0db10734602843
+FileChecksum: MD5: 0f13610853bccf4346b1b36e44374ead
+LicenseConcluded: BSD-3-Clause
+LicenseInfoInFile: LicenseRef-BSD
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/duration_slice.go
+SPDXID: SPDXRef-item4765196
+FileChecksum: SHA1: 487a8200d4107d74d8a710110698a69291193cb1
+FileChecksum: MD5: a9e1dfb85ab6e4845b1f69a0fea52354
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/duration.go
+SPDXID: SPDXRef-item4765136
+FileChecksum: SHA1: 57bc92008085cb9c462656b7e47c931b703e5624
+FileChecksum: MD5: fc280b07e056c16fc995a649bae02df9
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/count_test.go
+SPDXID: SPDXRef-item4765199
+FileChecksum: SHA1: 4ee76b93229da3f9325818bcac1a192fa951901c
+FileChecksum: MD5: 42b7a614bdfeb296cbb61fb288f9cd55
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/count.go
+SPDXID: SPDXRef-item4765222
+FileChecksum: SHA1: 97818b07bcae8d7cd3083e6c0d7951c4ca48e5b3
+FileChecksum: MD5: d07167f2c61024261ec106986e19bc7b
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/bool_test.go
+SPDXID: SPDXRef-item4765148
+FileChecksum: SHA1: e19eea33d6c1f8c2e4088918341a7a2040a59727
+FileChecksum: MD5: 4b9d43c3e94f1ef06b64214db79dbe21
+LicenseConcluded: BSD-3-Clause
+LicenseInfoInFile: LicenseRef-BSD
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/bool_slice_test.go
+SPDXID: SPDXRef-item4765151
+FileChecksum: SHA1: b07dcf5099beabf788eb92dc067703bf981e84f3
+FileChecksum: MD5: 406b31f57a81b3e7294ac91c0a441d8e
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/bool_slice.go
+SPDXID: SPDXRef-item4765143
+FileChecksum: SHA1: 05482303fc12c6b316862a6d4be7a88474278a31
+FileChecksum: MD5: 6a0c60301ca9897a62fa6595c7e9d45a
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/bool.go
+SPDXID: SPDXRef-item4765137
+FileChecksum: SHA1: 6f69e4205a6ad54c39433f413d8d66c91743d62e
+FileChecksum: MD5: 2e15068a727b3f0d84c51a03395468ad
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/verify/golint.sh
+SPDXID: SPDXRef-item4765214
+FileChecksum: SHA1: 56355072f557678ffad66b8e436107a45a1741b9
+FileChecksum: MD5: 676face97972945bfe23b43729d364a5
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/verify/gofmt.sh
+SPDXID: SPDXRef-item4765215
+FileChecksum: SHA1: 4c0e199ec0c8ad78be073368803862584ef5b62a
+FileChecksum: MD5: 8c35fb28cb3984321b16007a990173b7
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/verify/all.sh
+SPDXID: SPDXRef-item4765213
+FileChecksum: SHA1: c45f37f809e2b9a4af3d6ef740f334b8244324d4
+FileChecksum: MD5: a04e9215404866df5e4ca6168a084ca9
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/packed-refs
+SPDXID: SPDXRef-item4765170
+FileChecksum: SHA1: b00cae6502f03d575d9fc51ed1a8d2134b9b96eb
+FileChecksum: MD5: 5418eb50ed7017c921d5d746ac6fcd6f
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/index
+SPDXID: SPDXRef-item4765159
+FileChecksum: SHA1: 670c8ba4a48958dd3de4237429a85a466e5bc830
+FileChecksum: MD5: f53e7e60d0993bec2bc3cc044faea50a
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/HEAD
+SPDXID: SPDXRef-item4765158
+FileChecksum: SHA1: acbaef275e46a7f14c1ef456fff2c8bbe8c84724
+FileChecksum: MD5: 4cf2d64e44205fe628ddd534e1151b58
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/description
+SPDXID: SPDXRef-item4765177
+FileChecksum: SHA1: 9635f1b7e12c045212819dd934d809ef07efa2f4
+FileChecksum: MD5: a0a7c3fff21f2aea3cfa1d0316dd816c
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/config
+SPDXID: SPDXRef-item4765171
+FileChecksum: SHA1: 39b32a4d4684d783296abe11c794f6280e7f07fb
+FileChecksum: MD5: ae93f35804837f7c301d5367315b364a
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/refs/remotes/origin/HEAD
+SPDXID: SPDXRef-item4765195
+FileChecksum: SHA1: d9427cda09aba1cdde5c69c2b13c905bddb0bc51
+FileChecksum: MD5: 73a00957034783b7b5c8294c54cd3e12
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/refs/heads/master
+SPDXID: SPDXRef-item4765192
+FileChecksum: SHA1: 84f1120ec321028e9b9939779f508070a804f3ec
+FileChecksum: MD5: 0623eac21b19de3d8dc27341173740fe
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/objects/pack/pack-de67cdccf7a8c30853e604b04c29cd43a70f2dc7.pack
+SPDXID: SPDXRef-item4765176
+FileChecksum: SHA1: 1984ffaee054a83a3ca01aa8da95dd44fb627c31
+FileChecksum: MD5: b8aa33bca244ed6c65f8802c1a413f1c
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/objects/pack/pack-de67cdccf7a8c30853e604b04c29cd43a70f2dc7.idx
+SPDXID: SPDXRef-item4765175
+FileChecksum: SHA1: d2fb40607b8dd3259ef6ed2ef7ba556c4376bd47
+FileChecksum: MD5: 4fb00c05127732888f0d77d89edbc59f
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/logs/HEAD
+SPDXID: SPDXRef-item4765161
+FileChecksum: SHA1: cf954f4c6833d522969ab519d952fa8e764fa976
+FileChecksum: MD5: fc0bc8abd9e7677e5060cef9810ea0bf
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/logs/refs/remotes/origin/HEAD
+SPDXID: SPDXRef-item4765167
+FileChecksum: SHA1: cf954f4c6833d522969ab519d952fa8e764fa976
+FileChecksum: MD5: fc0bc8abd9e7677e5060cef9810ea0bf
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/logs/refs/heads/master
+SPDXID: SPDXRef-item4765164
+FileChecksum: SHA1: cf954f4c6833d522969ab519d952fa8e764fa976
+FileChecksum: MD5: fc0bc8abd9e7677e5060cef9810ea0bf
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/info/exclude
+SPDXID: SPDXRef-item4765169
+FileChecksum: SHA1: c879df015d97615050afa7b9641e3352a1e701ac
+FileChecksum: MD5: 036208b4a1ab4a235d75c181e685e5a3
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/hooks/update.sample
+SPDXID: SPDXRef-item4765181
+FileChecksum: SHA1: e729cd61b27c128951d139de8e7c63d1a3758dde
+FileChecksum: MD5: 517f14b9239689dff8bda3022ebd9004
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/hooks/pre-receive.sample
+SPDXID: SPDXRef-item4765182
+FileChecksum: SHA1: 705a17d259e7896f0082fe2e9f2c0c3b127be5ac
+FileChecksum: MD5: 2ad18ec82c20af7b5926ed9cea6aeedd
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/hooks/pre-rebase.sample
+SPDXID: SPDXRef-item4765184
+FileChecksum: SHA1: 18be3eb275c1decd3614e139f5a311b75f1b0ab8
+FileChecksum: MD5: 3ff6ba9cf6d8e5332978e057559b5562
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: <text> Copyright (c) 2006, 2008 Junio C Hamano </text>
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/hooks/pre-push.sample
+SPDXID: SPDXRef-item4765186
+FileChecksum: SHA1: 5c8518bfd1d1d3d2c1a7194994c0a16d8a313a41
+FileChecksum: MD5: 3c5989301dd4b949dfa1f43738a22819
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/hooks/prepare-commit-msg.sample
+SPDXID: SPDXRef-item4765188
+FileChecksum: SHA1: 2b6275eda365cad50d167fe3a387c9bc9fedd54f
+FileChecksum: MD5: 7dfe15854212a30f346da5255c1d794b
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/hooks/pre-commit.sample
+SPDXID: SPDXRef-item4765180
+FileChecksum: SHA1: 36aed8976dcc08b5076844f0ec645b18bc37758f
+FileChecksum: MD5: 01b1688f97f94776baae85d77b06048b
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/hooks/pre-applypatch.sample
+SPDXID: SPDXRef-item4765185
+FileChecksum: SHA1: f208287c1a92525de9f5462e905a9d31de1e2d75
+FileChecksum: MD5: 054f9ffb8bfe04a599751cc757226dda
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/hooks/post-update.sample
+SPDXID: SPDXRef-item4765187
+FileChecksum: SHA1: b614c2f63da7dca9f1db2e7ade61ef30448fc96c
+FileChecksum: MD5: 2b7ea5cee3c49ff53d41e00785eb974c
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/hooks/commit-msg.sample
+SPDXID: SPDXRef-item4765179
+FileChecksum: SHA1: ee1ed5aad98a435f2020b6de35c173b75d9affac
+FileChecksum: MD5: 579a3c1e12a1e74a98169175fb913012
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/spf13/pflag/.git/hooks/applypatch-msg.sample
+SPDXID: SPDXRef-item4765183
+FileChecksum: SHA1: 4de88eb95a5e93fd27e78b5fb3b5231a8d8917dd
+FileChecksum: MD5: ce562e08d8098926a3862fc6e7905199
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/info/exclude
+SPDXID: SPDXRef-item4765026
+FileChecksum: SHA1: c879df015d97615050afa7b9641e3352a1e701ac
+FileChecksum: MD5: 036208b4a1ab4a235d75c181e685e5a3
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/hooks/update.sample
+SPDXID: SPDXRef-item4765059
+FileChecksum: SHA1: e729cd61b27c128951d139de8e7c63d1a3758dde
+FileChecksum: MD5: 517f14b9239689dff8bda3022ebd9004
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+##File
+
+FileName: godeps/vendor/xanzy/ssh-agent/.git/hooks/pre-receive.sample
+SPDXID: SPDXRef-item4765060
+FileChecksum: SHA1: 705a17d259e7896f0082fe2e9f2c0c3b127be5ac
+FileChecksum: MD5: 2ad18ec82c20af7b5926ed9cea6aeedd
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NONE
+ 
+
+
+
+##-------------------------
+## License Information
+##-------------------------
+
+LicenseID: LicenseRef-BSD
+LicenseName: LicenseRef-BSD
+ExtractedText: <text> BSD is referenced without a version number. Please look up BSD in the License Admin to view the different versions. </text>
+
+LicenseID: LicenseRef-WebM
+LicenseName: LicenseRef-WebM
+ExtractedText: <text> Software License
+Copyright (c) 2010, Google Inc. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+Neither the name of Google nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. </text>
+
+LicenseID: LicenseRef-No_license_found
+LicenseName: LicenseRef-No_license_found
+ExtractedText: <text> Not find any license in the scanned file </text>
+

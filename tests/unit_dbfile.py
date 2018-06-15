@@ -28,7 +28,7 @@ from slm.projectdb import (ProjectDB, ProjectDBQueryError,
 from slm.datatypes import Category, File, License, Scan, Subproject
 
 class DBFileUnitTestSuite(unittest.TestCase):
-  """spdxLicenseManager unit test suite for scan metadata in DB."""
+  """spdxLicenseManager unit test suite for scan file data in DB."""
 
   def setUp(self):
     # create and initialize an in-memory database

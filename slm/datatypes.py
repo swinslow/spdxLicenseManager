@@ -113,3 +113,20 @@ class File(Base):
     else:
       lic_name = "NULL"
     return f"File {self._id}: scan {self.scan_id}, path {self.path}, license {lic_name} ({self.license_id})"
+
+class ComponentType(Base):
+  __tablename__ = 'component_types'
+  # columns
+  _id = Column(Integer(), primary_key=True)
+  name = Column(String(), unique=True)
+
+class Component(Base):
+  __tablename__ = 'components'
+  # columns
+  _id = Column(Integer(), primary_key=True)
+  name = Column(String())
+  scan_id = Column(Integer(), ForeignKey('scans._id'))
+  component_type_id = Column(Integer(), ForeignKey('component_types._id'))
+  # relationships
+  scan = relationship('Scan')
+  component_type = relationship('ComponentType')
