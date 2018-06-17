@@ -198,14 +198,3 @@ class ComponentFuncTestSuite(unittest.TestCase):
     result = runcmd(self, slm.cli, "frotz", "-v", "list-components", "--scan_id", 3)
     self.assertEqual(0, result.exit_code)
     self.assertEqual("github.com/xanzy/ssh-agent:\n  licenses: Apache-2.0, MIT\n  type: Golang\n  locations:\n    */vendor/github.com/xanzy/ssh-agent/*\n    godeps/test.txt\n", result.output)
-
-  # def test_can_get_urls_where_appropriate(self):
-  #   # Edith adds a component
-  #   result = runcmd(self, slm.cli, "frotz", "--scan_id", 3,
-  #     "add-component", "github.com/spf13/pflag", "--type", "Golang")
-  #   self.assertEqual(0, result.exit_code)
-
-  #   # She checks to see if the URL is parsed correctly
-  #   result = runcmd(self, slm.cli, "frotz", "-v", "list-components", "--scan_id", 3)
-  #   self.assertEqual(0, result.exit_code)
-  #   self.assertEqual("github.com/spf13/pflag:\n  licenses: \n  type: Golang\n  url: github.com/spf13/pflag\n", result.output)
