@@ -27,7 +27,8 @@ from sqlalchemy.orm import sessionmaker
 from .__configs__ import (isValidConfigKey, isInternalConfigKey,
   getConfigKeyDesc)
 from .datatypes import (Base, Category, Component, ComponentLicense,
-  ComponentType, Config, Conversion, File, License, Scan, Subproject)
+  ComponentLocation, ComponentType, Config, Conversion, File, License, Scan,
+  Subproject)
 
 class ProjectDBConfigError(Exception):
   """Exception raised for errors in database configuration.
@@ -808,13 +809,13 @@ class ProjectDB:
 
   def getComponentLicenses(self, *, component_id=None, name=None, scan_id=None):
     if component_id is None and name is None:
-      raise ProjectDBQueryError("Cannot call getComponentLicense without either component_id or (name and scan_id) parameters")
+      raise ProjectDBQueryError("Cannot call getComponentLicenses without either component_id or (name and scan_id) parameters")
     if component_id is not None and name is not None:
-      raise ProjectDBQueryError("Cannot call getComponentLicense with both component_id and name parameters")
+      raise ProjectDBQueryError("Cannot call getComponentLicenses with both component_id and name parameters")
     if component_id is not None and scan_id is not None:
-      raise ProjectDBQueryError("Cannot call getComponentLicense with both component_id and scan_id parameters")
+      raise ProjectDBQueryError("Cannot call getComponentLicenses with both component_id and scan_id parameters")
     if name is not None and scan_id is None:
-      raise ProjectDBQueryError("Cannot call getComponentLicense with name parameter but without scan_id parameter")
+      raise ProjectDBQueryError("Cannot call getComponentLicenses with name parameter but without scan_id parameter")
 
     if component_id is not None:
       # search by component ID
@@ -858,6 +859,82 @@ class ProjectDB:
 
     cl = ComponentLicense(component_id=component_id, license_id=license_id)
     self.session.add(cl)
+    if commit:
+      self.session.commit()
+    else:
+      self.session.flush()
+
+  #################################
+  ##### ComponentLocation functions
+  #################################
+
+  def getComponentLocations(self, *, component_id=None, name=None, scan_id=None):
+    if component_id is None and name is None:
+      raise ProjectDBQueryError("Cannot call getComponentLocations without either component_id or (name and scan_id) parameters")
+    if component_id is not None and name is not None:
+      raise ProjectDBQueryError("Cannot call getComponentLocations with both component_id and name parameters")
+    if component_id is not None and scan_id is not None:
+      raise ProjectDBQueryError("Cannot call getComponentLocations with both component_id and scan_id parameters")
+    if name is not None and scan_id is None:
+      raise ProjectDBQueryError("Cannot call getComponentLocations with name parameter but without scan_id parameter")
+
+    if component_id is not None:
+      # search by component ID
+      # raise exception if component does not exist
+      component = self.session.query(Component).\
+                              filter(Component._id == component_id).first()
+      if component is None:
+        raise ProjectDBQueryError(f"Component ID '{component_id}' does not exist.")
+
+      return self.session.query(ComponentLocation).\
+                         filter(ComponentLocation.component_id == component_id).\
+                       order_by(ComponentLocation.path).all()
+
+    else:
+      # search by component name for a given scan
+      # raise exception if component does not exist
+      component = self.session.query(Component).\
+                              filter(and_(Component.name == name,
+                                          Component.scan_id == scan_id)).first()
+      if component is None:
+        raise ProjectDBQueryError(f"Component '{name}' does not exist for scan {scan_id}.")
+
+      return self.session.query(ComponentLocation).\
+                         filter(ComponentLocation.component_id == component._id).\
+                       order_by(ComponentLocation.path).all()
+
+  def addComponentLocation(self, component_id, path, absolute=False, commit=True):
+    # raise exception if component does not exist
+    component = self.session.query(Component).\
+                            filter(Component._id == component_id).first()
+    if component is None:
+      raise ProjectDBInsertError(f"Component ID {component_id} does not exist.")
+
+    # raise exception if component location is already present
+    cloc = self.session.query(ComponentLocation).\
+                       filter(and_(ComponentLocation.component_id==component_id,
+                                   ComponentLocation.path==path)).first()
+    if cloc is not None:
+      raise ProjectDBInsertError(f"Location {path} already present for {component.name} for scan {component.scan_id}.")
+
+    # raise exception if path does not exist in any files for this scan,
+    # taking into account absolute path
+    locs = []
+    if absolute:
+      locs = self.session.query(File).\
+                         filter(and_(File.scan_id == component.scan_id,
+                                     File.path.startswith(path))).all()
+      if locs == []:
+        raise ProjectDBInsertError(f"No files found with absolute path {path} for scan {component.scan_id}.")
+    else:
+      locs = self.session.query(File).\
+                         filter(and_(File.scan_id == component.scan_id,
+                                     File.path.contains(path))).all()
+      if locs == []:
+        raise ProjectDBInsertError(f"No files found containing path {path} for scan {component.scan_id}.")
+
+    cloc = ComponentLocation(component_id=component_id, path=path, absolute=absolute)
+    self.session.add(cloc)
     if commit:
       self.session.commit()
     else:

@@ -53,6 +53,7 @@ from .commands.cmdListComponentTypes import cmdListComponentTypes
 from .commands.cmdAddComponent import cmdAddComponent
 from .commands.cmdListComponents import cmdListComponents
 from .commands.cmdAddComponentLicense import cmdAddComponentLicense
+from .commands.cmdAddComponentLocation import cmdAddComponentLocation
 
 VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
 
@@ -378,3 +379,13 @@ def cliListComponents(ctx, scan_id):
 def cliAddComponentLicense(ctx, component, license, scan_id):
   checkForContext(ctx)
   return cmdAddComponentLicense(ctx, component_name=component, license_name=license, scan_id=scan_id)
+
+@cli.command('add-component-location', help="Add a location to an existing component")
+@click.argument('component')
+@click.argument('location')
+@click.option('--scan_id', required=True, help='Scan ID')
+@click.option('--absolute', is_flag=True, default=False, help='Location is absolute path')
+@click.pass_context
+def cliAddComponentLocation(ctx, component, location, scan_id, absolute):
+  checkForContext(ctx)
+  return cmdAddComponentLocation(ctx, component_name=component, location=location, scan_id=scan_id, absolute=absolute)

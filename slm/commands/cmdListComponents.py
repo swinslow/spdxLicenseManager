@@ -36,5 +36,14 @@ def cmdListComponents(ctx, scan_id):
 
       click.echo(f"  licenses: {lics_string}")
       click.echo(f"  type: {component.component_type.name}")
+
+      # also show file locations
+      click.echo(f"  locations:")
+      locs = db.getComponentLocations(component_id=component._id)
+      for loc in locs:
+        if not loc.absolute:
+          click.echo(f"    *{loc.path}*")
+        else:
+          click.echo(f"    {loc.path}")
     else:
       click.echo(f"{component.name}")

@@ -108,6 +108,69 @@ class ComponentFuncTestSuite(unittest.TestCase):
     self.assertEqual("Added MIT to github.com/xanzy/ssh-agent for scan 3\n",
       result.output)
 
+  def test_can_add_locations_to_component(self):
+    # Edith adds a component
+    result = runcmd(self, slm.cli, "frotz", "add-component",
+      "github.com/xanzy/ssh-agent",
+      "--scan_id", 3, "--component_type", "Golang")
+    self.assertEqual(0, result.exit_code)
+
+    # She tags its location
+    result = runcmd(self, slm.cli, "frotz", "add-component-location",
+      "github.com/xanzy/ssh-agent", "/github.com/xanzy/ssh-agent/", "--scan_id", 3)
+
+    # It works correctly and lets her know
+    self.assertEqual("Added location to github.com/xanzy/ssh-agent for scan 3\n",
+      result.output)
+
+    # She tags a second location, but with an absolute path this time,
+    # so that it doesn't pick up a similar filename in a different directory
+    result = runcmd(self, slm.cli, "frotz", "add-component-location",
+      "github.com/xanzy/ssh-agent", "godeps/test.txt", "--scan_id", 3, "--absolute")
+
+    # It works correctly and lets her know
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual("Added location to github.com/xanzy/ssh-agent for scan 3\n",
+      result.output)
+
+  def test_cannot_add_location_to_component_if_path_not_found_for_any_files(self):
+    # Edith adds a component
+    result = runcmd(self, slm.cli, "frotz", "add-component",
+      "github.com/xanzy/ssh-agent",
+      "--scan_id", 3, "--component_type", "Golang")
+    self.assertEqual(0, result.exit_code)
+
+    # She attempts to tag its location, but misspells its file path
+    location = "/github.com/xanzzzzz/ssh-agent/"
+    result = runcmd(self, slm.cli, "frotz", "add-component-location",
+      "github.com/xanzy/ssh-agent", location, "--scan_id", 3)
+
+    # It fails and tells her why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(f"No files found containing path {location} for scan 3.\n",
+      result.output)
+
+  def test_cannot_add_same_location_to_same_component_twice(self):
+    # Edith adds a component
+    location = "/github.com/xanzy/ssh-agent/"
+    component = "github.com/xanzy/ssh-agent"
+    result = runcmd(self, slm.cli, "frotz", "add-component",
+      component, "--scan_id", 3, "--component_type", "Golang")
+    self.assertEqual(0, result.exit_code)
+
+    # She attempts to tag its location, but misspells its file path
+    result = runcmd(self, slm.cli, "frotz", "add-component-location",
+      component, location, "--scan_id", 3)
+    self.assertEqual(0, result.exit_code)
+
+    result = runcmd(self, slm.cli, "frotz", "add-component-location",
+      component, location, "--scan_id", 3)
+
+    # It fails the second time,  and tells her why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(f"Location {location} already present for {component} for scan 3.\n",
+      result.output)
+
   def test_can_get_verbose_details(self):
     # Edith adds a component
     result = runcmd(self, slm.cli, "frotz", "add-component",
@@ -123,10 +186,18 @@ class ComponentFuncTestSuite(unittest.TestCase):
       "github.com/xanzy/ssh-agent", "MIT", "--scan_id", 3)
     self.assertEqual(0, result.exit_code)
 
+    # She adds some locations to it
+    result = runcmd(self, slm.cli, "frotz", "add-component-location",
+      "github.com/xanzy/ssh-agent", "/vendor/github.com/xanzy/ssh-agent/", "--scan_id", 3)
+    self.assertEqual(0, result.exit_code)
+    result = runcmd(self, slm.cli, "frotz", "add-component-location",
+      "github.com/xanzy/ssh-agent", "godeps/test.txt", "--scan_id", 3, "--absolute")
+    self.assertEqual(0, result.exit_code)
+
     # She checks to make sure she can get verbose details
     result = runcmd(self, slm.cli, "frotz", "-v", "list-components", "--scan_id", 3)
     self.assertEqual(0, result.exit_code)
-    self.assertEqual("github.com/xanzy/ssh-agent:\n  licenses: Apache-2.0, MIT\n  type: Golang\n", result.output)
+    self.assertEqual("github.com/xanzy/ssh-agent:\n  licenses: Apache-2.0, MIT\n  type: Golang\n  locations:\n    */vendor/github.com/xanzy/ssh-agent/*\n    godeps/test.txt\n", result.output)
 
   # def test_can_get_urls_where_appropriate(self):
   #   # Edith adds a component
