@@ -1,6 +1,6 @@
 # tests/ft_components.py
 #
-# Functional test for spdxLicenseManager: create, edit, and list licenses.
+# Functional test for spdxLicenseManager: create, edit, and list components.
 #
 # Copyright (C) The Linux Foundation
 # SPDX-License-Identifier: Apache-2.0

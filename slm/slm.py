@@ -54,6 +54,8 @@ from .commands.cmdAddComponent import cmdAddComponent
 from .commands.cmdListComponents import cmdListComponents
 from .commands.cmdAddComponentLicense import cmdAddComponentLicense
 from .commands.cmdAddComponentLocation import cmdAddComponentLocation
+from .commands.cmdAddApprovalType import cmdAddApprovalType
+from .commands.cmdListApprovalTypes import cmdListApprovalTypes
 
 VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
 
@@ -389,3 +391,20 @@ def cliAddComponentLicense(ctx, component, license, scan_id):
 def cliAddComponentLocation(ctx, component, location, scan_id, absolute):
   checkForContext(ctx)
   return cmdAddComponentLocation(ctx, component_name=component, location=location, scan_id=scan_id, absolute=absolute)
+
+############################
+##### Approval type commands
+############################
+
+@cli.command('add-approval-type', help="Add a new approval type")
+@click.argument('name')
+@click.pass_context
+def cliAddApprovalType(ctx, name):
+  checkForContext(ctx)
+  return cmdAddApprovalType(ctx, name)
+
+@cli.command('list-approval-types', help="List approval types")
+@click.pass_context
+def cliListApprovalTypes(ctx):
+  checkForContext(ctx)
+  return cmdListApprovalTypes(ctx)

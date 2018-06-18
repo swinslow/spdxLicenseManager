@@ -155,3 +155,9 @@ class ComponentLocation(Base):
   absolute = Column(Boolean())
   # relationships
   component = relationship("Component", backref=backref('component_locations'))
+
+class ApprovalType(Base):
+  __tablename__ = 'approval_types'
+  # columns
+  _id = Column(Integer(), primary_key=True)
+  name = Column(String(), unique=True)

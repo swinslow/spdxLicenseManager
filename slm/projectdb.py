@@ -26,9 +26,9 @@ from sqlalchemy.orm import sessionmaker
 
 from .__configs__ import (isValidConfigKey, isInternalConfigKey,
   getConfigKeyDesc)
-from .datatypes import (Base, Category, Component, ComponentLicense,
-  ComponentLocation, ComponentType, Config, Conversion, File, License, Scan,
-  Subproject)
+from .datatypes import (ApprovalType, Base, Category, Component,
+  ComponentLicense, ComponentLocation, ComponentType, Config, Conversion,
+  File, License, Scan, Subproject)
 
 class ProjectDBConfigError(Exception):
   """Exception raised for errors in database configuration.
@@ -668,7 +668,7 @@ class ProjectDB:
 
   #############################
   ##### ComponentType functions
-  ############################
+  #############################
 
   def getComponentTypesAll(self):
     return self.session.query(ComponentType).order_by(ComponentType._id).all()
@@ -939,3 +939,45 @@ class ProjectDB:
       self.session.commit()
     else:
       self.session.flush()
+
+  ############################
+  ##### ApprovalType functions
+  ############################
+
+  def getApprovalTypesAll(self):
+    return self.session.query(ApprovalType).order_by(ApprovalType._id).all()
+
+  def getApprovalType(self, *, _id=None, name=None):
+    if _id is None and name is None:
+      raise ProjectDBQueryError("Cannot call getApprovalType without either _id or name parameters")
+    if _id is not None and name is not None:
+      raise ProjectDBQueryError("Cannot call getApprovalType with both _id and name parameters")
+    if _id is not None:
+      return self.session.query(ApprovalType).\
+                         filter(ApprovalType._id == _id).first()
+    if name is not None:
+      return self.session.query(ApprovalType).\
+                         filter(ApprovalType.name == name).first()
+
+  def addApprovalType(self, name, commit=True):
+    approvalType = ApprovalType(name=name)
+    self.session.add(approvalType)
+    if commit:
+      self.session.commit()
+    else:
+      self.session.flush()
+    return approvalType._id
+
+  def changeApprovalTypeName(self, name, newName):
+    if name is None or newName is None:
+      raise ProjectDBUpdateError("Missing parameter for changeApprovalTypeName")
+    at = self.session.query(ApprovalType).\
+                     filter(ApprovalType.name == name).first()
+    if at is None:
+      raise ProjectDBUpdateError(f"ApprovalType {name} not found in changeApprovalTypeName")
+
+    try:
+      at.name = newName
+      self.session.commit()
+    except IntegrityError:
+      raise ProjectDBUpdateError(f"ApprovalType {newName} already exists in changeApprovalTypeName({name})")

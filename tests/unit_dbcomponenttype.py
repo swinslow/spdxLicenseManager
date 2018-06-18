@@ -1,4 +1,4 @@
-# tests/unit_dbcomponent.py
+# tests/unit_dbcomponenttype.py
 #
 # Unit test for spdxLicenseManager: database functions for ComponentTypes.
 #
