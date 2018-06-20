@@ -241,13 +241,13 @@ class ProjectDB:
     subproject = self.session.query(Subproject).\
                               filter(Subproject.name == name).first()
     if subproject is None:
-      raise ProjectDBUpdateError(f"Subproject {name} not found in changeSubprojectSPDXSearch")
+      raise ProjectDBUpdateError(f"Subproject {name} not found")
 
     try:
       subproject.spdx_search = spdx_search
       self.session.commit()
     except IntegrityError:
-      raise ProjectDBUpdateError(f"Subproject with SPDX search string {spdx_search} already exists in changeSubprojectSPDXSearch({name})")
+      raise ProjectDBUpdateError(f"Subproject with SPDX search string {spdx_search} already exists")
 
   ########################
   ##### Category functions

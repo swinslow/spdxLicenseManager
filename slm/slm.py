@@ -29,6 +29,7 @@ from .projectdb import ProjectDB, ProjectDBConfigError
 from .commands.cmdInit import cmdInit
 from .commands.cmdList import cmdList
 from .commands.cmdCreate import cmdCreateProject, cmdCreateSubproject
+from .commands.cmdEditSubproject import cmdEditSubproject
 from .commands.cmdAddCategory import cmdAddCategory
 from .commands.cmdEditCategory import cmdEditCategory
 from .commands.cmdListCategories import cmdListCategories
@@ -149,6 +150,14 @@ def cliCreateProject(ctx, name, desc):
 @click.pass_context
 def cliCreateSubproject(ctx, name, desc):
   return cmdCreateSubproject(ctx, name, desc)
+
+@cli.command('edit-subproject', help="Edit a subproject")
+@click.option('--spdx_search', help='search string for SPDX files')
+@click.pass_context
+def cliEditSubproject(ctx, spdx_search):
+  checkForContext(ctx)
+  subproject = ctx.obj['SUBPROJECT']
+  return cmdEditSubproject(ctx, subproject, spdx_search)
 
 ####################################
 ##### Project configuration commands

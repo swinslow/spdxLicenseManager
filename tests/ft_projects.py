@@ -25,7 +25,7 @@ from click.testing import CliRunner
 from slm import slm
 
 from helper_sandbox import (setUpSandbox, runSandboxCommands, tearDownSandbox,
-  runcmd)
+  runcmd, printResultDebug)
 from helper_check import (checkForFileExists, checkForDirectoryExists,
   checkForTextInFile)
 
@@ -183,3 +183,57 @@ class ProjectTestSuite(unittest.TestCase):
     # It doesn't work and tells her why
     self.assertEqual(1, result.exit_code)
     self.assertEqual(result.output, "Error: called create-subproject but didn't pass a project name; did you mean to call create-project?\n")
+
+  def test_can_change_subproject_spdx_search_name(self):
+    # Edith asks SLM to change a subproject's default spdx search term
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+    "edit-subproject", "--spdx_search", "fdim")
+
+    # It works fine, and sets the project spdx search term to fdim
+    self.assertEqual(0, result.exit_code)
+
+    # ...which she confirms with a "list" call
+    result = runcmd(self, slm.cli, "frotz", "-v", "list")
+    self.assertEqual(0, result.exit_code)
+    self.assertIn("fdim", result.output)
+
+  def test_cannot_change_subproject_spdx_search_name_without_project(self):
+    # Edith asks SLM to edit an existing subproject, but accidentally fails
+    # to include any project name in the command
+    result = runcmd(self, slm.cli, None, "--subproject", "frotz-dim",
+      "edit-subproject", "--spdx_search", "oops")
+
+    # It doesn't work and tells her why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(result.output, "No project specified.\nPlease specify a project with --project=PROJECT or the SLM_PROJECT environment variable.\n")
+
+  def test_cannot_change_subproject_spdx_search_name_without_subproject(self):
+    # Edith asks SLM to edit an existing subproject, but accidentally fails
+    # to include any subproject name in the command
+    result = runcmd(self, slm.cli, "frotz",
+      "edit-subproject", "--spdx_search", "oops")
+
+    # It doesn't work and tells her why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(result.output, "No subproject specified.\nPlease specify a subproject with --subproject=SUBPROJECT or the SLM_SUBPROJECT environment variable.\n")
+
+  def test_cannot_change_subproject_spdx_search_name_without_subproject(self):
+    # Edith asks SLM to edit an existing subproject, but accidentally uses
+    # a non-existent subproject name
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "oops",
+      "edit-subproject", "--spdx_search", "will-fail")
+
+    # It doesn't work and tells her why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(result.output, "Subproject oops not found\n")
+
+  def test_cannot_change_subproject_spdx_search_name_to_existing_name(self):
+    # Edith asks SLM to edit an existing project, but accidentally tries to
+    # change the spdx search term to a term which is already in use for this
+    # project
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "edit-subproject", "--spdx_search", "frotz-nuclear")
+
+    # It doesn't work and tells her why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(result.output, "Subproject with SPDX search string frotz-nuclear already exists\n")
