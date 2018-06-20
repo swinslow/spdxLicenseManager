@@ -57,39 +57,38 @@ class ApprovalFuncTestSuite(unittest.TestCase):
     self.assertEqual(0, result.exit_code)
     self.assertIn("TSC approval", result.output)
 
-  # def test_can_approve_components(self):
-  #   # Edith wants to approve some components. She creates a new approval type
-  #   result = runcmd(self, slm.cli, "frotz", "add-approval-type",
-  #     "TSC approval")
-  #   self.assertEqual(0, result.exit_code)
+  def test_can_approve_components(self):
+    # Edith wants to approve some components. She creates a new approval type
+    result = runcmd(self, slm.cli, "frotz", "add-approval-type", "TSC approval")
+    self.assertEqual(0, result.exit_code)
 
-  #   # She adds a component
-  #   result = runcmd(self, slm.cli, "frotz", "add-component",
-  #     "github.com/xanzy/ssh-agent",
-  #     "--scan_id", 3, "--component_type", "Golang")
-  #   self.assertEqual(0, result.exit_code)
+    # She adds a component
+    result = runcmd(self, slm.cli, "frotz", "add-component",
+      "github.com/xanzy/ssh-agent",
+      "--scan_id", 3, "--component_type", "Golang")
+    self.assertEqual(0, result.exit_code)
 
-  #   # She adds two licenses and a location
-  #   result = runcmd(self, slm.cli, "frotz", "add-component-license",
-  #     "github.com/xanzy/ssh-agent", "Apache-2.0", "--scan_id", 3)
-  #   self.assertEqual(0, result.exit_code)
-  #   result = runcmd(self, slm.cli, "frotz", "add-component-license",
-  #     "github.com/xanzy/ssh-agent", "MIT", "--scan_id", 3)
-  #   self.assertEqual(0, result.exit_code)
-  #   result = runcmd(self, slm.cli, "frotz", "add-component-location",
-  #     "github.com/xanzy/ssh-agent", "/vendor/github.com/xanzy/ssh-agent/", "--scan_id", 3)
-  #   self.assertEqual(0, result.exit_code)
+    # She adds two licenses and a location
+    result = runcmd(self, slm.cli, "frotz", "add-component-license",
+      "github.com/xanzy/ssh-agent", "Apache-2.0", "--scan_id", 3)
+    self.assertEqual(0, result.exit_code)
+    result = runcmd(self, slm.cli, "frotz", "add-component-license",
+      "github.com/xanzy/ssh-agent", "MIT", "--scan_id", 3)
+    self.assertEqual(0, result.exit_code)
+    result = runcmd(self, slm.cli, "frotz", "add-component-location",
+      "github.com/xanzy/ssh-agent", "/vendor/github.com/xanzy/ssh-agent/", "--scan_id", 3)
+    self.assertEqual(0, result.exit_code)
 
-  #   # Now, she marks that component as approved by the TSC
-  #   result = runcmd(self, slm.cli, "frotz", "add-approval",
-  #     "--component", "github.com/xanzy/ssh-agent", "TSC approval",
-  #     "--date", "2018-05-01", "--scan_id", 3)
+    # Now, she marks that component as approved by the TSC
+    result = runcmd(self, slm.cli, "frotz", "add-approval",
+      "--component", "github.com/xanzy/ssh-agent", "TSC approval",
+      "--date", "2018-05-01", "--scan_id", 3)
 
-  #   # It works correctly and lets her know
-  #   self.assertEqual(0, result.exit_code)
-  #   self.assertEqual("github.com/xanzy/ssh-agent marked as approved by: TSC approval\n", result.output)
+    # It works correctly and lets her know
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual("github.com/xanzy/ssh-agent marked as approved by: TSC approval\n", result.output)
 
-  #   # She checks the list of approvals for this scan to make sure, and there it is
-  #   result = runcmd(self, slm.cli, "frotz", "list-approvals", "--scan_id", 3)
-  #   self.assertEqual(0, result.exit_code)
-  #   self.assertEqual("Approved (1):\n  Apache-2.0 AND MIT: github.com/xanzy/ssh-agent\n", result.output)
+    # She checks the list of approvals for this scan to make sure, and there it is
+    result = runcmd(self, slm.cli, "frotz", "list-approvals", "--scan_id", 3)
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual("Approved (1):\n  Apache-2.0 AND MIT: github.com/xanzy/ssh-agent\n", result.output)
