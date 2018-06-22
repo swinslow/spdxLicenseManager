@@ -1,7 +1,7 @@
 # tests/ft_reportxlsx.py
 #
-# Functional tests for spdxLicenseManager: producing reports from previously-
-# imported scans.
+# Functional tests for spdxLicenseManager: producing Xlsx reports from
+# previously-imported scans.
 #
 # Copyright (C) The Linux Foundation
 # SPDX-License-Identifier: Apache-2.0
@@ -39,7 +39,7 @@ PATH_SIMPLE_EMPTYFILE_SPDX = "tests/testfiles/simpleEmptyFile.spdx"
 PATH_SIMPLE_THIRDPARTY_SPDX = "tests/testfiles/simpleThirdParty.spdx"
 
 class XlsxReportFuncTestSuite(unittest.TestCase):
-  """spdxLicenseManager tag-value reporting FT suite."""
+  """spdxLicenseManager Xlsx reporting FT suite."""
 
   def setUp(self):
     self.runner = CliRunner()
@@ -362,3 +362,19 @@ class XlsxReportFuncTestSuite(unittest.TestCase):
     self.assertEqual("No license found - third party directory", ws2['B4'].value)
     self.assertEqual("simple/vendor/file3.txt", ws2['A5'].value)
     self.assertEqual("No license found - third party directory", ws2['B5'].value)
+
+  def test_can_omit_report_path_and_get_default_location_and_name(self):
+    # Edith chooses not to include a --report-path flag
+    result = runcmd(self, slm.cli, "frotz",
+      "create-report", "--scan_id", "1", "--report_format", "xlsx")
+
+    # The output message tells her it succeeded, and that the report is in
+    # the expected path and has the expected filename
+    self.assertEqual(0, result.exit_code)
+    expectedPath = os.path.join("projects", "frotz",
+      "subprojects", "frotz-nuclear", "reports", "frotz-nuclear-2018-01.xlsx")
+    fullPath = os.path.join(self.slmhome, expectedPath)
+    self.assertEqual(f"Report successfully created at {fullPath}.\n", result.output)
+
+    # She checks to make sure, and indeed the report is there
+    checkForFileExists(self, self.slmhome, expectedPath)

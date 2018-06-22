@@ -17,6 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import sys
 import click
 
@@ -34,13 +35,19 @@ def cmdCreateReport(ctx, subproject, scan_id=None, report_path=None,
   # check whether a scan ID was provided
   if scan_id is None:
     sys.exit(f'Usage: slm create-report --scan_id SCAN_ID --report_path PATH [OPTIONS]\n\nError: "scan_id" not provided.')
-  if report_path is None:
-    sys.exit(f'Usage: slm create-report --scan_id SCAN_ID --report_path PATH [OPTIONS]\n\nError: "report_path" not provided.')
 
   # confirm that scan with this ID exists
   scan = db.getScan(_id=scan_id)
   if scan is None:
     sys.exit(f"Scan ID {scan_id} does not exist.")
+
+  # if no report_path was provided, construct the scan's default path
+  if report_path is None:
+    subproject_name = scan.subproject.name
+    scan_dt_str = scan.scan_dt.strftime("%Y-%m")
+    filename = f"{subproject_name}-{scan_dt_str}.{report_format}"
+    report_path = os.path.join(slmhome, "projects", project, "subprojects",
+      subproject_name, "reports", filename)
 
   # check for config flags
   kwConfig = {}

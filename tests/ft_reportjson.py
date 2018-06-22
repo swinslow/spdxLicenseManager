@@ -104,3 +104,19 @@ class JSONReportFuncTestSuite(unittest.TestCase):
       cat2 = rj[1]
       lic2 = cat2.get("licenses")[0]
       self.assertEqual(len(lic2.get("files")), 3)
+
+  def test_can_omit_report_path_and_get_default_location_and_name(self):
+    # Edith chooses not to include a --report-path flag
+    result = runcmd(self, slm.cli, "frotz",
+      "create-report", "--scan_id", "1", "--report_format", "json")
+
+    # The output message tells her it succeeded, and that the report is in
+    # the expected path and has the expected filename
+    self.assertEqual(0, result.exit_code)
+    expectedPath = os.path.join("projects", "frotz",
+      "subprojects", "frotz-nuclear", "reports", "frotz-nuclear-2018-01.json")
+    fullPath = os.path.join(self.slmhome, expectedPath)
+    self.assertEqual(f"Report successfully created at {fullPath}.\n", result.output)
+
+    # She checks to make sure, and indeed the report is there
+    checkForFileExists(self, self.slmhome, expectedPath)
