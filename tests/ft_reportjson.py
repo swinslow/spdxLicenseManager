@@ -36,7 +36,7 @@ from helper_check import checkForFileExists
 PATH_SIMPLE_SPDX = "tests/testfiles/simple.spdx"
 
 class JSONReportFuncTestSuite(unittest.TestCase):
-  """spdxLicenseManager tag-value JSON reporting FT suite."""
+  """spdxLicenseManager JSON reporting FT suite."""
 
   def setUp(self):
     self.runner = CliRunner()
@@ -50,6 +50,8 @@ class JSONReportFuncTestSuite(unittest.TestCase):
     self.reportDir.cleanup()
     self.reportDir = None
     tearDownSandbox(self)
+
+  ##### Tests below here
 
   def test_can_create_simple_json_file_without_summary(self):
     # Edith imports a very short SPDX file as a new scan in the frotz

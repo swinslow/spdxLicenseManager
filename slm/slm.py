@@ -48,6 +48,7 @@ from .commands.cmdImportScan import cmdImportScan
 from .commands.cmdListScanResults import cmdListScanResults
 from .commands.cmdListScans import cmdListScans
 from .commands.cmdCreateReport import cmdCreateReport
+from .commands.cmdCreateReports import cmdCreateReports
 from .commands.cmdRetrieveSPDX import cmdRetrieveSPDX
 
 VERSION_MESSAGE = f"spdxLicenseManager (slm) version {__version__}"
@@ -325,6 +326,13 @@ def cliCreateReport(ctx, scan_id, report_path, report_format, no_summary, force)
   subproject = ctx.obj['SUBPROJECT']
   return cmdCreateReport(ctx, subproject, scan_id, report_path,
     report_format, no_summary, force)
+
+@cli.command('create-reports', help="Create all reports for current scans")
+@click.option('-f', '--force', is_flag=True, help='Force overwrite of existing reports')
+@click.pass_context
+def cliCreateReports(ctx, force):
+  checkForContext(ctx)
+  return cmdCreateReports(ctx, force)
 
 #############################
 ##### SPDX retrieval commands
