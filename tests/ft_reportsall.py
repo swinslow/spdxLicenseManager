@@ -65,16 +65,16 @@ class AllReportsFuncTestSuite(unittest.TestCase):
 
     # She checks to make sure, and indeed the reports are there
     p1 = os.path.join("projects", "frotz", "subprojects", "frotz-nuclear",
-      "reports", "frotz-nuclear-2018-01.xlsx")
+      "reports", "frotz-nuclear-2018-01-26.xlsx")
     checkForFileExists(self, self.slmhome, p1)
     p2 = os.path.join("projects", "frotz", "subprojects", "frotz-nuclear",
-      "reports", "frotz-nuclear-2018-01.json")
+      "reports", "frotz-nuclear-2018-01-26.json")
     checkForFileExists(self, self.slmhome, p2)
     p3 = os.path.join("projects", "frotz", "subprojects", "frotz-dim",
-      "reports", "frotz-dim-2018-02.xlsx")
+      "reports", "frotz-dim-2018-02-06.xlsx")
     checkForFileExists(self, self.slmhome, p3)
     p4 = os.path.join("projects", "frotz", "subprojects", "frotz-dim",
-      "reports", "frotz-dim-2018-02.json")
+      "reports", "frotz-dim-2018-02-06.json")
     checkForFileExists(self, self.slmhome, p4)
 
   def test_make_all_reports_does_not_recreate_existing_reports(self):
@@ -84,7 +84,7 @@ class AllReportsFuncTestSuite(unittest.TestCase):
     # She checks to make sure, and indeed the report is there
     self.assertEqual(0, result.exit_code)
     p1 = os.path.join("projects", "frotz", "subprojects", "frotz-nuclear",
-      "reports", "frotz-nuclear-2018-01.xlsx")
+      "reports", "frotz-nuclear-2018-01-26.xlsx")
     checkForFileExists(self, self.slmhome, p1)
 
     # Now she wants to automatically have all types of reports created
@@ -100,13 +100,13 @@ class AllReportsFuncTestSuite(unittest.TestCase):
     # She checks to make sure, and indeed the new reports are there
     checkForFileExists(self, self.slmhome, p1)
     p2 = os.path.join("projects", "frotz", "subprojects", "frotz-nuclear",
-      "reports", "frotz-nuclear-2018-01.json")
+      "reports", "frotz-nuclear-2018-01-26.json")
     checkForFileExists(self, self.slmhome, p2)
     p3 = os.path.join("projects", "frotz", "subprojects", "frotz-dim",
-      "reports", "frotz-dim-2018-02.xlsx")
+      "reports", "frotz-dim-2018-02-06.xlsx")
     checkForFileExists(self, self.slmhome, p3)
     p4 = os.path.join("projects", "frotz", "subprojects", "frotz-dim",
-      "reports", "frotz-dim-2018-02.json")
+      "reports", "frotz-dim-2018-02-06.json")
     checkForFileExists(self, self.slmhome, p4)
 
   def test_make_all_reports_can_recreate_existing_reports_if_forced(self):
@@ -116,7 +116,7 @@ class AllReportsFuncTestSuite(unittest.TestCase):
     # She checks to make sure, and indeed the report is there
     self.assertEqual(0, result.exit_code)
     p1 = os.path.join("projects", "frotz", "subprojects", "frotz-nuclear",
-      "reports", "frotz-nuclear-2018-01.xlsx")
+      "reports", "frotz-nuclear-2018-01-26.xlsx")
     checkForFileExists(self, self.slmhome, p1)
 
     # Now she wants to automatically have all types of reports created
@@ -132,11 +132,11 @@ class AllReportsFuncTestSuite(unittest.TestCase):
     # She checks to make sure, and indeed the reports are all there
     checkForFileExists(self, self.slmhome, p1)
     p2 = os.path.join("projects", "frotz", "subprojects", "frotz-nuclear",
-      "reports", "frotz-nuclear-2018-01.json")
+      "reports", "frotz-nuclear-2018-01-26.json")
     checkForFileExists(self, self.slmhome, p2)
     p3 = os.path.join("projects", "frotz", "subprojects", "frotz-dim",
-      "reports", "frotz-dim-2018-02.xlsx")
+      "reports", "frotz-dim-2018-02-06.xlsx")
     checkForFileExists(self, self.slmhome, p3)
     p4 = os.path.join("projects", "frotz", "subprojects", "frotz-dim",
-      "reports", "frotz-dim-2018-02.json")
+      "reports", "frotz-dim-2018-02-06.json")
     checkForFileExists(self, self.slmhome, p4)

@@ -44,7 +44,7 @@ def cmdCreateReport(ctx, subproject, scan_id=None, report_path=None,
   # if no report_path was provided, construct the scan's default path
   if report_path is None:
     subproject_name = scan.subproject.name
-    scan_dt_str = scan.scan_dt.strftime("%Y-%m")
+    scan_dt_str = scan.scan_dt.strftime("%Y-%m-%d")
     filename = f"{subproject_name}-{scan_dt_str}.{report_format}"
     report_path = os.path.join(slmhome, "projects", project, "subprojects",
       subproject_name, "reports", filename)

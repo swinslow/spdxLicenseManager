@@ -372,7 +372,7 @@ class XlsxReportFuncTestSuite(unittest.TestCase):
     # the expected path and has the expected filename
     self.assertEqual(0, result.exit_code)
     expectedPath = os.path.join("projects", "frotz",
-      "subprojects", "frotz-nuclear", "reports", "frotz-nuclear-2018-01.xlsx")
+      "subprojects", "frotz-nuclear", "reports", "frotz-nuclear-2018-01-26.xlsx")
     fullPath = os.path.join(self.slmhome, expectedPath)
     self.assertEqual(f"Report successfully created at {fullPath}.\n", result.output)
 
