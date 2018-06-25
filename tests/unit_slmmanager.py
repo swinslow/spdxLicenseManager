@@ -123,3 +123,27 @@ class SLMManagerTestSuite(unittest.TestCase):
     self.assertIn("frotz", projects)
     self.assertIn("gnusto", projects)
     self.assertIn("rezrov", projects)
+
+  def test_can_get_project_directory_path(self):
+    frotz_dir = self.manager.getProjectDir("frotz")
+    self.assertEqual(frotz_dir, "/tmp/fake/whatever/projects/frotz")
+
+  def test_can_get_project_database_path(self):
+    frotz_db_path = self.manager.getProjectDBPath("frotz")
+    self.assertEqual(frotz_db_path, "/tmp/fake/whatever/projects/frotz/frotz.db")
+
+  def test_can_get_project_reports_directory_path(self):
+    frotz_reports_dir = self.manager.getProjectReportsDir("frotz")
+    self.assertEqual(frotz_reports_dir, "/tmp/fake/whatever/projects/frotz/reports")
+
+  def test_can_get_project_subprojects_directory_path(self):
+    f2_dir = self.manager.getSubprojectDir("frotz", "f2")
+    self.assertEqual(f2_dir, "/tmp/fake/whatever/projects/frotz/subprojects/f2")
+
+  def test_can_get_project_subprojects_reports_directory_path(self):
+    f2_reports_dir = self.manager.getSubprojectReportsDir("frotz", "f2")
+    self.assertEqual(f2_reports_dir, "/tmp/fake/whatever/projects/frotz/subprojects/f2/reports")
+
+  def test_can_get_project_subprojects_spdx_directory_path(self):
+    f2_spdx_dir = self.manager.getSubprojectSPDXDir("frotz", "f2")
+    self.assertEqual(f2_spdx_dir, "/tmp/fake/whatever/projects/frotz/subprojects/f2/spdx")
