@@ -27,6 +27,7 @@ from .slmconfig import SLMConfig, BadSLMConfigError
 from .projectdb import ProjectDB, ProjectDBConfigError
 
 from .commands.cmdInit import cmdInit
+from .commands.cmdStatus import cmdStatus
 from .commands.cmdList import cmdList
 from .commands.cmdCreate import cmdCreateProject, cmdCreateSubproject
 from .commands.cmdEditSubproject import cmdEditSubproject
@@ -137,6 +138,12 @@ def cliInit(ctx, newhome):
 @click.pass_context
 def cliList(ctx):
   return cmdList(ctx)
+
+@cli.command('status', help="Show status for one month across all projects")
+@click.argument('year_month')
+@click.pass_context
+def cliList(ctx, year_month):
+  return cmdStatus(ctx, year_month)
 
 @cli.command('create-project', help="Create a new project")
 @click.argument('name')

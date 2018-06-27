@@ -20,7 +20,9 @@
 import unittest
 import datetime
 
-from slm.slmmanager import SLMManager
+from unittest import mock
+
+from slm.slmmanager import SLMManager, SLMManagerError
 from slm.slmconfig import SLMConfig
 from slm.datatypes import Scan, Subproject
 from slm.projectdb import ProjectDB
@@ -136,14 +138,97 @@ class SLMManagerTestSuite(unittest.TestCase):
     frotz_reports_dir = self.manager.getProjectReportsDir("frotz")
     self.assertEqual(frotz_reports_dir, "/tmp/fake/whatever/projects/frotz/reports")
 
-  def test_can_get_project_subprojects_directory_path(self):
+  def test_can_get_subprojects_directory_path(self):
     f2_dir = self.manager.getSubprojectDir("frotz", "f2")
     self.assertEqual(f2_dir, "/tmp/fake/whatever/projects/frotz/subprojects/f2")
 
-  def test_can_get_project_subprojects_reports_directory_path(self):
+  def test_can_get_subprojects_reports_directory_path(self):
     f2_reports_dir = self.manager.getSubprojectReportsDir("frotz", "f2")
     self.assertEqual(f2_reports_dir, "/tmp/fake/whatever/projects/frotz/subprojects/f2/reports")
 
-  def test_can_get_project_subprojects_spdx_directory_path(self):
+  def test_can_get_subprojects_spdx_directory_path(self):
     f2_spdx_dir = self.manager.getSubprojectSPDXDir("frotz", "f2")
     self.assertEqual(f2_spdx_dir, "/tmp/fake/whatever/projects/frotz/subprojects/f2/spdx")
+
+  def test_can_get_subproject_scan_dates_for_month_with_one_scan(self):
+    dates = self.manager.getScanDates(self.frotz_db, "f1", "2017-02")
+    self.assertIsInstance(dates, list)
+    self.assertEqual(len(dates), 1)
+    self.assertEqual(dates[0], "2017-02-03")
+
+  def test_can_get_subproject_scan_dates_for_month_with_two_scans(self):
+    dates = self.manager.getScanDates(self.frotz_db, "f2", "2017-02")
+    self.assertIsInstance(dates, list)
+    self.assertEqual(len(dates), 2)
+    self.assertEqual(dates[0], "2017-02-10")
+    self.assertEqual(dates[1], "2017-02-17")
+
+  def test_getting_scan_dates_without_scans_returns_empty_list(self):
+    dates = self.manager.getScanDates(self.frotz_db, "f3", "2017-02")
+    self.assertIsInstance(dates, list)
+    self.assertEqual(len(dates), 0)
+
+  def test_getting_scan_dates_without_choosing_subproject_raises_exception(self):
+    with self.assertRaises(SLMManagerError):
+      self.manager.getScanDates(self.frotz_db, None, "2017-02")
+
+  def test_getting_scan_dates_without_any_subprojects_raises_exception(self):
+    with self.assertRaises(SLMManagerError):
+      self.manager.getScanDates(self.rezrov_db, None, "2017-02")
+
+  def test_getting_scan_dates_with_nonexistent_subproject_raises_exception(self):
+    with self.assertRaises(SLMManagerError):
+      self.manager.getScanDates(self.frotz_db, "oops", "2017-02")
+
+  def test_can_check_if_any_scan_is_present_for_given_month(self):
+    retval = self.manager.isScanForMonth(self.frotz_db, "f1", "2017-02")
+    self.assertTrue(retval)
+    retval = self.manager.isScanForMonth(self.frotz_db, "f2", "2017-02")
+    self.assertTrue(retval)
+    retval = self.manager.isScanForMonth(self.frotz_db, "f3", "2017-02")
+    self.assertFalse(retval)
+
+  def test_can_get_spdx_possible_filenames_for_scan_dt(self):
+    spdx_paths = self.manager.getSPDXExpectedPaths(self.frotz_db, "frotz", "f1", "2017-02")
+    self.assertIsInstance(spdx_paths, list)
+    self.assertEqual(len(spdx_paths), 1)
+    self.assertEqual(spdx_paths[0],
+      "/tmp/fake/whatever/projects/frotz/subprojects/f1/spdx/f1-2017-02-03.spdx")
+
+    spdx_paths2 = self.manager.getSPDXExpectedPaths(self.frotz_db, "frotz", "f2", "2017-02")
+    self.assertIsInstance(spdx_paths2, list)
+    self.assertEqual(len(spdx_paths2), 2)
+    self.assertEqual(spdx_paths2[0],
+      "/tmp/fake/whatever/projects/frotz/subprojects/f2/spdx/f2-2017-02-10.spdx")
+    self.assertEqual(spdx_paths2[1],
+      "/tmp/fake/whatever/projects/frotz/subprojects/f2/spdx/f2-2017-02-17.spdx")
+
+  @mock.patch('slm.projectdb.os.path.isfile', return_value=True)
+  def test_can_check_if_spdx_file_is_present(self, os_isfile):
+    retval = self.manager.isSPDXForMonth(self.frotz_db, "frotz", "f1", "2017-02")
+    self.assertTrue(retval)
+
+  @mock.patch('slm.projectdb.os.path.isfile', return_value=False)
+  def test_can_check_if_spdx_file_is_absent(self, os_isfile):
+    retval = self.manager.isSPDXForMonth(self.frotz_db, "frotz", "f1", "2017-02")
+    self.assertFalse(retval)
+
+  @mock.patch('slm.projectdb.os.path.isfile', return_value=True)
+  def test_can_check_if_xlsx_report_is_present(self, os_isfile):
+    retval = self.manager.isXLSXForMonth("frotz", "f1", "2017-02")
+    self.assertTrue(retval)
+
+  @mock.patch('slm.projectdb.os.path.isfile', return_value=False)
+  def test_can_check_if_xlsx_report_is_absent(self, os_isfile):
+    retval = self.manager.isXLSXForMonth("frotz", "f1", "2017-02")
+    self.assertFalse(retval)
+
+  @mock.patch('slm.projectdb.os.path.isfile', return_value=True)
+  def test_can_check_if_json_report_is_present(self, os_isfile):
+    retval = self.manager.isJSONForMonth("frotz", "f1", "2017-02")
+    self.assertTrue(retval)
+
+  @mock.patch('slm.projectdb.os.path.isfile', return_value=False)
+  def test_can_check_if_json_report_is_absent(self, os_isfile):
+    retval = self.manager.isJSONForMonth("frotz", "f1", "2017-02")
+    self.assertFalse(retval)

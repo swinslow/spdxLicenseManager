@@ -32,6 +32,7 @@ setup(
     'Click',
     'SQLAlchemy',
     'openpyxl',
+    'tabulate',
   ],
   entry_points='''
     [console_scripts]
