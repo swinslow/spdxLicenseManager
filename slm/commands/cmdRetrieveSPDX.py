@@ -20,6 +20,7 @@
 import os
 import sys
 import click
+from datetime import datetime
 
 from .helperContext import extractContext
 from ..projectdb import ProjectDBQueryError
@@ -34,6 +35,14 @@ def cmdRetrieveSPDX(ctx, month):
     search_dir = db.getConfigValue("spdx-search-dir")
   except ProjectDBQueryError as e:
     sys.exit("Configuration variable for SPDX search directory not found.\nPlease call 'slm set-config spdx-search-dir DIR_NAME' first.")
+
+  # check whether year-month is present and valid
+  if month is None:
+    sys.exit("Missing argument: --month YYYY-MM")
+  try:
+    _dt = datetime.strptime(month, "%Y-%m")
+  except ValueError as e:
+    sys.exit(f"Invalid format for --month argument ({month}): should be --month YYYY-MM")
 
   retriever = Retriever()
 

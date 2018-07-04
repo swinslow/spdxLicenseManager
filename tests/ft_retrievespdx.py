@@ -78,6 +78,41 @@ class SPDXRetrieveFuncTestSuite(unittest.TestCase):
     self.assertEqual(1, result.exit_code)
     self.assertEqual(f"Configuration variable for SPDX search directory not found.\nPlease call 'slm set-config spdx-search-dir DIR_NAME' first.\n", result.output)
 
+  def test_cannot_retrieve_spdx_files_if_no_month_specified(self):
+    # Edith wants to have SLM automatically retrieve and rename SPDX files,
+    # but mistakenly forgot to specify a month to search
+    result = runcmd(self, slm.cli, "frotz", "set-config",
+      "spdx-search-dir", self.spdxSearchDir.path)
+    self.assertEqual(0, result.exit_code)
+
+    result = runcmd(self, slm.cli, "frotz", "retrieve-spdx")
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(f"Missing argument: --month YYYY-MM\n", result.output)
+
+  def test_cannot_retrieve_spdx_files_if_invalid_year_month_specified(self):
+    # Edith wants to have SLM automatically retrieve and rename SPDX files,
+    # but requests an invalid month format
+    result = runcmd(self, slm.cli, "frotz", "set-config",
+      "spdx-search-dir", self.spdxSearchDir.path)
+    self.assertEqual(0, result.exit_code)
+
+    result = runcmd(self, slm.cli, "frotz", "retrieve-spdx",
+      "--month", "blah")
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(f"Invalid format for --month argument (blah): should be --month YYYY-MM\n", result.output)
+
+    # She tries again but gets the format wrong, and mistakenly includes the day
+    result = runcmd(self, slm.cli, "frotz", "retrieve-spdx",
+      "--month", "2018-03-21")
+
+    # It fails again and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(f"Invalid format for --month argument (2018-03-21): should be --month YYYY-MM\n", result.output)
+
   def test_can_retrieve_spdx_files_and_move_to_subproject_folder(self):
     # Edith has set things correctly and asks SLM to retrieve, rename and move
     # the SPDX files for March 2018
