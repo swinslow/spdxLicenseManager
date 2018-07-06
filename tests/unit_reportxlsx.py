@@ -279,7 +279,7 @@ class ReportXlsxTestSuite(unittest.TestCase):
     self.reporter.setResults(results)
     self.reporter.generate()
     cs_mock.assert_called_with(self.reporter.wb, self.reporter.results)
-    file_mock.assert_called_with(self.reporter.wb, self.reporter.results)
+    file_mock.assert_called_with(self.reporter.wb, self.reporter.results, strip_licenseref=False)
 
   def test_generate_sets_report_generated_flag(self):
     results = self._getAnalysisResults()
@@ -362,7 +362,7 @@ class ReportXlsxTestSuite(unittest.TestCase):
     results = self._getAnalysisResults()
     self.reporter.setResults(results)
     self.reporter.generate()
-    summary_mock.assert_called_with(self.reporter.wb, self.reporter.results)
+    summary_mock.assert_called_with(self.reporter.wb, self.reporter.results, strip_licenseref=False)
 
   def test_can_generate_summary_sheet(self):
     wb = Workbook()
@@ -536,3 +536,77 @@ class ReportXlsxTestSuite(unittest.TestCase):
     self.assertEqual("No license found - blah", lic.name)
     self.assertTrue(lic.hasFiles)
     self.assertEqual(OrderedDict(), lic.filesSorted)
+
+  def test_will_strip_licenseref_prefix_if_requested(self):
+    licName = "LicenseRef-blah-1 AND Apache-2.0 AND LicenseRef-hi"
+    finalLicName = self.reporter._getFinalLicenseName(licName, True)
+    self.assertEqual(finalLicName, "blah-1 AND Apache-2.0 AND hi")
+
+  def test_will_not_strip_licenseref_prefix_if_not_requested(self):
+    licName = "LicenseRef-blah-1 AND Apache-2.0 AND LicenseRef-hi"
+    finalLicName = self.reporter._getFinalLicenseName(licName, False)
+    self.assertEqual(finalLicName, "LicenseRef-blah-1 AND Apache-2.0 AND LicenseRef-hi")
+
+  @mock.patch('slm.reports.xlsx.XlsxReporter._getFinalLicenseName', return_value="blah")
+  def test_generate_file_listings_strips_licenseref_prefix_if_arg_set(self, final_name):
+    wb = Workbook()
+    results = self._getAnalysisResults()
+    self.reporter._generateCategorySheets(wb, results)
+    self.reporter._generateFileListings(wb, results, strip_licenseref=True)
+    final_name.assert_any_call("another lic2cat2", True)
+
+  @mock.patch('slm.reports.xlsx.XlsxReporter._getFinalLicenseName', return_value="blah")
+  def test_generate_file_listings_does_not_strip_licenseref_prefix_if_arg_not_set(self, final_name):
+    wb = Workbook()
+    results = self._getAnalysisResults()
+    self.reporter._generateCategorySheets(wb, results)
+    self.reporter._generateFileListings(wb, results)
+    final_name.assert_any_call("another lic2cat2", False)
+
+  @mock.patch('slm.reports.xlsx.XlsxReporter._generateFileListings')
+  def test_generate_strips_licenseref_prefix_if_config_set(self, gfl_mock):
+    self.db.setConfigValue(key="report-strip-licenseref", value="yes")
+    results = self._getAnalysisResults()
+    self.reporter.setResults(results)
+    self.reporter.generate()
+    gfl_mock.assert_any_call(self.reporter.wb, self.reporter.results, strip_licenseref=True)
+
+  @mock.patch('slm.reports.xlsx.XlsxReporter._generateFileListings')
+  def test_generate_does_not_strip_licenseref_prefix_if_config_not_set(self, gfl_mock):
+    results = self._getAnalysisResults()
+    self.reporter.setResults(results)
+    self.reporter.generate()
+    gfl_mock.assert_any_call(self.reporter.wb, self.reporter.results, strip_licenseref=False)
+
+  @mock.patch('slm.reports.xlsx.XlsxReporter._getFinalLicenseName', return_value="blah")
+  def test_generate_summary_strips_licenseref_prefix_if_arg_set(self, final_name):
+    wb = Workbook()
+    results = self._getAnalysisResults()
+    self.reporter._generateCategorySheets(wb, results)
+    self.reporter._generateSummarySheet(wb, results, strip_licenseref=True)
+    final_name.assert_any_call("another lic2cat2", True)
+
+  @mock.patch('slm.reports.xlsx.XlsxReporter._getFinalLicenseName', return_value="blah")
+  def test_generate_summary_does_not_strip_licenseref_prefix_if_arg_not_set(self, final_name):
+    wb = Workbook()
+    results = self._getAnalysisResults()
+    self.reporter._generateCategorySheets(wb, results)
+    self.reporter._generateSummarySheet(wb, results)
+    final_name.assert_any_call("another lic2cat2", False)
+
+  @mock.patch('slm.reports.xlsx.XlsxReporter._generateSummarySheet')
+  def test_generate_strips_licenseref_prefix_from_summary_if_config_set(self, gss_mock):
+    self.db.setConfigValue(key="report-include-summary", value="yes")
+    self.db.setConfigValue(key="report-strip-licenseref", value="yes")
+    results = self._getAnalysisResults()
+    self.reporter.setResults(results)
+    self.reporter.generate()
+    gss_mock.assert_any_call(self.reporter.wb, self.reporter.results, strip_licenseref=True)
+
+  @mock.patch('slm.reports.xlsx.XlsxReporter._generateSummarySheet')
+  def test_generate_does_not_strip_licenseref_prefix_from_summary_if_config_not_set(self, gss_mock):
+    self.db.setConfigValue(key="report-include-summary", value="yes")
+    results = self._getAnalysisResults()
+    self.reporter.setResults(results)
+    self.reporter.generate()
+    gss_mock.assert_any_call(self.reporter.wb, self.reporter.results, strip_licenseref=False)

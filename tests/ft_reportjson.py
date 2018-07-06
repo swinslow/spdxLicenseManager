@@ -108,6 +108,46 @@ class JSONReportFuncTestSuite(unittest.TestCase):
       lic2 = cat2.get("licenses")[0]
       self.assertEqual(len(lic2.get("files")), 3)
 
+  # def test_can_configure_to_strip_licenseref_prefixes_in_json_report(self):
+  #   # Edith configures the project so that licenses beginning with "LicenseRef-"
+  #   # will have that prefix stripped from the JSON report
+  #   result = runcmd(self, slm.cli, "frotz", "set-config",
+  #     "report-strip-licenseref", "yes")
+  #   self.assertEqual(0, result.exit_code)
+
+  #   # She adds the LicenseRef- license
+  #   result = runcmd(self, slm.cli, "frotz", "add-license",
+  #     "LicenseRef-swinslow-1 AND Apache-2.0", "Other")
+  #   self.assertEqual(0, result.exit_code)
+
+  #   # She then imports the SPDX file
+  #   result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+  #     "import-scan", PATH_SIMPLE_LICENSEREF_SPDX, "--scan_date", "2017-08-15",
+  #     "--desc", "frotz-dim scan to strip LicenseRef- prefixes")
+  #   self.assertEqual(0, result.exit_code)
+
+  #   # She then creates a report
+  #   reportPath = self.reportDir.path + "/report.json"
+  #   result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+  #     "create-report", "--scan_id", "3", "--report_format", "json",
+  #     "--report_path", reportPath)
+  #   self.assertEqual(0, result.exit_code)
+
+  #   # She confirms that the file was created successfully
+  #   self.assertTrue(os.path.isfile(reportPath))
+
+  #   # Re-importing the JSON file, she sees that license is present with
+  #   # the "LicenseRef-" prefix stripped
+  #   with open(reportPath, 'r') as f:
+  #     rj = json.load(f)
+  #     flag_found = False
+  #     for cat in rj:
+  #       licenses = cat["licenses"]
+  #       for license in licenses:
+  #         if license["name"] == "swinslow-1 AND Apache-2.0":
+  #           flag_found = True
+  #   self.assertTrue(flag_found)
+
   def test_can_omit_report_path_and_get_default_location_and_name(self):
     # Edith chooses not to include a --report-path flag
     result = runcmd(self, slm.cli, "frotz",

@@ -49,11 +49,16 @@ class XlsxReporter:
   def generate(self):
     if type(self.results) != OrderedDict:
       raise ReportNotReadyError("Cannot call generate() before analysis results are set")
+
+    strip_licenseref = False
+    if self._getFinalConfigValue("report-strip-licenseref") == 'yes':
+      strip_licenseref = True
+
     if self._getFinalConfigValue("report-include-summary") == 'yes':
-      self._generateSummarySheet(self.wb, self.results)
+      self._generateSummarySheet(self.wb, self.results, strip_licenseref=strip_licenseref)
 
     self._generateCategorySheets(self.wb, self.results)
-    self._generateFileListings(self.wb, self.results)
+    self._generateFileListings(self.wb, self.results, strip_licenseref=strip_licenseref)
     self.reportGenerated = True
 
   def save(self, path, replace=False):
@@ -98,7 +103,7 @@ class XlsxReporter:
       ws['B1'] = "License"
       ws['B1'].font = fontBold
 
-  def _generateFileListings(self, wb, results):
+  def _generateFileListings(self, wb, results, strip_licenseref=False):
     # create font styles
     fontBold = openpyxl.styles.Font(size=16, bold=True)
     fontNormal = openpyxl.styles.Font(size=14)
@@ -119,12 +124,12 @@ class XlsxReporter:
           ws[f'A{row}'] = file.path
           ws[f'A{row}'].font = fontNormal
           ws[f'A{row}'].alignment = alignNormal
-          ws[f'B{row}'] = lic.name
+          ws[f'B{row}'] = self._getFinalLicenseName(lic.name, strip_licenseref)
           ws[f'B{row}'].font = fontNormal
           ws[f'B{row}'].alignment = alignNormal
           row += 1
 
-  def _generateSummarySheet(self, wb, results):
+  def _generateSummarySheet(self, wb, results, strip_licenseref=False):
     # use the first (existing) sheet as the summary sheet
     ws = wb.active
     ws.title = "License summary"
@@ -158,7 +163,7 @@ class XlsxReporter:
         if not lic.hasFiles:
           continue
         numfiles = len(lic.filesSorted)
-        ws[f'B{row}'] = lic.name
+        ws[f'B{row}'] = self._getFinalLicenseName(lic.name, strip_licenseref)
         ws[f'B{row}'].font = fontNormal
         ws[f'B{row}'].alignment = alignNormal
         ws[f'C{row}'] = numfiles
@@ -292,3 +297,9 @@ class XlsxReporter:
     lic.hasFiles = True
     lic.filesSorted = OrderedDict()
     return lic
+
+  def _getFinalLicenseName(self, licName, stripLicenseRef):
+    if stripLicenseRef:
+      return licName.replace("LicenseRef-", "")
+    else:
+      return licName

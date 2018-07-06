@@ -37,6 +37,7 @@ PATH_SIMPLE_SPDX = "tests/testfiles/simple.spdx"
 PATH_SIMPLE_EXTENSION_SPDX = "tests/testfiles/simpleExtension.spdx"
 PATH_SIMPLE_EMPTYFILE_SPDX = "tests/testfiles/simpleEmptyFile.spdx"
 PATH_SIMPLE_THIRDPARTY_SPDX = "tests/testfiles/simpleThirdParty.spdx"
+PATH_SIMPLE_LICENSEREF_SPDX = "tests/testfiles/simpleLicenseRef.spdx"
 PATH_SPDX_SUMMARIZER = "tests/testfiles/spdxSummarizer-test1.spdx"
 
 class XlsxReportFuncTestSuite(unittest.TestCase):
@@ -373,6 +374,45 @@ class XlsxReportFuncTestSuite(unittest.TestCase):
     self.assertEqual("No license found - third party directory", ws2['B4'].value)
     self.assertEqual("simple/vendor/file3.txt", ws2['A5'].value)
     self.assertEqual("No license found - third party directory", ws2['B5'].value)
+
+  def test_can_configure_to_strip_licenseref_prefixes_in_xlsx_report(self):
+    # Edith configures the project so that licenses beginning with "LicenseRef-"
+    # will have that prefix stripped from the xlsx report
+    result = runcmd(self, slm.cli, "frotz", "set-config",
+      "report-strip-licenseref", "yes")
+    self.assertEqual(0, result.exit_code)
+
+    # She adds the LicenseRef- license
+    result = runcmd(self, slm.cli, "frotz", "add-license",
+      "LicenseRef-swinslow-1 AND Apache-2.0", "Other")
+    self.assertEqual(0, result.exit_code)
+
+    # She then imports the SPDX file
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "import-scan", PATH_SIMPLE_LICENSEREF_SPDX, "--scan_date", "2017-08-15",
+      "--desc", "frotz-dim scan to strip LicenseRef- prefixes")
+    self.assertEqual(0, result.exit_code)
+
+    # She then creates a report
+    reportPath = self.reportDir.path + "/report.xlsx"
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "create-report", "--scan_id", "3", "--report_format", "xlsx",
+      "--report_path", reportPath)
+    self.assertEqual(0, result.exit_code)
+
+    # Looking inside the workbook, she sees that the summary displays
+    # this license without the "LicenseRef-" prefix
+    wb = load_workbook(filename=reportPath)
+    ws1 = wb["License summary"]
+    flag_found = False
+    for row in range(1, ws1.max_row+1):
+      if ws1[f'B{row}'].value == "swinslow-1 AND Apache-2.0":
+        flag_found = True
+    self.assertTrue(flag_found)
+
+    # And she sees that it also has the prefix omitted in the file list sheet
+    ws2 = wb["Other"]
+    self.assertEqual("swinslow-1 AND Apache-2.0", ws2['B2'].value)
 
   def test_can_omit_report_path_and_get_default_location_and_name(self):
     # Edith chooses not to include a --report-path flag
