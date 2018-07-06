@@ -27,36 +27,49 @@ from ..reports.common import ReportFileError
 from ..reports.json import JSONReporter
 from ..reports.xlsx import XlsxReporter
 
-def cmdCreateReport(ctx, subproject, scan_id=None, report_path=None,
-  report_format='xlsx', no_summary=False, force=False):
+def cmdCreateReport(ctx, subproject, scan_id=None, scan_ids=None,
+  report_path=None, report_format='xlsx', no_summary=False, force=False):
 
   slmhome, mainconfig, project, db = extractContext(ctx)
 
   # check whether a scan ID was provided
-  if scan_id is None:
-    sys.exit(f'Usage: slm create-report --scan_id SCAN_ID --report_path PATH [OPTIONS]\n\nError: "scan_id" not provided.')
+  if scan_id is None and scan_ids == None:
+    sys.exit(f'Usage: \n  slm create-report --scan_id SCAN_ID --report_path PATH [OPTIONS]\n  slm create-report --scan_ids SCAN_IDS --report_path PATH [OPTIONS]\n\nError: "scan_id" and "scan_ids" not provided.')
 
-  # confirm that scan with this ID exists
-  scan = db.getScan(_id=scan_id)
-  if scan is None:
-    sys.exit(f"Scan ID {scan_id} does not exist.")
-
-  # if no report_path was provided, construct the scan's default path
-  if report_path is None:
-    subproject_name = scan.subproject.name
-    scan_dt_str = scan.scan_dt.strftime("%Y-%m-%d")
-    filename = f"{subproject_name}-{scan_dt_str}.{report_format}"
-    report_path = os.path.join(slmhome, "projects", project, "subprojects",
-      subproject_name, "reports", filename)
+  # cannot omit report path when reporting on multiple scans
+  if report_path is None and scan_ids is not None:
+    sys.exit(f"Cannot auto-determine report path; --report_path must be included when multiple scans are included in one report.")
 
   # check for config flags
   kwConfig = {}
   if no_summary:
     kwConfig['report-include-summary'] = 'no'
 
-  # analyze this scan
   analyzer = Analyzer(db=db)
-  results = analyzer.runAnalysis(scan_id)
+
+  # confirm that scan with this ID exists
+  if scan_id is not None:
+    scan_ids_list = [scan_id]
+    scan = db.getScan(_id=scan_id)
+    if scan is None:
+      sys.exit(f"Scan ID {scan_id} does not exist.")
+    # if no report_path was provided, and only one scan is reported,
+    # construct the scan's default path
+    if report_path is None:
+      subproject_name = scan.subproject.name
+      scan_dt_str = scan.scan_dt.strftime("%Y-%m-%d")
+      filename = f"{subproject_name}-{scan_dt_str}.{report_format}"
+      report_path = os.path.join(slmhome, "projects", project, "subprojects",
+        subproject_name, "reports", filename)
+
+  else:
+    scan_ids_list = analyzer.splitScanIDString(scan_ids)
+    for s_id in scan_ids_list:
+      scan = db.getScan(_id=s_id)
+      if scan is None:
+        sys.exit(f"Scan ID {s_id} does not exist.")
+
+  results = analyzer.runAnalysis(scan_ids=scan_ids_list)
 
   reporter = None
   if report_format == 'xlsx':

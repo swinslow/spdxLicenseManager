@@ -84,6 +84,10 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     scans = [
       Scan(_id=1, subproject_id=1, scan_dt=datetime.date(2017, 1, 10),
         desc="new scan"),
+      Scan(_id=2, subproject_id=1, scan_dt=datetime.date(2017, 2, 10),
+        desc="monthly scan 2"),
+      Scan(_id=3, subproject_id=1, scan_dt=datetime.date(2017, 3, 10),
+        desc="monthly scan 3"),
     ]
     self.db.session.bulk_save_objects(scans)
     self.db.session.commit()
@@ -100,9 +104,19 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self.f9 = File(_id=9, scan_id=1, license_id=6, path="/tmp/nolic/vendor/emptyfile", sha1=None, md5="d41d8cd98f00b204e9800998ecf8427e", sha256=None)
     self.f10 = File(_id=10, scan_id=1, license_id=6, path="/tmp/nolic/emptyfile.png", sha1=None, md5="d41d8cd98f00b204e9800998ecf8427e", sha256=None)
     self.f11 = File(_id=11, scan_id=1, license_id=6, path="/tmp/nolic/vendor/emptyfile.json", sha1=None, md5="d41d8cd98f00b204e9800998ecf8427e", sha256=None)
+    self.f21 = File(_id=21, scan_id=2, license_id=1, path="/scan2/tmp/f1", sha1=None, md5="abcdef", sha256=None)
+    self.f22 = File(_id=22, scan_id=2, license_id=4, path="/scan2/tmp/f2", sha1=None, md5=None, sha256="abcdef")
+    self.f23 = File(_id=23, scan_id=2, license_id=3, path="/scan2/tmp/f3-lic3", sha1="abcdef", md5=None, sha256=None)
+    self.f24 = File(_id=24, scan_id=2, license_id=2, path="/scan2/tmp/f4", sha1=None, md5=None, sha256=None)
+    self.f31 = File(_id=31, scan_id=3, license_id=1, path="/scan3/tmp/f1", sha1=None, md5="abcdef", sha256=None)
+    self.f32 = File(_id=32, scan_id=3, license_id=4, path="/scan3/tmp/f2", sha1=None, md5=None, sha256="abcdef")
+    self.f33 = File(_id=33, scan_id=3, license_id=2, path="/scan3/tmp/f3", sha1="abcdef", md5=None, sha256=None)
+    self.f34 = File(_id=34, scan_id=3, license_id=2, path="/scan3/tmp/f4", sha1=None, md5=None, sha256=None)
     self.files = [
       self.f1, self.f2, self.f3, self.f4, self.f5,
-      self.f6, self.f7, self.f8, self.f9, self.f10, self.f11
+      self.f6, self.f7, self.f8, self.f9, self.f10, self.f11,
+      self.f21, self.f22, self.f23, self.f24,
+      self.f31, self.f32, self.f33, self.f34,
     ]
     self.db.session.bulk_save_objects(self.files)
     self.db.session.commit()
@@ -205,11 +219,12 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self.assertEqual("293PageEULA", l11.name)
     self.assertEqual([], list(l11.filesSorted.items()))
 
-    # check category 2, with one license and two files
+    # check category 2, with one license and three files
     (c_id2, c2) = self.analyzer.primaryScanCategories.popitem(last=False)
     self.assertEqual("cat", c2.name)
     (l_id21, l21) = c2.licensesSorted.popitem(last=False)
     self.assertEqual("HarshEULA", l21.name)
+    self.assertEqual(len(l21.filesSorted), 3)
     (f_id211, f211) = l21.filesSorted.popitem(last=False)
     self.assertEqual(f_id211, 3)
     self.assertEqual(f211.path, "/tmp/f3")
@@ -218,22 +233,67 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self.assertEqual(f_id212, 4)
     self.assertEqual(f212.path, "/tmp/f4")
     self.assertEqual(f212.findings, {})
+    (f_id216, f216) = l21.filesSorted.popitem(last=False)
+    self.assertEqual(f_id216, 6)
+    self.assertEqual(f216.path, "/tmp/nolic/vendor/whatever")
+    self.assertEqual(f216.findings, {}) # haven't run analysis yet
 
     # check category 3, with two licenses and two files
     (c_id3, c3) = self.analyzer.primaryScanCategories.popitem(last=False)
     self.assertEqual("a category", c3.name)
     (l_id31, l31) = c3.licensesSorted.popitem(last=False)
     self.assertEqual("DoAnything", l31.name)
+    self.assertEqual(len(l31.filesSorted), 1)
     (f_id311, f311) = l31.filesSorted.popitem(last=False)
     self.assertEqual(f_id311, 1)
     self.assertEqual(f311.path, "/tmp/f1")
     self.assertEqual(f311.findings, {})
     (l_id32, l32) = c3.licensesSorted.popitem(last=False)
     self.assertEqual("DoAnythingNoncommercial", l32.name)
+    self.assertEqual(len(l32.filesSorted), 1)
     (f_id321, f321) = l32.filesSorted.popitem(last=False)
     self.assertEqual(f_id321, 2)
     self.assertEqual(f321.path, "/tmp/f2")
     self.assertEqual(f321.findings, {})
+
+  def test_can_add_files_from_multiple_scans(self):
+    self.analyzer._buildScanCategories()
+    self.analyzer._addFiles(scan_id=1)
+    self.analyzer._addFiles(scan_id=3)
+
+  # check category 1, with one license and still NO FILES
+    (c_id1, c1) = self.analyzer.primaryScanCategories.popitem(last=False)
+    self.assertEqual("blah category", c1.name)
+    (l_id11, l11) = c1.licensesSorted.popitem(last=False)
+    self.assertEqual("293PageEULA", l11.name)
+    self.assertEqual([], list(l11.filesSorted.items()))
+
+  # check category 2, with one license and now five files
+    (c_id2, c2) = self.analyzer.primaryScanCategories.popitem(last=False)
+    self.assertEqual("cat", c2.name)
+    (l_id21, l21) = c2.licensesSorted.popitem(last=False)
+    self.assertEqual("HarshEULA", l21.name)
+    self.assertEqual(len(l21.filesSorted), 5)
+    (f_id211, f211) = l21.filesSorted.popitem(last=False)
+    self.assertEqual(f_id211, 3)
+    self.assertEqual(f211.path, "/tmp/f3")
+    self.assertEqual(f211.findings, {})
+    (f_id212, f212) = l21.filesSorted.popitem(last=False)
+    self.assertEqual(f_id212, 4)
+    self.assertEqual(f212.path, "/tmp/f4")
+    self.assertEqual(f212.findings, {})
+    (f_id216, f216) = l21.filesSorted.popitem(last=False)
+    self.assertEqual(f_id216, 6)
+    self.assertEqual(f216.path, "/tmp/nolic/vendor/whatever")
+    self.assertEqual(f216.findings, {}) # haven't run analysis yet
+    (f3_id211, f3211) = l21.filesSorted.popitem(last=False)
+    self.assertEqual(f3_id211, 33)
+    self.assertEqual(f3211.path, "/scan3/tmp/f3")
+    self.assertEqual(f3211.findings, {})
+    (f3_id212, f3212) = l21.filesSorted.popitem(last=False)
+    self.assertEqual(f3_id212, 34)
+    self.assertEqual(f3212.path, "/scan3/tmp/f4")
+    self.assertEqual(f3212.findings, {})
 
   def test_analyzer_marks_cats_and_lics_that_have_files(self):
     self.analyzer._buildScanCategories()
@@ -571,9 +631,26 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self.assertEqual("a category", cat1.name)
     self.assertTrue(self.analyzer.analysisDone)
 
+  def test_can_analyze_and_get_results_for_multiple_scans(self):
+    self.db.setConfigValue(key="analyze-extensions", value="yes")
+    results = self.analyzer.runAnalysis(scan_ids=[1,3])
+    self.assertEqual(OrderedDict, type(results))
+    self.assertEqual(4, len(results.items()))
+    cat1 = results[1]
+    self.assertEqual("a category", cat1.name)
+    self.assertTrue(self.analyzer.analysisDone)
+
   def test_cannot_analyze_invalid_scan_id(self):
     with self.assertRaises(ReportAnalysisError):
       self.analyzer.runAnalysis(scan_id=187)
+
+  def test_cannot_analyze_invalid_scan_id_in_multiple_ids(self):
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer.runAnalysis(scan_ids=[1,3,187])
+
+  def test_cannot_analyze_with_singular_and_multiple_scan_ids(self):
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer.runAnalysis(scan_id=1, scan_ids=[1,3])
 
   ##### create list results from OrderedDict results
 
@@ -618,3 +695,68 @@ class ReportAnalysisTestSuite(unittest.TestCase):
     self.assertIsInstance(lic6.files, list)
     self.assertEqual(len(lic6.files), 5)
     self.assertIsInstance(lic6.files[0], File)
+
+  ##### Split string into separate scan IDs
+
+  def test_can_split_string_with_individual_scan_ids(self):
+    sstring = "1,3,10,6,2"
+    scan_ids = self.analyzer.splitScanIDString(sstring)
+    # scan IDs should be included regardless of whether they're actual
+    # scans, and should be sorted
+    self.assertEqual(scan_ids, [1,2,3,6,10])
+
+  def test_can_split_string_with_range_of_scan_ids(self):
+    sstring = "1,8,4-6,9"
+    scan_ids = self.analyzer.splitScanIDString(sstring)
+    self.assertEqual(scan_ids, [1,4,5,6,8,9])
+
+  def test_raises_error_if_invalid_text_found(self):
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer.splitScanIDString("oops")
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer.splitScanIDString("1,oops")
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer.splitScanIDString("oops,3")
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer.splitScanIDString("1,oops,3")
+
+  def test_ids_not_duplicated_if_included_repeatedly(self):
+    sstring = "1,1-4,1,4,7-8,7-8,7"
+    scan_ids = self.analyzer.splitScanIDString(sstring)
+    self.assertEqual(scan_ids, [1,2,3,4,7,8])
+
+  def test_raises_error_if_range_is_backwards(self):
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer.splitScanIDString("9-2")
+
+  def test_raises_error_if_range_format_is_invalid(self):
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer.splitScanIDString("9-")
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer.splitScanIDString("9-10-15")
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer.splitScanIDString("-9")
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer.splitScanIDString("-")
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer.splitScanIDString("9--12")
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer.splitScanIDString("-9-10")
+
+  def test_helper_returns_int_from_string(self):
+    i = self.analyzer._getIntFromStringScanID("3")
+    self.assertEqual(i, 3)
+
+  def test_helper_raises_report_analysis_error_for_non_integers(self):
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer._getIntFromStringScanID("")
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer._getIntFromStringScanID("a")
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer._getIntFromStringScanID("3-")
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer._getIntFromStringScanID("3a")
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer._getIntFromStringScanID(",")
+    with self.assertRaises(ReportAnalysisError):
+      self.analyzer._getIntFromStringScanID("3:")

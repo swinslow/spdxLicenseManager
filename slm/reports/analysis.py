@@ -40,15 +40,29 @@ class Analyzer:
   ##### Main common report analysis functions
   ##### External usage shouldn't require calling anything except these
 
-  def runAnalysis(self, scan_id):
-    # check whether scan exists
-    scan = self.db.getScan(_id=scan_id)
-    if scan is None:
-      raise ReportAnalysisError(f"Scan ID {scan_id} does not exist")
+  def runAnalysis(self, *, scan_id=None, scan_ids=[]):
+    # cannot pass both singular and multiple scan IDs
+    if scan_id is not None and scan_ids != []:
+      raise ReportAnalysisError(f"Cannot call runAnalysis with both singular and multiple scan IDs")
+
+    # if just one ID, check whether scan exists
+    if scan_id is not None:
+      scan = self.db.getScan(_id=scan_id)
+      if scan is None:
+        raise ReportAnalysisError(f"Scan ID {scan_id} does not exist")
+
+    # or if multiple IDs, check whether all scans exist
+    for si in scan_ids:
+      si_scan = self.db.getScan(_id=si)
+      if si_scan is None:
+        raise ReportAnalysisError(f"Scan ID {si} does not exist")
 
     # build and run analysis
     self._buildScanCategories()
-    self._addFiles(scan_id=scan_id)
+    if scan_id is not None:
+      self._addFiles(scan_id=scan_id)
+    for si in scan_ids:
+      self._addFiles(scan_id=si)
     self._runAnalysis()
 
     self.analysisDone = True
@@ -76,6 +90,29 @@ class Analyzer:
           newFile.findings = f.findings
           newLic.files.append(newFile)
     return listResults
+
+  def splitScanIDString(self, sstring):
+    ids_set = set()
+    # split IDs string by commas
+    slist = sstring.split(',')
+    for sgroup in slist:
+      # split by hyphen, if there is one
+      shyp = sgroup.split('-', 1)
+      if len(shyp) > 2:
+        raise ReportAnalysisError(f"Invalid scan ID range: {sgroup}")
+      elif len(shyp) == 1:
+        # if there's no range, then just handle this scan ID
+        ids_set.add(self._getIntFromStringScanID(shyp[0]))
+      else:
+        # add all in range
+        idstart = self._getIntFromStringScanID(shyp[0])
+        idend = self._getIntFromStringScanID(shyp[1]) + 1
+        if idend < idstart:
+          raise ReportAnalysisError(f"Invalid scan ID format: {sgroup}")
+        for i in range(idstart, idend):
+          ids_set.add(i)
+    # convert to list and sort before returning
+    return sorted(list(ids_set))
 
   ##### Reporting analysis main helper functions
 
@@ -284,3 +321,9 @@ class Analyzer:
     if lic is None:
       return None
     return lic.filesSorted.get(file_id, None)
+
+  def _getIntFromStringScanID(self, s):
+    try:
+      return int(s)
+    except ValueError:
+      raise ReportAnalysisError(f"Cannot convert {s} to integer as scan ID")

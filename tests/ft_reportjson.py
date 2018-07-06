@@ -34,6 +34,7 @@ from helper_check import checkForFileExists
 
 # paths to various SPDX test files
 PATH_SIMPLE_SPDX = "tests/testfiles/simple.spdx"
+PATH_SPDX_SUMMARIZER = "tests/testfiles/spdxSummarizer-test1.spdx"
 
 class JSONReportFuncTestSuite(unittest.TestCase):
   """spdxLicenseManager JSON reporting FT suite."""
@@ -63,7 +64,7 @@ class JSONReportFuncTestSuite(unittest.TestCase):
 
     # Now Edith wants to get a JSON version of the findings.
     # She configures it to omit empty categories and licenses
-    result = runcmd(self, slm.cli, "frotz", "set-config", 
+    result = runcmd(self, slm.cli, "frotz", "set-config",
       "analyze-exclude-empty-cats-and-lics", "yes")
     self.assertEqual(0, result.exit_code)
 
@@ -122,3 +123,51 @@ class JSONReportFuncTestSuite(unittest.TestCase):
 
     # She checks to make sure, and indeed the report is there
     checkForFileExists(self, self.slmhome, expectedPath)
+
+  def test_cannot_omit_report_path_if_reporting_on_multiple_scans(self):
+    # Edith chooses not to include a --report-path flag. However, she has included
+    # multiple scans, and this causes things to fail because the appropriate
+    # report name cannot be auto-determined.
+    result = runcmd(self, slm.cli, "frotz",
+      "create-report", "--scan_ids", "1,3", "--report_format", "json")
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(f"Cannot auto-determine report path; --report_path must be included when multiple scans are included in one report.\n", result.output)
+
+  def test_can_create_report_for_multiple_scans(self):
+    # Edith imports a second SPDX file, for a different but related project,
+    # as a new scan in the frotz subproject frotz-nuclear
+    result = runcmd(self, slm.cli, "frotz", "add-license",
+      "Apache-2.0 AND MIT", "Attribution")
+    self.assertEqual(0, result.exit_code)
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-nuclear",
+      "import-scan", PATH_SPDX_SUMMARIZER, "--scan_date", "2017-10-01",
+      "--desc", "frotz-nuclear spdxSummarizer")
+    self.assertEqual(0, result.exit_code)
+
+    # Now Edith wants to get a JSON version of the findings for BOTH scans.
+    # She configures it to omit empty categories and licenses
+    result = runcmd(self, slm.cli, "frotz", "set-config",
+      "analyze-exclude-empty-cats-and-lics", "yes")
+    self.assertEqual(0, result.exit_code)
+
+    # And she requests the report and specifies the target output path
+    reportPath = self.reportDir.path + "/report.json"
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-dim",
+      "create-report", "--scan_ids", "1,3", "--report_format", "json",
+      "--report_path", reportPath)
+
+    # The output message tells her it succeeded
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual(f"Report successfully created at {reportPath}.\n", result.output)
+
+    # She confirms that the file was created successfully
+    self.assertTrue(os.path.isfile(reportPath))
+
+    # Looking inside the JSON file (as text and not as JSON), she sees that
+    # file results from both scans are found
+    with open(reportPath, 'r') as f:
+      json_contents = f.read()
+    self.assertIn("spdxLicenseManager-master/tests/ft_init.py", json_contents)
+    self.assertIn("spdxSummarizer-master/LICENSE-docs.txt", json_contents)

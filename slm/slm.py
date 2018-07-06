@@ -323,16 +323,17 @@ def cliListScans(ctx):
 
 @cli.command('create-report', help="Create report from scan in database")
 @click.option('--scan_id', default=None, help='Scan ID')
+@click.option('--scan_ids', default=None, help='Scan IDs (multiple)')
 @click.option('--report_path', default=None, help='Output file path')
 @click.option('--report_format', default=None, help='Report format')
 @click.option('--no_summary', is_flag=True, help='Omit summary report')
 @click.option('-f', '--force', is_flag=True, help='Force overwrite of existing output file')
 @click.pass_context
-def cliCreateReport(ctx, scan_id, report_path, report_format, no_summary, force):
+def cliCreateReport(ctx, scan_id, scan_ids, report_path, report_format, no_summary, force):
   checkForContext(ctx)
   subproject = ctx.obj['SUBPROJECT']
-  return cmdCreateReport(ctx, subproject, scan_id, report_path,
-    report_format, no_summary, force)
+  return cmdCreateReport(ctx, subproject, scan_id, scan_ids,
+    report_path, report_format, no_summary, force)
 
 @cli.command('create-reports', help="Create all reports for current scans")
 @click.option('-f', '--force', is_flag=True, help='Force overwrite of existing reports')

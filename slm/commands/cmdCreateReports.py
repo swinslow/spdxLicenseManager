@@ -45,7 +45,7 @@ def cmdCreateReports(ctx, force=False):
 
     # analyze this scan
     analyzer = Analyzer(db=db)
-    results = analyzer.runAnalysis(scan._id)
+    results = analyzer.runAnalysis(scan_ids=[scan._id])
 
     # create xlsx report
     xlsxReporter = XlsxReporter(db=db, config={})

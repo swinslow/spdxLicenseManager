@@ -37,6 +37,7 @@ PATH_SIMPLE_SPDX = "tests/testfiles/simple.spdx"
 PATH_SIMPLE_EXTENSION_SPDX = "tests/testfiles/simpleExtension.spdx"
 PATH_SIMPLE_EMPTYFILE_SPDX = "tests/testfiles/simpleEmptyFile.spdx"
 PATH_SIMPLE_THIRDPARTY_SPDX = "tests/testfiles/simpleThirdParty.spdx"
+PATH_SPDX_SUMMARIZER = "tests/testfiles/spdxSummarizer-test1.spdx"
 
 class XlsxReportFuncTestSuite(unittest.TestCase):
   """spdxLicenseManager Xlsx reporting FT suite."""
@@ -53,6 +54,16 @@ class XlsxReportFuncTestSuite(unittest.TestCase):
     self.reportDir.cleanup()
     self.reportDir = None
     tearDownSandbox(self)
+
+  ##### Test helpers
+
+  def helper_confirm_sheet_contains_filename(self, sheet, filename):
+    for row in sheet.rows:
+      if row[0].value == filename:
+        return True
+    return False
+
+  ##### Tests below here
 
   def test_can_create_simple_report_without_summary(self):
     # Edith imports a very short SPDX file as a new scan in the frotz
@@ -378,3 +389,89 @@ class XlsxReportFuncTestSuite(unittest.TestCase):
 
     # She checks to make sure, and indeed the report is there
     checkForFileExists(self, self.slmhome, expectedPath)
+
+  def test_cannot_omit_report_path_if_reporting_on_multiple_scans(self):
+    # Edith chooses not to include a --report-path flag. However, she has included
+    # multiple scans, and this causes things to fail because the appropriate
+    # report name cannot be auto-determined.
+    result = runcmd(self, slm.cli, "frotz",
+      "create-report", "--scan_ids", "1,3", "--report_format", "xlsx")
+
+    # It fails and explains why
+    self.assertEqual(1, result.exit_code)
+    self.assertEqual(f"Cannot auto-determine report path; --report_path must be included when multiple scans are included in one report.\n", result.output)
+
+  def test_can_create_report_for_multiple_scans(self):
+    # Edith imports a second SPDX file, for a different but related project,
+    # as a new scan in the frotz subproject frotz-nuclear
+    result = runcmd(self, slm.cli, "frotz", "add-license",
+      "Apache-2.0 AND MIT", "Attribution")
+    self.assertEqual(0, result.exit_code)
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-nuclear",
+      "import-scan", PATH_SPDX_SUMMARIZER, "--scan_date", "2017-10-01",
+      "--desc", "frotz-nuclear spdxSummarizer")
+    self.assertEqual(0, result.exit_code)
+
+    # Now Edith wants to get an xlsx report of the findings for BOTH scans,
+    # combined into one report. She omits the summary
+    reportPath = self.reportDir.path + "/report.xlsx"
+    result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-nuclear",
+      "create-report", "--scan_ids", "1,3", "--report_format", "xlsx",
+      "--report_path", reportPath, "--no_summary")
+
+    # The output message tells her it succeeded
+    self.assertEqual(0, result.exit_code)
+    self.assertEqual(f"Report successfully created at {reportPath}.\n", result.output)
+
+    # She confirms that the file was created successfully
+    self.assertTrue(os.path.isfile(reportPath))
+
+    # Looking inside the workbook, she sees that the expected license
+    # sheets are present
+    wb = load_workbook(filename=reportPath)
+    self.assertEqual(['Project Licenses', 'Attribution', 'No license found'], wb.sheetnames)
+
+    # and that file results from both scans are found
+    ws1 = wb["Project Licenses"]
+    scan_1 = self.helper_confirm_sheet_contains_filename(ws1, "spdxLicenseManager-master/tests/ft_init.py")
+    scan_3 = self.helper_confirm_sheet_contains_filename(ws1, "spdxSummarizer-master/LICENSE-docs.txt")
+    self.assertTrue(scan_1)
+    self.assertTrue(scan_3)
+
+  # def test_can_create_report_for_multiple_scans_with_renamed_paths(self):
+  #   # Same as prior test, but this time Edith wants to add a prefix before
+  #   # all paths in scan 1
+  #   result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-nuclear",
+  #     "import-scan", PATH_SPDX_SUMMARIZER, "--scan_date", "2017-10-01",
+  #     "--desc", "frotz-nuclear spdxSummarizer")
+  #   self.assertEqual(0, result.exit_code)
+
+  #   # Now she asks for the report, this time with the prefix noted
+  #   reportPath = self.reportDir.path + "/report.xlsx"
+  #   result = runcmd(self, slm.cli, "frotz", "--subproject", "frotz-nuclear",
+  #     "create-report", "--scan_ids", "1:PREFIX,3", "--report_format", "xlsx",
+  #     "--report_path", reportPath, "--no_summary")
+
+  #   # The output message tells her it succeeded
+  #   self.assertEqual(0, result.exit_code)
+  #   self.assertEqual(f"Report successfully created at {reportPath}.\n", result.output)
+
+  #   # She confirms that the file was created successfully
+  #   self.assertTrue(os.path.isfile(reportPath))
+
+  #   # Looking inside the workbook, she sees that the expected license
+  #   # sheets are present
+  #   wb = load_workbook(filename=reportPath)
+  #   self.assertEqual(['Project Licenses', 'Attribution', 'No license found'], wb.sheetnames)
+
+  #   # and that file results from both scans are found, with PREFIX/ added
+  #   # to scan 1's files only
+  #   ws1 = wb["Project Licenses"]
+  #   scan_1_prefix = helper_confirm_sheet_contains_filename(ws1, "PREFIX/spdxLicenseManager-master/tests/ft_init.py")
+  #   scan_1_noprefix = helper_confirm_sheet_contains_filename(ws1, "spdxLicenseManager-master/tests/ft_init.py")
+  #   scan_3_prefix = helper_confirm_sheet_contains_filename(ws1, "PREFIX/spdxSummarizer-master/LICENSE-docs.txt")
+  #   scan_3_noprefix = helper_confirm_sheet_contains_filename(ws1, "spdxLicenseManager-master/tests/ft_init.py")
+  #   self.assertTrue(scan_1_prefix)
+  #   self.assertFalse(scan_1_noprefix)
+  #   self.assertFalse(scan_3_prefix)
+  #   self.assertTrue(scan_3_noprefix)
